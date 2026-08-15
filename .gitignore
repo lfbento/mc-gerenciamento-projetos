@@ -3,3 +3,5 @@ __pycache__/
 *.png
 !assets/*.png
 openproject_cronograma.xml
+graphify-out/
+.claude/

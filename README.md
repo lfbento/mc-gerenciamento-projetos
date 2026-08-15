@@ -16,9 +16,14 @@ lógica serve para qualquer projeto com estimativas de 3 pontos.
 
 | Script | Função |
 |---|---|
-| `mc_projetos.py` | Simula 20.000 iterações de cronograma (PERT/CPM + distribuição triangular) e custo; calcula percentis P10/P50/P90, probabilidade de cumprir prazo, índice de criticidade e contingência (P80−P50); gera histogramas |
-| `gerar_msproject.py` | Converte a rede de tarefas em arquivo `.xml` que o MS Project abre nativamente: vínculos FS, campos customizados (Otimista/Provável/Pessimista) e resumo do MC nos metadados |
-| `openproject_to_xml.py` | Puxa tarefas de um projeto do **OpenProject** (API v3) e gera o mesmo Project XML — pipeline OpenProject → MS Project |
+| `main.py` | **Pipeline Inteligente Completo:** lê documentos (.md) de `/convertidos`, extrai escopo/prazos/custos, aplica a EAP ponderada (2%, 20%, 30%, 40%, 7%, 1%), cria predecessoras inteligentes, roda Monte Carlo (20.000 iterações) e exporta para MS Project XML e relatório executivo |
+| `mc_engine.py` | Motor genérico de Simulação de Monte Carlo para redes WBS arbitrárias com distribuição triangular, cálculo de caminho crítico dinâmico, percentis (P10/P50/P80/P90), índice de criticidade e contingência |
+| `wbs_scheduler.py` | Gerador e balanceador da EAP padrão por pesos de serviço e distribuidor de durações de 3 pontos com links FS |
+| `msproject_exporter.py` | Exportador hierárquico para MS Project XML (MSPDI) com tarefas-resumo, subtarefas e campos customizados Text1..Text5 |
+| `projeto_extractor.py` | Extrator semântico de documentos contratuais/técnicos (.md) |
+| `mc_projetos.py` | Exemplo inicial isolado de Monte Carlo para 2 trocadores de calor |
+| `gerar_msproject.py` | Gerador de XML isolado para o exemplo inicial de trocadores |
+| `openproject_to_xml.py` | Integração direta com a API v3 do **OpenProject** |
 
 ## Resultados (cronograma)
 
@@ -54,28 +59,23 @@ pip install -r requirements.txt
 ```
 
 ## Uso
-
+ 
 ```bash
-# 1) Rodar o Monte Carlo (cronograma + custo)
+# 1) Executar o Pipeline Inteligente (Lê /convertidos, estrutura WBS, roda Monte Carlo e gera XML)
+python3 main.py
+
+# Opções customizadas do pipeline
+python3 main.py --pasta convertidos/ --saida exemplos/cronograma_tanque_tq960.xml --iteracoes 20000
+
+# 2) Rodar o Monte Carlo isolado do exemplo antigo de trocadores
 python3 mc_projetos.py
 
-# 2) Gerar cronograma para MS Project (inicio = proxima segunda-feira)
+# 3) Gerar cronograma isolado para MS Project (trocadores)
 python3 gerar_msproject.py
-
-#    opcoes do gerador
-python3 gerar_msproject.py --inicio 2026-09-01   # data de inicio custom
-python3 gerar_msproject.py --base p50            # duracoes = P50 do MC
-python3 gerar_msproject.py --prazo 50            # prazo p/ relatorio MC
-
-# 3) Integracao com OpenProject (API v3)
-python3 openproject_to_xml.py --projetos                         # lista projetos
-python3 openproject_to_xml.py --url http://192.168.100.65:8080 \
-        --key SUA_API_KEY --projeto 1                            # gera o XML
-python3 openproject_to_xml.py --mock                             # testa sem servidor
 ```
 
 No MS Project: **Arquivo → Abrir** e selecionar o `.xml` (o Project
-converte para `.mpp` ao salvar).
+converta para `.mpp` ao salvar).
 
 ## Metodologia
 
