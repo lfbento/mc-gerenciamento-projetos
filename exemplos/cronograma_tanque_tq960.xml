@@ -3,7 +3,7 @@
   <Name>Fabricação e Fornecimento do Tanque de Armazenamento TQ-960-30/1 (API 650) – Obra 2026-000037</Name>
   <Title>Fabricação e Fornecimento do Tanque de Armazenamento TQ-960-30/1 (API 650) – Obra 2026-000037</Title>
   <StartDate>2026-08-17T08:00:00</StartDate>
-  <FinishDate>2026-11-30T17:00:00</FinishDate>
+  <FinishDate>2027-01-06T17:00:00</FinishDate>
   <ScheduleFromStart>1</ScheduleFromStart>
   <MinutesPerDay>480</MinutesPerDay>
   <MinutesPerWeek>2400</MinutesPerWeek>
@@ -11,10 +11,10 @@
   <DefaultTaskType>0</DefaultTaskType>
   <Comments>CRONOGRAMA GERADO POR PIPELINE INTELIGENTE COM EAP PADRONIZADA.
 Análise de Monte Carlo (20.000 simulações):
- • Prazo P50: 63.6 dias úteis | P90: 67.5 dias úteis
- • Probabilidade de cumprimento do prazo contratual: 99.4%
- • Buffer de contingência sugerido: 3.9 dias úteis
- • Custo Médio Estimado: R$ 419.0k (Contingência P80-P50: R$ 21.4k)
+ • Prazo P50: 81.3 dias úteis | P90: 85.3 dias úteis
+ • Probabilidade de cumprimento do prazo contratual: 0.0%
+ • Buffer de contingência sugerido: 4.0 dias úteis
+ • Custo Médio Estimado: R$ 413.7k (Contingência P80-P50: R$ 20.1k)
 Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criticidade (%) | Text5 = Pacote WBS.</Comments>
   <Tasks>
     <Task>
@@ -29,16 +29,16 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
       <Start>2026-08-17T08:00:00</Start>
-      <Finish>2026-11-30T17:00:00</Finish>
-      <Duration>PT840H</Duration>
+      <Finish>2027-01-06T17:00:00</Finish>
+      <Duration>PT1136H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>1</Summary>
       <Notes>CRONOGRAMA GERADO POR PIPELINE INTELIGENTE COM EAP PADRONIZADA.
 Análise de Monte Carlo (20.000 simulações):
- • Prazo P50: 63.6 dias úteis | P90: 67.5 dias úteis
- • Probabilidade de cumprimento do prazo contratual: 99.4%
- • Buffer de contingência sugerido: 3.9 dias úteis
- • Custo Médio Estimado: R$ 419.0k (Contingência P80-P50: R$ 21.4k)
+ • Prazo P50: 81.3 dias úteis | P90: 85.3 dias úteis
+ • Probabilidade de cumprimento do prazo contratual: 0.0%
+ • Buffer de contingência sugerido: 4.0 dias úteis
+ • Custo Médio Estimado: R$ 413.7k (Contingência P80-P50: R$ 20.1k)
 Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criticidade (%) | Text5 = Pacote WBS.</Notes>
     </Task>
     <Task>
@@ -76,15 +76,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <Summary>0</Summary>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>1 d</Value>
+        <Value>0.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>1 d</Value>
+        <Value>1.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>2 d</Value>
+        <Value>1.5 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -94,7 +94,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>1.0 - ATIVIDADES</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 1d | Provável = 1d | Pessimista = 2d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 0.8d | Provável = 1.0d | Pessimista = 1.5d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -120,15 +120,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>1 d</Value>
+        <Value>0.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>1 d</Value>
+        <Value>1.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>2 d</Value>
+        <Value>1.5 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -138,7 +138,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>1.0 - ATIVIDADES</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 1d | Provável = 1d | Pessimista = 2d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 0.8d | Provável = 1.0d | Pessimista = 1.5d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -153,8 +153,8 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
       <Start>2026-08-21T08:00:00</Start>
-      <Finish>2026-09-16T17:00:00</Finish>
-      <Duration>PT208H</Duration>
+      <Finish>2026-09-17T17:00:00</Finish>
+      <Duration>PT216H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>1</Summary>
     </Task>
@@ -170,8 +170,8 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
       <Start>2026-08-21T08:00:00</Start>
-      <Finish>2026-08-27T17:00:00</Finish>
-      <Duration>PT32H</Duration>
+      <Finish>2026-08-28T17:00:00</Finish>
+      <Duration>PT34H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -181,15 +181,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>3.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4 d</Value>
+        <Value>4.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>6 d</Value>
+        <Value>6.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -199,7 +199,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>2.0 - METODOS E PROCESSOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 4d | Pessimista = 6d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 3.4d | Provável = 4.3d | Pessimista = 6.4d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -213,9 +213,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>2.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-08-28T08:00:00</Start>
-      <Finish>2026-09-03T17:00:00</Finish>
-      <Duration>PT32H</Duration>
+      <Start>2026-08-31T08:00:00</Start>
+      <Finish>2026-09-04T17:00:00</Finish>
+      <Duration>PT28H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -225,26 +225,26 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>2.9 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4 d</Value>
+        <Value>3.6 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>6 d</Value>
+        <Value>5.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>0.1%</Value>
+        <Value>100.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>2.0 - METODOS E PROCESSOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 4d | Pessimista = 6d.
-Índice de Criticidade (Monte Carlo): 0.1% das 20.000 iterações no Caminho Crítico.</Notes>
+      <Notes>Estimativas de 3 Pontos: Otimista = 2.9d | Provável = 3.6d | Pessimista = 5.4d.
+Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
       <UID>8</UID>
@@ -257,9 +257,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>2.3</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-04T08:00:00</Start>
-      <Finish>2026-09-09T17:00:00</Finish>
-      <Duration>PT24H</Duration>
+      <Start>2026-09-07T08:00:00</Start>
+      <Finish>2026-09-10T17:00:00</Finish>
+      <Duration>PT22H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -269,26 +269,26 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>2 d</Value>
+        <Value>2.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>3 d</Value>
+        <Value>2.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>5 d</Value>
+        <Value>4.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>0.1%</Value>
+        <Value>100.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>2.0 - METODOS E PROCESSOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 2d | Provável = 3d | Pessimista = 5d.
-Índice de Criticidade (Monte Carlo): 0.1% das 20.000 iterações no Caminho Crítico.</Notes>
+      <Notes>Estimativas de 3 Pontos: Otimista = 2.2d | Provável = 2.8d | Pessimista = 4.2d.
+Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
       <UID>9</UID>
@@ -301,9 +301,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>2.4</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-10T08:00:00</Start>
-      <Finish>2026-09-16T17:00:00</Finish>
-      <Duration>PT32H</Duration>
+      <Start>2026-09-11T08:00:00</Start>
+      <Finish>2026-09-17T17:00:00</Finish>
+      <Duration>PT28H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -313,26 +313,26 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>2.9 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4 d</Value>
+        <Value>3.6 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>6 d</Value>
+        <Value>5.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>0.1%</Value>
+        <Value>100.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>2.0 - METODOS E PROCESSOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 4d | Pessimista = 6d.
-Índice de Criticidade (Monte Carlo): 0.1% das 20.000 iterações no Caminho Crítico.</Notes>
+      <Notes>Estimativas de 3 Pontos: Otimista = 2.9d | Provável = 3.6d | Pessimista = 5.4d.
+Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
       <UID>10</UID>
@@ -345,9 +345,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>3.0</OutlineNumber>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-08-28T08:00:00</Start>
-      <Finish>2026-09-24T17:00:00</Finish>
-      <Duration>PT216H</Duration>
+      <Start>2026-09-18T08:00:00</Start>
+      <Finish>2026-10-23T17:00:00</Finish>
+      <Duration>PT280H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>1</Summary>
     </Task>
@@ -362,43 +362,43 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>3.1</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-08-28T08:00:00</Start>
-      <Finish>2026-09-02T17:00:00</Finish>
-      <Duration>PT24H</Duration>
+      <Start>2026-09-18T08:00:00</Start>
+      <Finish>2026-09-24T17:00:00</Finish>
+      <Duration>PT25H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
-        <PredecessorUID>6</PredecessorUID>
+        <PredecessorUID>9</PredecessorUID>
         <Type>1</Type>
         <LinkLag>0</LinkLag>
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>2 d</Value>
+        <Value>2.6 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>3 d</Value>
+        <Value>3.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>5 d</Value>
+        <Value>4.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>99.9%</Value>
+        <Value>100.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>3.0 - SUPRIMENTOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 2d | Provável = 3d | Pessimista = 5d.
-Índice de Criticidade (Monte Carlo): 99.9% das 20.000 iterações no Caminho Crítico.</Notes>
+      <Notes>Estimativas de 3 Pontos: Otimista = 2.6d | Provável = 3.2d | Pessimista = 4.8d.
+Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
       <UID>12</UID>
       <ID>12</ID>
-      <Name>Aquisição de Chapas Inox SA-240 304, Tubos e Flanges</Name>
+      <Name>Fabricação e Entrega de Chapas Inox SA-240 304 e Tubos pela Usina</Name>
       <Type>0</Type>
       <IsNull>0</IsNull>
       <CreateDate>2026-08-14T08:00:00</CreateDate>
@@ -406,9 +406,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>3.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-03T08:00:00</Start>
-      <Finish>2026-09-16T17:00:00</Finish>
-      <Duration>PT72H</Duration>
+      <Start>2026-09-25T08:00:00</Start>
+      <Finish>2026-10-14T17:00:00</Finish>
+      <Duration>PT102H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -418,31 +418,31 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>6 d</Value>
+        <Value>10.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>9 d</Value>
+        <Value>12.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>14 d</Value>
+        <Value>19.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>99.9%</Value>
+        <Value>100.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>3.0 - SUPRIMENTOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 6d | Provável = 9d | Pessimista = 14d.
-Índice de Criticidade (Monte Carlo): 99.9% das 20.000 iterações no Caminho Crítico.</Notes>
+      <Notes>Estimativas de 3 Pontos: Otimista = 10.2d | Provável = 12.8d | Pessimista = 19.2d.
+Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
       <UID>13</UID>
       <ID>13</ID>
-      <Name>Aquisição de Acessórios Aço Carbono, Juntas PTFE e Estojos</Name>
+      <Name>Aquisição de Forjados, Flanges, Juntas PTFE e Estojos (Paralelo)</Name>
       <Type>0</Type>
       <IsNull>0</IsNull>
       <CreateDate>2026-08-14T08:00:00</CreateDate>
@@ -450,9 +450,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>3.3</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-03T08:00:00</Start>
-      <Finish>2026-09-09T17:00:00</Finish>
-      <Duration>PT32H</Duration>
+      <Start>2026-09-25T08:00:00</Start>
+      <Finish>2026-10-06T17:00:00</Finish>
+      <Duration>PT51H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -462,15 +462,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>5.1 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4 d</Value>
+        <Value>6.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>6 d</Value>
+        <Value>9.6 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -480,13 +480,13 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>3.0 - SUPRIMENTOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 4d | Pessimista = 6d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 5.1d | Provável = 6.4d | Pessimista = 9.6d.
 Índice de Criticidade (Monte Carlo): 0.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
       <UID>14</UID>
       <ID>14</ID>
-      <Name>Recebimento, Inspeção Dimensional e Rastreabilidade de MP</Name>
+      <Name>Recebimento, Inspeção Dimensional e Rastreabilidade de MP na Fábrica</Name>
       <Type>0</Type>
       <IsNull>0</IsNull>
       <CreateDate>2026-08-14T08:00:00</CreateDate>
@@ -494,9 +494,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>3.4</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-17T08:00:00</Start>
-      <Finish>2026-09-24T17:00:00</Finish>
-      <Duration>PT40H</Duration>
+      <Start>2026-10-15T08:00:00</Start>
+      <Finish>2026-10-23T17:00:00</Finish>
+      <Duration>PT42H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -511,26 +511,26 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>4.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>5 d</Value>
+        <Value>5.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>8 d</Value>
+        <Value>7.9 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>99.9%</Value>
+        <Value>100.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>3.0 - SUPRIMENTOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 5d | Pessimista = 8d.
-Índice de Criticidade (Monte Carlo): 99.9% das 20.000 iterações no Caminho Crítico.</Notes>
+      <Notes>Estimativas de 3 Pontos: Otimista = 4.2d | Provável = 5.3d | Pessimista = 7.9d.
+Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
       <UID>15</UID>
@@ -543,9 +543,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>4.0</OutlineNumber>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-25T08:00:00</Start>
-      <Finish>2026-11-12T17:00:00</Finish>
-      <Duration>PT384H</Duration>
+      <Start>2026-10-26T08:00:00</Start>
+      <Finish>2026-12-18T17:00:00</Finish>
+      <Duration>PT424H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>1</Summary>
     </Task>
@@ -560,16 +560,11 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>4.1</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-25T08:00:00</Start>
-      <Finish>2026-10-01T17:00:00</Finish>
-      <Duration>PT32H</Duration>
+      <Start>2026-10-26T08:00:00</Start>
+      <Finish>2026-11-02T17:00:00</Finish>
+      <Duration>PT34H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
-      <PredecessorLink>
-        <PredecessorUID>9</PredecessorUID>
-        <Type>1</Type>
-        <LinkLag>0</LinkLag>
-      </PredecessorLink>
       <PredecessorLink>
         <PredecessorUID>14</PredecessorUID>
         <Type>1</Type>
@@ -577,15 +572,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>3.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4 d</Value>
+        <Value>4.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>6 d</Value>
+        <Value>6.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -595,7 +590,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 4d | Pessimista = 6d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 3.4d | Provável = 4.3d | Pessimista = 6.4d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -609,9 +604,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>4.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-02T08:00:00</Start>
-      <Finish>2026-10-08T17:00:00</Finish>
-      <Duration>PT32H</Duration>
+      <Start>2026-11-03T08:00:00</Start>
+      <Finish>2026-11-10T17:00:00</Finish>
+      <Duration>PT34H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -621,15 +616,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>3.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4 d</Value>
+        <Value>4.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>6 d</Value>
+        <Value>6.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -639,7 +634,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 4d | Pessimista = 6d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 3.4d | Provável = 4.3d | Pessimista = 6.4d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -653,9 +648,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>4.3</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-09T08:00:00</Start>
-      <Finish>2026-10-19T17:00:00</Finish>
-      <Duration>PT48H</Duration>
+      <Start>2026-11-11T08:00:00</Start>
+      <Finish>2026-11-23T17:00:00</Finish>
+      <Duration>PT56H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -665,15 +660,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>4 d</Value>
+        <Value>5.7 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>6 d</Value>
+        <Value>7.1 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>9 d</Value>
+        <Value>10.6 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -683,7 +678,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 4d | Provável = 6d | Pessimista = 9d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 5.7d | Provável = 7.1d | Pessimista = 10.6d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -697,9 +692,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>4.4</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-20T08:00:00</Start>
-      <Finish>2026-10-26T17:00:00</Finish>
-      <Duration>PT32H</Duration>
+      <Start>2026-11-24T08:00:00</Start>
+      <Finish>2026-12-01T17:00:00</Finish>
+      <Duration>PT34H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -709,15 +704,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>3.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4 d</Value>
+        <Value>4.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>6 d</Value>
+        <Value>6.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -727,13 +722,13 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 4d | Pessimista = 6d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 3.4d | Provável = 4.3d | Pessimista = 6.4d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
       <UID>20</UID>
       <ID>20</ID>
-      <Name>Fabricação/Instalação de Bocais A1-W1, Boca de Visita M1 e Guarda-Corpo</Name>
+      <Name>Fabricação/Instalação de Bocais A1-W1, Boca de Visita M1 e Acessórios</Name>
       <Type>0</Type>
       <IsNull>0</IsNull>
       <CreateDate>2026-08-14T08:00:00</CreateDate>
@@ -741,9 +736,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>4.5</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-27T08:00:00</Start>
-      <Finish>2026-11-02T17:00:00</Finish>
-      <Duration>PT32H</Duration>
+      <Start>2026-12-02T08:00:00</Start>
+      <Finish>2026-12-09T17:00:00</Finish>
+      <Duration>PT34H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -753,15 +748,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3 d</Value>
+        <Value>3.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4 d</Value>
+        <Value>4.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>6 d</Value>
+        <Value>6.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -771,7 +766,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3d | Provável = 4d | Pessimista = 6d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 3.4d | Provável = 4.3d | Pessimista = 6.4d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -785,9 +780,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>4.6</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-03T08:00:00</Start>
-      <Finish>2026-11-06T17:00:00</Finish>
-      <Duration>PT24H</Duration>
+      <Start>2026-12-10T08:00:00</Start>
+      <Finish>2026-12-15T17:00:00</Finish>
+      <Duration>PT18H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -797,15 +792,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>2 d</Value>
+        <Value>1.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>3 d</Value>
+        <Value>2.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>5 d</Value>
+        <Value>3.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -815,7 +810,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 2d | Provável = 3d | Pessimista = 5d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 1.8d | Provável = 2.3d | Pessimista = 3.4d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -829,9 +824,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>4.7</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-09T08:00:00</Start>
-      <Finish>2026-11-12T17:00:00</Finish>
-      <Duration>PT24H</Duration>
+      <Start>2026-12-16T08:00:00</Start>
+      <Finish>2026-12-18T17:00:00</Finish>
+      <Duration>PT16H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -841,15 +836,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>2 d</Value>
+        <Value>1.6 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>3 d</Value>
+        <Value>2.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>5 d</Value>
+        <Value>3.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -859,7 +854,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 2d | Provável = 3d | Pessimista = 5d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 1.6d | Provável = 2.0d | Pessimista = 3.0d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -873,9 +868,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>5.0</OutlineNumber>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-13T08:00:00</Start>
-      <Finish>2026-11-20T17:00:00</Finish>
-      <Duration>PT56H</Duration>
+      <Start>2026-12-21T08:00:00</Start>
+      <Finish>2026-12-29T17:00:00</Finish>
+      <Duration>PT64H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>1</Summary>
     </Task>
@@ -890,9 +885,9 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>5.1</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-13T08:00:00</Start>
-      <Finish>2026-11-17T17:00:00</Finish>
-      <Duration>PT16H</Duration>
+      <Start>2026-12-21T08:00:00</Start>
+      <Finish>2026-12-24T17:00:00</Finish>
+      <Duration>PT24H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
       <PredecessorLink>
@@ -902,15 +897,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>1 d</Value>
+        <Value>2.4 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>2 d</Value>
+        <Value>3.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>3 d</Value>
+        <Value>4.5 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -920,7 +915,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>5.0 - PINTURA</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 1d | Provável = 2d | Pessimista = 3d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 2.4d | Provável = 3.0d | Pessimista = 4.5d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -934,8 +929,8 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>5.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-18T08:00:00</Start>
-      <Finish>2026-11-20T17:00:00</Finish>
+      <Start>2026-12-25T08:00:00</Start>
+      <Finish>2026-12-29T17:00:00</Finish>
       <Duration>PT16H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
@@ -946,15 +941,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>1 d</Value>
+        <Value>1.6 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>2 d</Value>
+        <Value>2.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>3 d</Value>
+        <Value>3.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -964,7 +959,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>5.0 - PINTURA</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 1d | Provável = 2d | Pessimista = 3d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 1.6d | Provável = 2.0d | Pessimista = 3.0d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -978,8 +973,8 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>6.0</OutlineNumber>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-23T08:00:00</Start>
-      <Finish>2026-11-30T17:00:00</Finish>
+      <Start>2026-12-30T08:00:00</Start>
+      <Finish>2027-01-06T17:00:00</Finish>
       <Duration>PT56H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>1</Summary>
@@ -995,16 +990,11 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>6.1</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-23T08:00:00</Start>
-      <Finish>2026-11-24T17:00:00</Finish>
+      <Start>2026-12-30T08:00:00</Start>
+      <Finish>2026-12-31T17:00:00</Finish>
       <Duration>PT8H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
-      <PredecessorLink>
-        <PredecessorUID>22</PredecessorUID>
-        <Type>1</Type>
-        <LinkLag>0</LinkLag>
-      </PredecessorLink>
       <PredecessorLink>
         <PredecessorUID>25</PredecessorUID>
         <Type>1</Type>
@@ -1012,15 +1002,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>1 d</Value>
+        <Value>0.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>1 d</Value>
+        <Value>1.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>2 d</Value>
+        <Value>1.5 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -1030,7 +1020,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>6.0 - EXPEDIÇÃO</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 1d | Provável = 1d | Pessimista = 2d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 0.8d | Provável = 1.0d | Pessimista = 1.5d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -1044,8 +1034,8 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>6.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-25T08:00:00</Start>
-      <Finish>2026-11-26T17:00:00</Finish>
+      <Start>2027-01-01T08:00:00</Start>
+      <Finish>2027-01-04T17:00:00</Finish>
       <Duration>PT8H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
@@ -1056,15 +1046,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>1 d</Value>
+        <Value>0.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>1 d</Value>
+        <Value>1.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>2 d</Value>
+        <Value>1.5 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -1074,7 +1064,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>6.0 - EXPEDIÇÃO</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 1d | Provável = 1d | Pessimista = 2d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 0.8d | Provável = 1.0d | Pessimista = 1.5d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
     <Task>
@@ -1088,8 +1078,8 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       <OutlineNumber>6.3</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-11-27T08:00:00</Start>
-      <Finish>2026-11-30T17:00:00</Finish>
+      <Start>2027-01-05T08:00:00</Start>
+      <Finish>2027-01-06T17:00:00</Finish>
       <Duration>PT8H</Duration>
       <DurationFormat>7</DurationFormat>
       <Summary>0</Summary>
@@ -1100,15 +1090,15 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>1 d</Value>
+        <Value>0.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>1 d</Value>
+        <Value>1.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>2 d</Value>
+        <Value>1.5 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -1118,7 +1108,7 @@ Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criti
         <FieldID>188743735</FieldID>
         <Value>6.0 - EXPEDIÇÃO</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 1d | Provável = 1d | Pessimista = 2d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 0.8d | Provável = 1.0d | Pessimista = 1.5d.
 Índice de Criticidade (Monte Carlo): 100.0% das 20.000 iterações no Caminho Crítico.</Notes>
     </Task>
   </Tasks>
