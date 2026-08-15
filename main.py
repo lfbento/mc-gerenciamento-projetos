@@ -28,6 +28,7 @@ from projeto_extractor import extrair_metadados_projeto
 from wbs_scheduler import gerar_rede_wbs, PESOS_WBS
 from mc_engine import simular_monte_carlo_rede
 from msproject_exporter import exportar_msproject_xml, next_monday
+from relatorio_pdf import gerar_relatorio_pdf_diretoria
 
 
 def gerar_relatorio_markdown(
@@ -128,12 +129,13 @@ def executar_pipeline(
     pasta_md: str = "convertidos",
     caminho_saida_xml: str = "exemplos/cronograma_tanque_tq960.xml",
     caminho_relatorio: str = "RELATORIO_PROJETO_MC.md",
+    caminho_pdf: str = "RELATORIO_DIRETORIA_MONTE_CARLO.pdf",
     data_inicio_str: str = None,
     n_simulacoes: int = 20000,
     base_duracao: str = "provavel"
 ):
     print("=" * 75)
-    print("🚀 INICIANDO PIPELINE: MD -> EAP PONDERADA -> MONTE CARLO -> MS PROJECT")
+    print("🚀 INICIANDO PIPELINE: MD -> EAP PONDERADA -> MONTE CARLO -> MS PROJECT & PDF")
     print("=" * 75)
 
     # 1. Leitura e Extração Semântica dos MDs
@@ -153,14 +155,22 @@ def executar_pipeline(
     print(f"   ✓ Total de Pacotes EAP : {len(rede_wbs['pacotes'])}")
     print(f"   ✓ Total de Atividades  : {total_tarefas} tarefas com estimativas (O, M, P)")
 
-    # 3. Simulação de Monte Carlo
-    print(f"\n🎲 3. Executando Simulação de Monte Carlo ({n_simulacoes:,} iterações)...")
+    # 3. Simulação de Monte Carlo & Comparativo de Cenários
+    print(f"\n🎲 3. Executando Simulação de Monte Carlo & Comparativo de Cenários ({n_simulacoes:,} iterações)...")
     res_mc = simular_monte_carlo_rede(rede_wbs, n_sim=n_simulacoes, plot=True)
-    d = res_mc["duracao"]
+    d_inercial = res_mc["duracao"]
+    d_mitigado = res_mc["cenario_mitigado"]
     c = res_mc["custo"]
-    print(f"   ✓ Duração P50 / P90    : {d['p50']:.1f} dias / {d['p90']:.1f} dias")
-    print(f"   ✓ P(cumprir prazo)     : {d['prob_sucesso_prazo']:.1f}%")
-    print(f"   ✓ Buffer Sugerido      : {d['buffer_sugerido']:.1f} dias úteis")
+
+    print(f"\n   ┌── CENÁRIO 1: INERCIAL (SEM MITIGAÇÃO) ──────────────┐")
+    print(f"   │ Duração P50 / P90    : {d_inercial['p50']:.1f} dias / {d_inercial['p90']:.1f} dias")
+    print(f"   │ P(cumprir prazo)     : {d_inercial['prob_sucesso_prazo']:.1f}% (🔴 Alto Risco de Atraso)")
+    print(f"   │ Atraso projetado     : +{d_inercial['p50'] - d_inercial['prazo_alvo']:.1f} dias úteis")
+    print(f"   └── CENÁRIO 2: OTIMIZADO COM PLANO DE AÇÃO ────────────┘")
+    print(f"   │ Duração P50 / P90    : {d_mitigado['p50']:.1f} dias / {d_mitigado['p90']:.1f} dias")
+    print(f"   │ P(cumprir prazo)     : {d_mitigado['prob_sucesso_prazo']:.1f}% (🟢 Baixo Risco / Protegido)")
+    print(f"   │ Buffer Disponível    : {d_mitigado['buffer_disponivel']:.1f} dias úteis de margem")
+    print(f"   └──────────────────────────────────────────────────────┘")
     print(f"   ✓ Custo P50 / P80      : R$ {c['p50']/1000.0:.1f}k / R$ {c['p80']/1000.0:.1f}k")
     print(f"   ✓ Contingência Custo   : R$ {c['contingencia_sugerida']/1000.0:.1f}k")
 
@@ -174,20 +184,26 @@ def executar_pipeline(
     xml_path = exportar_msproject_xml(rede_wbs, res_mc, inicio, caminho_saida_xml, base_duracao)
     print(f"   ✓ Arquivo XML Gerado   : {xml_path}")
 
-    # 5. Geração do Relatório Markdown
-    print(f"\n📝 5. Gerando relatório executivo Markdown...")
+    # 5. Geração do Relatório Executivo em PDF para a Diretoria
+    print(f"\n📑 5. Gerando Relatório Executivo para a Diretoria em PDF...")
+    pdf_out = gerar_relatorio_pdf_diretoria(metadados, rede_wbs, res_mc, caminho_pdf)
+    print(f"   ✓ Relatório PDF Criado : {pdf_out}")
+
+    # 6. Geração do Relatório Markdown
+    print(f"\n📝 6. Gerando relatório executivo Markdown...")
     rel_path = gerar_relatorio_markdown(metadados, rede_wbs, res_mc, xml_path, caminho_relatorio)
     print(f"   ✓ Relatório Criado     : {rel_path}")
 
     print("\n" + "=" * 75)
-    print("🎉 PIPELINE CONCLUÍDO COM SUCESSO!")
+    print("🎉 PIPELINE E RELATÓRIO DA DIRETORIA CONCLUÍDOS COM SUCESSO!")
     print("=" * 75)
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Pipeline Inteligente de Cronograma e Monte Carlo para MS Project")
+    parser = argparse.ArgumentParser(description="Pipeline Inteligente de Cronograma e Monte Carlo para MS Project e PDF da Diretoria")
     parser.add_argument("--pasta", "-p", default="convertidos", help="Pasta com os arquivos .md do projeto")
     parser.add_argument("--saida", "-o", default="exemplos/cronograma_tanque_tq960.xml", help="Caminho do arquivo XML de saída")
+    parser.add_argument("--pdf", default="RELATORIO_DIRETORIA_MONTE_CARLO.pdf", help="Caminho do relatório PDF para a Diretoria")
     parser.add_argument("--relatorio", "-r", default="RELATORIO_PROJETO_MC.md", help="Caminho do relatório Markdown")
     parser.add_argument("--inicio", "-i", default=None, help="Data de início (YYYY-MM-DD)")
     parser.add_argument("--iteracoes", "-n", type=int, default=20000, help="Número de iterações de Monte Carlo")
@@ -198,6 +214,7 @@ def main():
         pasta_md=args.pasta,
         caminho_saida_xml=args.saida,
         caminho_relatorio=args.relatorio,
+        caminho_pdf=args.pdf,
         data_inicio_str=args.inicio,
         n_simulacoes=args.iteracoes,
         base_duracao=args.base

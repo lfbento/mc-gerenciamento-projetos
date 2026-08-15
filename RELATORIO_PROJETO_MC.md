@@ -19,9 +19,9 @@
 | Métrica Financeira | Valor Calculado | Diretriz de Ação |
 | :--- | :---: | :--- |
 | **Orçamento Base Aprovado** | **R$ 395,500.00** | Preço de venda / baseline |
-| **Custo Mais Provável (P50)** | **R$ 413,360.65** | Custo operacional estimado |
-| **Contingência Sugerida (P80 − P50)** | **R$ 20,146.39** | Reserva gerencial de contingência |
-| **Probabilidade de Estouro Orçamentário** | **77.7%** | Nível de exposição a variações de matéria-prima |
+| **Custo Mais Provável (P50)** | **R$ 413,384.55** | Custo operacional estimado |
+| **Contingência Sugerida (P80 − P50)** | **R$ 19,972.62** | Reserva gerencial de contingência |
+| **Probabilidade de Estouro Orçamentário** | **77.8%** | Nível de exposição a variações de matéria-prima |
 
 ---
 

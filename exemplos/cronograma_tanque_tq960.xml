@@ -14,7 +14,7 @@ Análise de Monte Carlo (20.000 simulações):
  • Prazo P50: 81.3 dias úteis | P90: 85.3 dias úteis
  • Probabilidade de cumprimento do prazo contratual: 0.0%
  • Buffer de contingência sugerido: 4.0 dias úteis
- • Custo Médio Estimado: R$ 413.7k (Contingência P80-P50: R$ 20.1k)
+ • Custo Médio Estimado: R$ 413.7k (Contingência P80-P50: R$ 20.0k)
 Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criticidade (%) | Text5 = Pacote WBS.</Comments>
   <Tasks>
     <Task>
@@ -38,7 +38,7 @@ Análise de Monte Carlo (20.000 simulações):
  • Prazo P50: 81.3 dias úteis | P90: 85.3 dias úteis
  • Probabilidade de cumprimento do prazo contratual: 0.0%
  • Buffer de contingência sugerido: 4.0 dias úteis
- • Custo Médio Estimado: R$ 413.7k (Contingência P80-P50: R$ 20.1k)
+ • Custo Médio Estimado: R$ 413.7k (Contingência P80-P50: R$ 20.0k)
 Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criticidade (%) | Text5 = Pacote WBS.</Notes>
     </Task>
     <Task>
