@@ -127,9 +127,9 @@ def gerar_relatorio_markdown(
 
 def executar_pipeline(
     pasta_md: str = "convertidos",
-    caminho_saida_xml: str = "exemplos/cronograma_tanque_tq960.xml",
-    caminho_relatorio: str = "RELATORIO_PROJETO_MC.md",
-    caminho_pdf: str = "RELATORIO_DIRETORIA_MONTE_CARLO.pdf",
+    caminho_saida_xml: str = None,
+    caminho_relatorio: str = None,
+    caminho_pdf: str = None,
     data_inicio_str: str = None,
     n_simulacoes: int = 20000,
     base_duracao: str = "provavel"
@@ -138,15 +138,30 @@ def executar_pipeline(
     print("🚀 INICIANDO PIPELINE: MD -> EAP PONDERADA -> MONTE CARLO -> MS PROJECT & PDF")
     print("=" * 75)
 
+    pasta_dir = Path(pasta_md)
+    if not pasta_dir.exists():
+        raise FileNotFoundError(f"Pasta de documentos não encontrada: {pasta_md}")
+
     # 1. Leitura e Extração Semântica dos MDs
-    print(f"\n📂 1. Lendo e analisando documentos da pasta: '{pasta_md}'...")
-    metadados = extrair_metadados_projeto(pasta_md)
+    print(f"\n📂 1. Lendo e analisando documentos da pasta: '{pasta_dir}'...")
+    metadados = extrair_metadados_projeto(str(pasta_dir))
     print(f"   ✓ Projeto Identificado : {metadados['nome_projeto']}")
     print(f"   ✓ TAG do Equipamento   : {metadados['tag_equipamento']}")
     print(f"   ✓ Cliente / Norma      : {metadados['cliente']} | {metadados['norma_principal']}")
     print(f"   ✓ Prazo Contratual     : {metadados['prazo_dias_corridos']} dias corridos (~{metadados['prazo_dias_uteis']} dias úteis)")
     print(f"   ✓ Orçamento Base       : R$ {metadados['orcamento_total']:,.2f}")
     print(f"   ✓ Documentos Lidos ({len(metadados['documentos_lidos'])}): {', '.join(metadados['documentos_lidos'][:3])}...")
+
+    # Definição dos caminhos de saída dentro da própria pasta informada
+    tag_clean = "".join([c if c.isalnum() or c in "-_" else "_" for c in metadados["tag_equipamento"]]).strip("_").lower()
+    pasta_assets = pasta_dir / "assets"
+    
+    if caminho_saida_xml is None:
+        caminho_saida_xml = str(pasta_dir / f"cronograma_{tag_clean}.xml")
+    if caminho_pdf is None:
+        caminho_pdf = str(pasta_dir / "RELATORIO_DIRETORIA_MONTE_CARLO.pdf")
+    if caminho_relatorio is None:
+        caminho_relatorio = str(pasta_dir / "RELATORIO_PROJETO_MC.md")
 
     # 2. Geração da Rede WBS Ponderada
     print(f"\n🏗️  2. Gerando árvore WBS com pesos oficiais (2%, 20%, 30%, 40%, 7%, 1%)...")
@@ -157,7 +172,7 @@ def executar_pipeline(
 
     # 3. Simulação de Monte Carlo & Comparativo de Cenários
     print(f"\n🎲 3. Executando Simulação de Monte Carlo & Comparativo de Cenários ({n_simulacoes:,} iterações)...")
-    res_mc = simular_monte_carlo_rede(rede_wbs, n_sim=n_simulacoes, plot=True)
+    res_mc = simular_monte_carlo_rede(rede_wbs, n_sim=n_simulacoes, plot=True, pasta_assets=str(pasta_assets))
     d_inercial = res_mc["duracao"]
     d_mitigado = res_mc["cenario_mitigado"]
     c = res_mc["custo"]
@@ -195,16 +210,16 @@ def executar_pipeline(
     print(f"   ✓ Relatório Criado     : {rel_path}")
 
     print("\n" + "=" * 75)
-    print("🎉 PIPELINE E RELATÓRIO DA DIRETORIA CONCLUÍDOS COM SUCESSO!")
+    print(f"🎉 PIPELINE CONCLUÍDO! TODOS OS ARTEFATOS GRAVADOS EM: {pasta_dir.resolve()}")
     print("=" * 75)
 
 
 def main():
     parser = argparse.ArgumentParser(description="Pipeline Inteligente de Cronograma e Monte Carlo para MS Project e PDF da Diretoria")
-    parser.add_argument("--pasta", "-p", default="convertidos", help="Pasta com os arquivos .md do projeto")
-    parser.add_argument("--saida", "-o", default="exemplos/cronograma_tanque_tq960.xml", help="Caminho do arquivo XML de saída")
-    parser.add_argument("--pdf", default="RELATORIO_DIRETORIA_MONTE_CARLO.pdf", help="Caminho do relatório PDF para a Diretoria")
-    parser.add_argument("--relatorio", "-r", default="RELATORIO_PROJETO_MC.md", help="Caminho do relatório Markdown")
+    parser.add_argument("--pasta", "-p", default="convertidos", help="Pasta com os arquivos .md do projeto (onde serão gravados todos os artefatos)")
+    parser.add_argument("--saida", "-o", default=None, help="Caminho customizado do arquivo XML de saída (padrão: dentro da pasta do projeto)")
+    parser.add_argument("--pdf", default=None, help="Caminho customizado do relatório PDF para a Diretoria (padrão: dentro da pasta do projeto)")
+    parser.add_argument("--relatorio", "-r", default=None, help="Caminho customizado do relatório Markdown (padrão: dentro da pasta do projeto)")
     parser.add_argument("--inicio", "-i", default=None, help="Data de início (YYYY-MM-DD)")
     parser.add_argument("--iteracoes", "-n", type=int, default=20000, help="Número de iterações de Monte Carlo")
     parser.add_argument("--base", choices=["provavel", "p50", "otimista", "pessimista"], default="provavel", help="Base de duração das tarefas no MS Project")
