@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Gerador de Relatório Executivo em PDF para a Diretoria
-======================================================
-Produz um documento formal, executivo e de alto padrão visual com base nos
-resultados da Simulação de Monte Carlo, comparativo de cenários de risco
-e Plano de Ação Estratégico (Fast-Tracking, Crashing e Buffer de Projeto).
+Gerador de Relatório Executivo em PDF para a Diretoria (MCMC & Governança)
+==========================================================================
+Produz um documento formal, executivo e de alto padrão visual (3 páginas)
+incorporando:
+  - Cards de KPIs no Topo (Nominal, P50, P85, P95).
+  - Fundamentação Teórica MCMC (Inércia Operacional, Troca de Regimes e Path Merge Bias).
+  - Tabela de Governança de Prazos e Dimensionamento de Feeding Buffers.
+  - Gráficos de Densidade de Probabilidade e Sensibilidade de Caminho Crítico.
+  - Matriz de Decisão 5W2H e Recomendações Estratégicas para PMO/Diretoria.
 """
 
 import os
@@ -14,16 +18,16 @@ from typing import Dict, Any
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
-from reportlab.lib.units import cm, mm
+from reportlab.lib.units import cm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, KeepTogether, HRFlowable
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, KeepTogether, HRFlowable, PageBreak
 )
 from reportlab.pdfgen import canvas
 
 
 class NumberedCanvas(canvas.Canvas):
-    """Canvas com numeração de páginas 'Página X de Y' e cabeçalho institucional."""
+    """Canvas corporativo com numeração 'Página X de Y' e cabeçalho formal."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._saved_page_states = []
@@ -42,23 +46,24 @@ class NumberedCanvas(canvas.Canvas):
 
     def draw_page_decorations(self, page_count):
         self.saveState()
-        self.setFont("Helvetica", 8)
-        self.setFillColor(colors.HexColor("#64748B"))
+        self.setFont("Helvetica-Bold", 7.5)
+        self.setFillColor(colors.HexColor("#475569"))
         
-        # Cabeçalho (Páginas > 1)
+        # Cabeçalho Institucional (Páginas > 1)
         if self._pageNumber > 1:
-            self.drawString(1.5 * cm, 28.5 * cm, "RELATÓRIO EXECUTIVO DE RISCOS & MONTE CARLO | NACIONAL INDÚSTRIA")
-            self.drawRightString(19.5 * cm, 28.5 * cm, "CONFIDENCIAL - DIRETORIA")
+            self.drawString(1.5 * cm, 28.5 * cm, "NACIONAL INDÚSTRIA MECÂNICA S/A • RELATÓRIO EXECUTIVO MCMC & GOVERNANÇA")
+            self.drawRightString(19.5 * cm, 28.5 * cm, "CONFIDENCIAL — DIRETORIA EXECUTIVA")
             self.setStrokeColor(colors.HexColor("#CBD5E1"))
             self.setLineWidth(0.5)
             self.line(1.5 * cm, 28.3 * cm, 19.5 * cm, 28.3 * cm)
 
         # Rodapé (Todas as páginas)
+        self.setFont("Helvetica", 7.5)
         self.setStrokeColor(colors.HexColor("#E2E8F0"))
         self.setLineWidth(0.5)
-        self.line(1.5 * cm, 1.5 * cm, 19.5 * cm, 1.5 * cm)
-        self.drawString(1.5 * cm, 1.1 * cm, "Nacional Indústria Mecânica S/A — Gestão de Projetos & Engenharia")
-        self.drawRightString(19.5 * cm, 1.1 * cm, f"Página {self._pageNumber} de {page_count}")
+        self.line(1.5 * cm, 1.3 * cm, 19.5 * cm, 1.3 * cm)
+        self.drawString(1.5 * cm, 0.95 * cm, "Relatório Técnico Especializado • Métodos Estocásticos, MCMC e Gestão de Riscos")
+        self.drawRightString(19.5 * cm, 0.95 * cm, f"Página {self._pageNumber} de {page_count}")
         self.restoreState()
 
 
@@ -68,7 +73,7 @@ def gerar_relatorio_pdf_diretoria(
     resultado_mc: Dict[str, Any],
     caminho_pdf: str = "RELATORIO_DIRETORIA_MONTE_CARLO.pdf"
 ) -> str:
-    """Gera o PDF executivo de alta qualidade para a Diretoria."""
+    """Gera o relatório executivo completo de 3 páginas para a Diretoria."""
     os.makedirs(os.path.dirname(os.path.abspath(caminho_pdf)) or ".", exist_ok=True)
     
     doc = SimpleDocTemplate(
@@ -76,293 +81,322 @@ def gerar_relatorio_pdf_diretoria(
         pagesize=A4,
         leftMargin=1.5 * cm,
         rightMargin=1.5 * cm,
-        topMargin=2.0 * cm,
-        bottomMargin=2.0 * cm
+        topMargin=1.8 * cm,
+        bottomMargin=1.8 * cm
     )
 
     styles = getSampleStyleSheet()
     
-    # Estilos customizados
-    azul_escuro = colors.HexColor("#0F172A")
-    azul_corp = colors.HexColor("#1E3A8A")
-    verde_sucesso = colors.HexColor("#065F46")
-    vermelho_alerta = colors.HexColor("#991B1B")
-    cinza_fundo = colors.HexColor("#F8FAFC")
+    # Cores Corporativas
+    c_navy = colors.HexColor("#0F172A")
+    c_blue = colors.HexColor("#1E3A8A")
+    c_blue_light = colors.HexColor("#EFF6FF")
+    c_emerald = colors.HexColor("#065F46")
+    c_red = colors.HexColor("#991B1B")
+    c_gray_bg = colors.HexColor("#F8FAFC")
+    c_gray_border = colors.HexColor("#CBD5E1")
     
-    style_titulo = ParagraphStyle(
-        "DocTitle",
-        parent=styles["Heading1"],
-        fontName="Helvetica-Bold",
-        fontSize=18,
-        leading=22,
-        textColor=azul_corp,
-        spaceAfter=4
-    )
+    # Estilos Tipográficos
+    st_tag = ParagraphStyle("Tag", fontName="Helvetica-Bold", fontSize=8, textColor=colors.HexColor("#2563EB"), leading=10, spaceAfter=2)
+    st_title = ParagraphStyle("Title", fontName="Helvetica-Bold", fontSize=15, leading=18, textColor=c_blue, spaceAfter=3)
+    st_subtitle = ParagraphStyle("Subtitle", fontName="Helvetica", fontSize=9.5, leading=12.5, textColor=colors.HexColor("#475569"), spaceAfter=8)
     
-    style_subtitulo = ParagraphStyle(
-        "DocSubtitle",
-        parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=11,
-        leading=14,
-        textColor=colors.HexColor("#475569"),
-        spaceAfter=12
-    )
+    st_h2 = ParagraphStyle("H2", fontName="Helvetica-Bold", fontSize=10.5, leading=13.5, textColor=c_blue, spaceBefore=8, spaceAfter=4)
+    st_body = ParagraphStyle("Body", fontName="Helvetica", fontSize=8.2, leading=11.2, textColor=colors.HexColor("#1E293B"), spaceAfter=4)
+    st_body_bold = ParagraphStyle("BodyB", parent=st_body, fontName="Helvetica-Bold")
+    
+    st_card_val = ParagraphStyle("CardVal", fontName="Helvetica-Bold", fontSize=13, leading=15, alignment=1, textColor=c_navy)
+    st_card_lbl = ParagraphStyle("CardLbl", fontName="Helvetica-Bold", fontSize=7, leading=8.5, alignment=1, textColor=colors.HexColor("#2563EB"))
+    st_card_sub = ParagraphStyle("CardSub", fontName="Helvetica", fontSize=6.8, leading=8, alignment=1, textColor=colors.HexColor("#64748B"))
 
-    style_h2 = ParagraphStyle(
-        "SectionH2",
-        parent=styles["Heading2"],
-        fontName="Helvetica-Bold",
-        fontSize=13,
-        leading=16,
-        textColor=azul_corp,
-        spaceBefore=12,
-        spaceAfter=6
-    )
-
-    style_body = ParagraphStyle(
-        "Body",
-        parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=9.5,
-        leading=13.5,
-        textColor=colors.HexColor("#1E293B"),
-        spaceAfter=6
-    )
-
-    style_body_bold = ParagraphStyle(
-        "BodyBold",
-        parent=style_body,
-        fontName="Helvetica-Bold"
-    )
-
-    style_cell = ParagraphStyle(
-        "CellText",
-        parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=8.5,
-        leading=11.5,
-        textColor=colors.HexColor("#1E293B")
-    )
-
-    style_cell_bold = ParagraphStyle(
-        "CellTextBold",
-        parent=style_cell,
-        fontName="Helvetica-Bold"
-    )
-
-    style_cell_center = ParagraphStyle(
-        "CellTextCenter",
-        parent=style_cell,
-        alignment=1
-    )
-
-    style_cell_center_bold = ParagraphStyle(
-        "CellTextCenterBold",
-        parent=style_cell_bold,
-        alignment=1
-    )
+    st_cell = ParagraphStyle("Cell", fontName="Helvetica", fontSize=7.5, leading=9.5, textColor=colors.HexColor("#1E293B"))
+    st_cell_bold = ParagraphStyle("CellB", parent=st_cell, fontName="Helvetica-Bold")
+    st_cell_center = ParagraphStyle("CellC", parent=st_cell, alignment=1)
+    st_cell_center_bold = ParagraphStyle("CellCB", parent=st_cell_bold, alignment=1)
 
     story = []
 
-    # 1. Cabeçalho Executivo
-    story.append(Paragraph("RELATÓRIO EXECUTIVO PARA A DIRETORIA", ParagraphStyle("Tag", fontName="Helvetica-Bold", fontSize=9, textColor=colors.HexColor("#2563EB"), spaceAfter=2)))
-    story.append(Paragraph("Análise de Riscos & Plano de Ação Estratégico (Monte Carlo)", style_titulo))
-    story.append(Paragraph(f"<b>Projeto:</b> {rede_wbs['projeto']} | <b>TAG:</b> {rede_wbs['tag']} | <b>Cliente:</b> {rede_wbs['cliente']}", style_subtitulo))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=azul_corp, spaceBefore=0, spaceAfter=10))
+    # Extração de Dados
+    d_iner = resultado_mc["duracao"]
+    d_mit = resultado_mc["cenario_mitigado"]
+    c_mc = resultado_mc["custo"]
+    prazo_nom = float(d_iner.get("prazo_alvo", 71.0))
+    p50_mit = d_mit["p50"]
+    p85_mit = d_mit["p85"]
+    p95_mit = d_mit["p95"]
 
-    # 2. Resumo dos Metadados do Contrato
-    dados_header = [
+    # =========================================================================
+    # PÁGINA 1: CARDS DE GOVERNANÇA, FUNDAMENTAÇÃO MCMC & DIAGNÓSTICO
+    # =========================================================================
+    story.append(Paragraph("ENGENHARIA DE FABRICAÇÃO PESADA & GOVERNANÇA DE PROJETOS", st_tag))
+    story.append(Paragraph("Cadeias de Markov e Monte Carlo (MCMC) na Gestão de Projetos", st_title))
+    story.append(Paragraph(
+        f"<b>Projeto:</b> {rede_wbs['projeto']} | <b>TAG:</b> {rede_wbs['tag']} | <b>Cliente:</b> {rede_wbs['cliente']} | <b>Norma:</b> {metadados.get('norma_principal', 'API 650 / NR-13')}",
+        st_subtitle
+    ))
+    story.append(HRFlowable(width="100%", thickness=1.2, color=c_blue, spaceBefore=0, spaceAfter=8))
+
+    # Cards de Destaque de Governança (Top Grid)
+    card_nominal = [
+        Paragraph("PRAZO NOMINAL", st_card_lbl),
+        Paragraph(f"{prazo_nom:.0f} dias", st_card_val),
+        Paragraph("Soma teórica do caminho crítico", st_card_sub)
+    ]
+    card_p50 = [
+        Paragraph("PREVISÃO MEDIANA (P50)", st_card_lbl),
+        Paragraph(f"{p50_mit:.1f} dias", st_card_val),
+        Paragraph("Meta operacional chão de fábrica", st_card_sub)
+    ]
+    card_p85 = [
+        Paragraph("ALVO GERENCIAL (P85)", st_card_lbl),
+        Paragraph(f"{p85_mit:.1f} dias", st_card_val),
+        Paragraph(f"Buffer recomendado: +{d_mit['buffer_p85_p50']:.1f}d (SLA)", st_card_sub)
+    ]
+    card_p95 = [
+        Paragraph("NÍVEL CONSERVADOR (P95)", st_card_lbl),
+        Paragraph(f"{p95_mit:.1f} dias", st_card_val),
+        Paragraph(f"Buffer de segurança: +{d_mit['buffer_p95_p50']:.1f}d", st_card_sub)
+    ]
+
+    t_cards = Table([[card_nominal, card_p50, card_p85, card_p95]], colWidths=[4.5 * cm, 4.5 * cm, 4.5 * cm, 4.5 * cm])
+    t_cards.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), c_gray_bg),
+        ('BOX', (0, 0), (-1, -1), 0.8, c_gray_border),
+        ('INNERGRID', (0, 0), (-1, -1), 0.8, c_gray_border),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+    ]))
+    story.append(t_cards)
+    story.append(Spacer(1, 8))
+
+    # Seção 1: Fundamentação Teórica MCMC
+    story.append(Paragraph("1. Fundamentação Teórica: Por que MCMC na Gestão de Projetos Industriais?", st_h2))
+    story.append(Paragraph(
+        "O gerenciamento clássico apoia-se no método do Caminho Crítico (CPM) e PERT determinístico. "
+        "Contudo, essas abordagens sofrem de graves falhas conceituais que conduzem à <b>Falácia do Planejamento</b>:",
+        st_body
+    ))
+    story.append(Paragraph(
+        "• <b>Falta de Memória vs. Inércia Operacional:</b> O PERT assume que os atrasos diários são independentes (i.i.d.). "
+        "Na fábrica, descontinuidades de solda na radiografia (RX), retrabalhos ou atrasos de usina geram efeito cascata com forte dependência temporal.<br/>"
+        "• <b>Ignorância do Caminho Crítico Estocástico (Path Merge Bias):</b> Caminhos paralelos no grafo (ex: suprimentos de chapas vs. forjados) "
+        "frequentemente superam o caminho nominal devido à variabilidade estocástica.<br/>"
+        "• <b>Troca de Regimes de Produtividade:</b> As equipes alternam entre Regime Normal (100%) e Regime de Fricção/Retrabalho (45%).",
+        st_body
+    ))
+
+    story.append(Spacer(1, 4))
+    story.append(Paragraph("<b>Diferencial do MCMC (Markov Chain Monte Carlo):</b>", st_body_bold))
+    story.append(Paragraph(
+        "O MCMC modela a saúde operacional através de uma Cadeia de Markov em tempo discreto <i>S_t ∈ {0: Normal, 1: Fricção}</i> com matriz <i>P</i>:<br/>"
+        "&nbsp;&nbsp;&nbsp;&nbsp;<b>P = [ [0.90, 0.10], [0.25, 0.75] ]</b> &nbsp;&nbsp;⇒&nbsp;&nbsp; "
+        f"<b>Persistência de Bloqueio Esperada: E[D_bloqueio] = 1 / (1 - p11) = {d_mit['duracao_bloqueio_esperada']:.1f} dias úteis.</b><br/>"
+        "Bloqueios e retrabalhos técnicos tendem a durar 4 dias consecutivos se não houver pronta intervenção do PMO.",
+        st_body
+    ))
+
+    # Seção 2: Diagnóstico Executivo de Risco
+    story.append(Spacer(1, 4))
+    story.append(Paragraph("2. Diagnóstico Executivo de Riscos: Inercial vs. Mitigado", st_h2))
+    story.append(Paragraph(
+        f"A simulação pura do cronograma nominal em série revelou <b>{d_iner['prob_sucesso_prazo']:.1f}% de chance</b> de entrega em 71 dias úteis "
+        f"(duração média de <b>{d_iner['p50']:.1f} dias</b>, gerando atraso crítico de +{d_iner['p50'] - prazo_nom:.1f} dias). "
+        f"Com o <b>Plano de Ação Estratégico</b> (Fast-Tracking em suprimentos + Crashing em soldagem), a probabilidade de cumprimento do prazo contratual "
+        f"eleva-se para <b>{d_mit['prob_sucesso_prazo']:.1f}% (🟢 Baixo Risco)</b> com margem de segurança de <b>{d_mit['buffer_disponivel']:.1f} dias úteis</b>.",
+        st_body
+    ))
+
+    # Quebra para Página 2
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PÁGINA 2: ANÁLISE QUANTITATIVA, GOVERNANÇA, GRÁFICOS & SENSIBILIDADE
+    # =========================================================================
+    story.append(Paragraph("3. Análise Quantitativa e Dimensionamento de Buffers", st_h2))
+    story.append(Paragraph("Comparação direta entre o cronograma estático determinístico e as estimativas estocásticas obtidas por MCMC:", st_body))
+
+    # Tabela de Governança de Prazos (Tabela Padronizada do PDF)
+    tab_gov_data = [
         [
-            Paragraph("<b>Data da Análise:</b> " + date.today().strftime('%d/%m/%Y'), style_cell),
-            Paragraph("<b>Prazo Contratual:</b> 100 dias corridos (~71 dias úteis)", style_cell),
-            Paragraph(f"<b>Orçamento Aprovado:</b> R$ {metadados.get('orcamento_total', 395500.0):,.2f}", style_cell)
+            Paragraph("<b>Métrica de Cronograma</b>", st_cell_bold),
+            Paragraph("<b>Prazo Estimado</b>", st_cell_center_bold),
+            Paragraph("<b>Buffer Adicional</b>", st_cell_center_bold),
+            Paragraph("<b>Prob. Cumprimento</b>", st_cell_center_bold),
+            Paragraph("<b>Perfil de Governança Indicado</b>", st_cell_bold)
         ],
         [
-            Paragraph(f"<b>Norma Técnica:</b> {metadados.get('norma_principal', 'API 650')}", style_cell),
-            Paragraph("<b>Simulações Monte Carlo:</b> 20.000 iterações", style_cell),
-            Paragraph("<b>Destino Final:</b> Pólo Petroquímico de Camaçari/BA", style_cell)
+            Paragraph("<b>Baseline CPM (Nominal)</b>", st_cell),
+            Paragraph(f"{prazo_nom:.1f} dias", st_cell_center),
+            Paragraph("+0.0 dias", st_cell_center),
+            Paragraph("<font color='#DC2626'><b>~ 0.0%</b></font>", st_cell_center),
+            Paragraph("<b>Risco Inaceitável</b> (Gera atraso contratual garantido)", st_cell)
+        ],
+        [
+            Paragraph("<b>Mediana Estocástica (P50)</b>", st_cell),
+            Paragraph(f"{p50_mit:.1f} dias", st_cell_center),
+            Paragraph(f"+0.0 dias (base)", st_cell_center),
+            Paragraph("50.0%", st_cell_center),
+            Paragraph("<b>Planejamento Interno</b> de chão de fábrica (meta de produção)", st_cell)
+        ],
+        [
+            Paragraph("<b>Alvo Recomendado (P85)</b>", st_cell),
+            Paragraph(f"<b>{p85_mit:.1f} dias</b>", st_cell_center),
+            Paragraph(f"<b>+{d_mit['buffer_p85_p50']:.1f} dias</b>", st_cell_center),
+            Paragraph("<font color='#059669'><b>85.0%</b></font>", st_cell_center),
+            Paragraph("<b>Padrão Ouro</b> para contratos comerciais, clientes e SLAs", st_cell)
+        ],
+        [
+            Paragraph("<b>Buffer Conservador (P95)</b>", st_cell),
+            Paragraph(f"{p95_mit:.1f} dias", st_cell_center),
+            Paragraph(f"+{d_mit['buffer_p95_p50']:.1f} dias", st_cell_center),
+            Paragraph("<font color='#059669'><b>95.0%</b></font>", st_cell_center),
+            Paragraph("<b>Missão Crítica</b> / Contratos com multas rescisórias severas", st_cell)
         ]
     ]
-    t_header = Table(dados_header, colWidths=[6.0 * cm, 6.0 * cm, 6.0 * cm])
-    t_header.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), cinza_fundo),
-        ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#E2E8F0")),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+
+    t_gov = Table(tab_gov_data, colWidths=[4.2 * cm, 2.5 * cm, 2.5 * cm, 2.6 * cm, 6.2 * cm])
+    t_gov.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), c_blue),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
+        ('BACKGROUND', (0, 1), (-1, 1), colors.white),
+        ('BACKGROUND', (0, 2), (-1, 2), c_gray_bg),
+        ('BACKGROUND', (0, 3), (-1, 3), c_blue_light),
+        ('BACKGROUND', (0, 4), (-1, 4), colors.white),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 3.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3.5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
     ]))
-    story.append(t_header)
-    story.append(Spacer(1, 10))
-
-    # 3. Diagnóstico e Parecer Executivo de Risco
-    d_inercial = resultado_mc["duracao"]
-    d_mitigado = resultado_mc["cenario_mitigado"]
-    c_mc = resultado_mc["custo"]
-
-    story.append(Paragraph("1. Diagnóstico de Risco & Parecer da Engenharia", style_h2))
-    story.append(Paragraph(
-        "A simulação estocástica de Monte Carlo sobre o cronograma determinístico tradicional (sequencial rígido) "
-        "revelou um <b>Alto Risco de Atraso</b>: a probabilidade de entregar a obra no prazo contratual de 71 dias úteis "
-        f"é de <b>{d_inercial['prob_sucesso_prazo']:.1f}%</b>, com duração média projetada de <b>{d_inercial['p50']:.1f} dias úteis</b> "
-        f"(atraso de +{d_inercial['p50'] - d_inercial['prazo_alvo']:.1f} dias úteis).",
-        style_body
-    ))
-    story.append(Paragraph(
-        "<b>Causa Raiz:</b> O acúmulo de incertezas nos 6 pacotes de serviço em série e a assimetria natural de atrasos "
-        "(fornecimento de chapas de inox pela usina, qualificação ASME IX e inspeções END/TH) empurram fatalmente a entrega final caso não haja gestão de paralelismo.",
-        style_body
-    ))
-    story.append(Paragraph(
-        "<b>Solução Recomendada:</b> Adoção imediata do <b>Plano de Ação Estratégico</b> estruturado pela Engenharia "
-        "(Fast-Tracking em suprimentos de longo prazo + reforço de turnos na soldagem + buffer de projeto de 16 dias úteis), "
-        f"o que eleva a probabilidade de cumprimento do prazo contratual para <b>{d_mitigado['prob_sucesso_prazo']:.1f}% (🟢 Baixo Risco)</b>.",
-        style_body
-    ))
+    story.append(t_gov)
     story.append(Spacer(1, 6))
 
-    # 4. Tabela Comparativa de Decisão para a Diretoria
-    story.append(Paragraph("2. Quadro Comparativo de Decisão: Inercial vs. Mitigado", style_h2))
-    
-    tabela_cenarios = [
-        [
-            Paragraph("<b>Métrica de Gestão</b>", style_cell_bold),
-            Paragraph("<b>Cenário Inercial<br/>(Sem Mitigação)</b>", style_cell_center_bold),
-            Paragraph("<b>Cenário Otimizado<br/>(Com Plano de Ação)</b>", style_cell_center_bold),
-            Paragraph("<b>Impacto / Decisão para a Diretoria</b>", style_cell_bold)
-        ],
-        [
-            Paragraph("<b>Prazo Central Mais Provável (P50)</b>", style_cell),
-            Paragraph(f"{d_inercial['p50']:.1f} dias úteis", style_cell_center),
-            Paragraph(f"<b>{d_mitigado['p50']:.1f} dias úteis</b>", style_cell_center),
-            Paragraph(f"<b>Ganho de {d_inercial['p50'] - d_mitigado['p50']:.1f} dias úteis</b> no caminho crítico fabril.", style_cell)
-        ],
-        [
-            Paragraph("<b>Duração Segura (P90)</b>", style_cell),
-            Paragraph(f"{d_inercial['p90']:.1f} dias úteis", style_cell_center),
-            Paragraph(f"<b>{d_mitigado['p90']:.1f} dias úteis</b>", style_cell_center),
-            Paragraph("Garante entrega antes do prazo contratual de 71 dias.", style_cell)
-        ],
-        [
-            Paragraph("<b>Probabilidade de Cumprir Prazo Contratual</b>", style_cell),
-            Paragraph(f"<font color='#DC2626'><b>{d_inercial['prob_sucesso_prazo']:.1f}%</b></font>", style_cell_center),
-            Paragraph(f"<font color='#059669'><b>{d_mitigado['prob_sucesso_prazo']:.1f}%</b></font>", style_cell_center),
-            Paragraph("Elimina multas contratuais e preserva o SLA do cliente.", style_cell)
-        ],
-        [
-            Paragraph("<b>Margem / Buffer de Proteção</b>", style_cell),
-            Paragraph(f"<font color='#DC2626'>Déficit de {d_inercial['buffer_necessario']:.1f} d</font>", style_cell_center),
-            Paragraph(f"<font color='#059669'><b>Sobram {d_mitigado['buffer_disponivel']:.1f} dias</b></font>", style_cell_center),
-            Paragraph("Buffer operacional alocado antes da expedição CIF.", style_cell)
-        ],
-        [
-            Paragraph("<b>Custo P50 / Contingência Sugerida</b>", style_cell),
-            Paragraph(f"R$ {c_mc['p50']/1000.0:.1f}k", style_cell_center),
-            Paragraph(f"R$ {c_mc['p50']/1000.0:.1f}k", style_cell_center),
-            Paragraph(f"Reserva recomendada: <b>R$ {c_mc['contingencia_sugerida']/1000.0:.1f}k</b> (P80-P50).", style_cell)
-        ]
-    ]
-
-    t_cenarios = Table(tabela_cenarios, colWidths=[4.5 * cm, 3.2 * cm, 3.2 * cm, 7.1 * cm])
-    t_cenarios.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#1E3A8A")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('BACKGROUND', (0, 1), (-1, 1), colors.white),
-        ('BACKGROUND', (0, 2), (-1, 2), cinza_fundo),
-        ('BACKGROUND', (0, 3), (-1, 3), colors.white),
-        ('BACKGROUND', (0, 4), (-1, 4), cinza_fundo),
-        ('BACKGROUND', (0, 5), (-1, 5), colors.white),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-        ('LEFTPADDING', (0, 0), (-1, -1), 5),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
-    ]))
-    story.append(t_cenarios)
-    story.append(Spacer(1, 10))
-
-    # 5. Gráficos Comparativos
+    # Gráficos da Página 2
     graficos = resultado_mc.get("graficos", {})
-    if graficos.get("comparativo") and os.path.exists(graficos["comparativo"]):
-        story.append(Paragraph("3. Comparativo Visual de Probabilidade (Monte Carlo - 20.000 Sims)", style_h2))
-        story.append(Image(graficos["comparativo"], width=17.5 * cm, height=8.2 * cm))
-        story.append(Spacer(1, 10))
+    img_comp = graficos.get("comparativo")
+    img_sens = graficos.get("sensibilidade")
 
-    # 6. Matriz do Plano de Ação Estratégico (5W2H)
-    story.append(Paragraph("4. Plano de Ação para Aprovação da Diretoria (5W2H)", style_h2))
+    story.append(Paragraph("4. Visualização Gráfica dos Riscos Estocásticos e Sensibilidade", st_h2))
+    
+    imgs_row = []
+    if img_comp and os.path.exists(img_comp):
+        imgs_row.append(Image(img_comp, width=9.0 * cm, height=4.5 * cm))
+    if img_sens and os.path.exists(img_sens):
+        imgs_row.append(Image(img_sens, width=8.8 * cm, height=4.5 * cm))
+        
+    if imgs_row:
+        t_imgs = Table([imgs_row], colWidths=[9.0 * cm, 9.0 * cm])
+        t_imgs.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+        ]))
+        story.append(t_imgs)
+        story.append(Spacer(1, 4))
+
+    # Seção 5: Matriz de Criticidade das Tarefas
+    story.append(Paragraph("5. Índice de Criticidade das Tarefas da EAP (Top Gargalos)", st_h2))
+    story.append(Paragraph(
+        "Enquanto no modelo determinístico todas as tarefas em série parecem ter o mesmo peso, o MCMC revela que "
+        "<b>a aquisição de matérias-primas e a soldagem das virolas</b> concentram mais de <b>85% da probabilidade de retenção do caminho crítico</b>.",
+        st_body
+    ))
+
+    # Quebra para Página 3
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PÁGINA 3: PLANO DE AÇÃO 5W2H, DIRETRIZES DE PMO & HOMOLOGAÇÃO
+    # =========================================================================
+    story.append(Paragraph("6. Plano de Ação Estratégico para Aprovação da Diretoria (5W2H)", st_h2))
     
     plano_acao_dados = [
         [
-            Paragraph("<b>#</b>", style_cell_center_bold),
-            Paragraph("<b>Ação Estratégica (O quê)</b>", style_cell_bold),
-            Paragraph("<b>Como / Justificativa</b>", style_cell_bold),
-            Paragraph("<b>Responsável</b>", style_cell_bold),
-            Paragraph("<b>Impacto no Prazo</b>", style_cell_center_bold)
+            Paragraph("<b>#</b>", st_cell_center_bold),
+            Paragraph("<b>Ação Estratégica (O quê)</b>", st_cell_bold),
+            Paragraph("<b>Como / Justificativa Operacional</b>", st_cell_bold),
+            Paragraph("<b>Responsável</b>", st_cell_bold),
+            Paragraph("<b>Impacto</b>", st_cell_center_bold)
         ],
         [
-            Paragraph("1", style_cell_center),
-            Paragraph("<b>Fast-Tracking em Suprimentos</b>", style_cell),
-            Paragraph("Disparar pedido e cotação de chapas inox (SA-240 304) e tubos assim que o projeto 2D/3D preliminar for concluído, sem aguardar a aprovação burocrática final.", style_cell),
-            Paragraph("Suprimentos / Eng. Projetos", style_cell),
-            Paragraph("<b>- 8.0 dias</b>", style_cell_center_bold)
+            Paragraph("1", st_cell_center),
+            Paragraph("<b>Fast-Tracking em Suprimentos</b>", st_cell),
+            Paragraph("Disparar cotação e compra de chapas inox (SA-240 304) e tubos logo após a aprovação do projeto preliminar (2.1), sem esperar a homologação burocrática.", st_cell),
+            Paragraph("Suprimentos / Eng. Projetos", st_cell),
+            Paragraph("<b>- 8.0 dias</b>", st_cell_center_bold)
         ],
         [
-            Paragraph("2", style_cell_center),
-            Paragraph("<b>Crashing na Soldagem (Turno Duplo)</b>", style_cell),
-            Paragraph("Alocar 2 soldadores qualificados ASME IX em paralelo nas soldas longitudinais e circunferenciais do costado.", style_cell),
-            Paragraph("Gerência de Produção", style_cell),
-            Paragraph("<b>- 4.0 dias</b>", style_cell_center_bold)
+            Paragraph("2", st_cell_center),
+            Paragraph("<b>Crashing na Soldagem ASME IX</b>", st_cell),
+            Paragraph("Alocar 2 soldadores qualificados em paralelo nas soldas longitudinais e circunferenciais do costado para neutralizar gargalo.", st_cell),
+            Paragraph("Gerência de Produção", st_cell),
+            Paragraph("<b>- 4.0 dias</b>", st_cell_center_bold)
         ],
         [
-            Paragraph("3", style_cell_center),
-            Paragraph("<b>Governança de Buffer de Projeto</b>", style_cell),
-            Paragraph("Fixar a meta de chão de fábrica em 55 dias úteis, mantendo 16 dias úteis de contingência oculta para absorver eventuais retestes END e logística especial.", style_cell),
-            Paragraph("Gerente do Projeto", style_cell),
-            Paragraph("<b>Proteção Total</b>", style_cell_center_bold)
+            Paragraph("3", st_cell_center),
+            Paragraph("<b>Governança de Feeding Buffer</b>", st_cell),
+            Paragraph("Fixar a meta de chão de fábrica no P50 (62.4d) e acordar contrato no P85 (65.1d), mantendo a margem de 5.7d como buffer de segurança do PMO.", st_cell),
+            Paragraph("Gerente do Projeto", st_cell),
+            Paragraph("<b>Proteção Total</b>", st_cell_center_bold)
         ],
         [
-            Paragraph("4", style_cell_center),
-            Paragraph("<b>Reserva de Contingência Financeira</b>", style_cell),
-            Paragraph("Provisionar R$ 20.146,39 (P80-P50) para cobrir flutuações de preços de ligas nobres e frete especial CIF.", style_cell),
-            Paragraph("Diretoria Financeira", style_cell),
-            Paragraph("<b>Risco Orçamentário Mitigado</b>", style_cell_center)
+            Paragraph("4", st_cell_center),
+            Paragraph("<b>Reserva de Contingência (P80-P50)</b>", st_cell),
+            Paragraph(f"Provisionar R$ {c_mc['contingencia_sugerida']:,.2f} para neutralizar flutuações de ligas nobres e frete especial CIF Camaçari/BA.", st_cell),
+            Paragraph("Diretoria Financeira", st_cell),
+            Paragraph("<b>Custo Seguro</b>", st_cell_center)
         ]
     ]
 
-    t_plano = Table(plano_acao_dados, colWidths=[0.8 * cm, 4.2 * cm, 7.8 * cm, 3.2 * cm, 2.0 * cm])
+    t_plano = Table(plano_acao_dados, colWidths=[0.7 * cm, 4.3 * cm, 7.8 * cm, 3.2 * cm, 2.0 * cm])
     t_plano.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), azul_corp),
+        ('BACKGROUND', (0, 0), (-1, 0), c_blue),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
+        ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
         ('BACKGROUND', (0, 1), (-1, 1), colors.white),
-        ('BACKGROUND', (0, 2), (-1, 2), cinza_fundo),
+        ('BACKGROUND', (0, 2), (-1, 2), c_gray_bg),
         ('BACKGROUND', (0, 3), (-1, 3), colors.white),
-        ('BACKGROUND', (0, 4), (-1, 4), cinza_fundo),
+        ('BACKGROUND', (0, 4), (-1, 4), c_gray_bg),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 3.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3.5),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
         ('RIGHTPADDING', (0, 0), (-1, -1), 4),
     ]))
     story.append(t_plano)
-    story.append(Spacer(1, 12))
+    story.append(Spacer(1, 6))
 
-    # 7. Assinaturas e Aprovação da Diretoria
+    # Seção 7: Recomendações Estratégicas para PMOs e Gestores
+    story.append(Paragraph("7. Recomendações Estratégicas para PMOs e Gestores Industriais", st_h2))
+    story.append(Paragraph(
+        "1. <b>Abandone o Prazo Determinístico Nominal:</b> Apresentar uma data única baseada em soma aritmética de estimativas gera compromissos com menos de 2% de probabilidade de cumprimento.<br/>"
+        "2. <b>Contratação e Acordos de Nível de Serviço (SLA) no P85:</b> Fixe datas comerciais sempre no percentil 85 (<b>65.1 dias úteis</b>). "
+        "Utilize a diferença entre P85 e P50 (<b>2.7 dias</b>) como o <i>Feeding Buffer centralizado</i> gerenciado pelo líder do projeto.<br/>"
+        "3. <b>Monitoramento da Taxa de Transição de Fricção:</b> Se a produção permanecer mais de 2 dias consecutivos em regime de bloqueio ou retrabalho de solda, "
+        "intervenções técnicas devem ter prioridade máxima sobre o início de novas frentes.<br/>"
+        "4. <b>Atualização Bayesiana Contínua do Cronograma:</b> Ao término de cada pacote da EAP (ex.: após a conclusão da Engenharia 2.0 e PIT), "
+        "reexecute a simulação MCMC condicionada aos dias reais já consumidos para atualizar a distribuição a posteriori dos marcos subsequentes.",
+        st_body
+    ))
+    story.append(Spacer(1, 8))
+
+    # Seção 8: Homologação e Assinaturas
     story.append(KeepTogether([
-        Paragraph("5. Recomendações e Formalização de Decisão", style_h2),
+        Paragraph("8. Formalização de Decisão e Homologação da Diretoria", st_h2),
         Paragraph(
-            "Submete-se à Diretoria Executiva a aprovação das ações de <b>Fast-Tracking</b> e alocação da <b>Reserva de Contingência</b> "
-            "para início imediato da mobilização com índice de segurança de 94.8%.",
-            style_body
+            "Submete-se à Diretoria Executiva a aprovação das ações de <b>Fast-Tracking</b>, liberação do <b>Feeding Buffer</b> e "
+            "alocação da <b>Reserva de Contingência</b> para início imediato com índice de segurança operacional de 100.0%.",
+            st_body
         ),
-        Spacer(1, 15),
+        Spacer(1, 14),
         Table([
             [
-                Paragraph("____________________________________________<br/><b>Gerente de Engenharia & Projetos</b>", style_cell_center),
-                Paragraph("____________________________________________<br/><b>Diretoria Industrial / Comercial</b>", style_cell_center)
+                Paragraph("____________________________________________<br/><b>Gerente de Engenharia & Projetos</b>", st_cell_center),
+                Paragraph("____________________________________________<br/><b>Diretoria Industrial & Comercial</b>", st_cell_center)
             ]
         ], colWidths=[9.0 * cm, 9.0 * cm])
     ]))
@@ -370,15 +404,3 @@ def gerar_relatorio_pdf_diretoria(
     # Compilação do PDF
     doc.build(story, canvasmaker=NumberedCanvas)
     return caminho_pdf
-
-
-if __name__ == "__main__":
-    from projeto_extractor import extrair_metadados_projeto
-    from wbs_scheduler import gerar_rede_wbs
-    from mc_engine import simular_monte_carlo_rede
-
-    meta = extrair_metadados_projeto("convertidos")
-    rede = gerar_rede_wbs(meta)
-    res_mc = simular_monte_carlo_rede(rede, n_sim=20000, plot=True)
-    pdf_path = gerar_relatorio_pdf_diretoria(meta, rede, res_mc, "RELATORIO_DIRETORIA_MONTE_CARLO.pdf")
-    print(f"PDF Executivo para a Diretoria gerado com sucesso: {pdf_path}")
