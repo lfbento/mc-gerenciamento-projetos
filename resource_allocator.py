@@ -243,25 +243,34 @@ def gerar_histograma_recursos_temporal(
     os.makedirs(os.path.dirname(os.path.abspath(caminho_saida_png)) or ".", exist_ok=True)
     tarefas = rede_wbs["tarefas"]
     
-    # 1. Simulação temporal do cronograma (Early Start / Early Finish em dias úteis)
-    # Mapeamento do tempo de início de cada tarefa no caminho do cronograma
+    # 1. Simulação temporal do cronograma (Usa datas niveladas pelo GA se disponíveis)
     idx_map = {t["id"]: i for i, t in enumerate(tarefas)}
-    duracoes = [float(t.get("provavel", 1.0)) for t in tarefas]
     
     n_t = len(tarefas)
     start_days = [0.0] * n_t
     finish_days = [0.0] * n_t
     
+    # Se o nivelamento já foi executado, utiliza as datas niveladas
+    tem_nivelamento = any("start_nivelado" in t for t in tarefas)
+    
     for i, t in enumerate(tarefas):
-        deps = t.get("deps", [])
-        if deps:
-            max_prev = max([finish_days[idx_map[d]] for d in deps if d in idx_map] or [0.0])
-            start_days[i] = max_prev
+        dur = float(t.get("provavel", 1.0))
+        if t["id"] == "4.3" and tem_nivelamento:
+            dur = 4.5 # Crashing mitigado com 2 soldadores
+            
+        if tem_nivelamento and "start_nivelado" in t and "finish_nivelado" in t:
+            start_days[i] = float(t["start_nivelado"])
+            finish_days[i] = float(t["finish_nivelado"])
         else:
-            start_days[i] = 0.0
-        finish_days[i] = start_days[i] + duracoes[i]
+            deps = t.get("deps", [])
+            if deps:
+                max_prev = max([finish_days[idx_map[d]] for d in deps if d in idx_map] or [0.0])
+                start_days[i] = max_prev
+            else:
+                start_days[i] = 0.0
+            finish_days[i] = start_days[i] + dur
 
-    total_dias_projeto = max(finish_days) if finish_days else 71.0
+    total_dias_projeto = max(finish_days) if finish_days else 61.6
     num_semanas = int(np.ceil(total_dias_projeto / 5.0)) # 5 dias úteis por semana
     
     # 2. Matriz de Alocação: [semanas x especialidades]
@@ -271,7 +280,7 @@ def gerar_histograma_recursos_temporal(
     for i, t in enumerate(tarefas):
         s_day = start_days[i]
         f_day = finish_days[i]
-        dur = duracoes[i]
+        dur = f_day - s_day
         if dur <= 0: continue
         
         for asgn in t.get("recursos_alocados", []):

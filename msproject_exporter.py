@@ -62,28 +62,34 @@ def exportar_msproject_xml(
     tarefas = rede_wbs["tarefas"]
     pacotes = rede_wbs["pacotes"]
 
-    # 1. Forward pass com suporte a deslocamentos do nivelamento bioinspirado
+    # 1. Forward pass com suporte direto às datas calculadas pelo Nivelamento Bioinspirado
     starts = {}
     fins = {}
+    tem_nivelamento = any("start_nivelado" in t for t in tarefas)
+
     for t in tarefas:
         tid = t["id"]
-        deps = t.get("deps", [])
-        dur_dias = t["pessimista"] if base_duracao == "pessimista" else (
-            t["otimista"] if base_duracao == "otimista" else t["provavel"]
-        )
-        shift_niv = t.get("shift_nivelamento", 0.0)
-
-        if deps:
-            s_base = max(fins[d] for d in deps) + timedelta(days=1)
-            while s_base.weekday() >= 5:
-                s_base += timedelta(days=1)
+        if tem_nivelamento and "start_nivelado" in t and "finish_nivelado" in t:
+            s_dias = float(t["start_nivelado"])
+            f_dias = float(t["finish_nivelado"])
+            s = add_workdays(data_inicio, s_dias)
+            f = add_workdays(data_inicio, f_dias)
         else:
-            s_base = data_inicio
+            deps = t.get("deps", [])
+            dur_dias = t["pessimista"] if base_duracao == "pessimista" else (
+                t["otimista"] if base_duracao == "otimista" else t["provavel"]
+            )
+            if deps:
+                s_base = max(fins[d] for d in deps) + timedelta(days=1)
+                while s_base.weekday() >= 5:
+                    s_base += timedelta(days=1)
+            else:
+                s_base = data_inicio
+            s = s_base
+            f = add_workdays(s, dur_dias)
 
-        # Aplica o deslocamento otimizado pelo GA
-        s = add_workdays(s_base, shift_niv) if shift_niv > 0 else s_base
         starts[tid] = s
-        fins[tid] = add_workdays(s, dur_dias)
+        fins[tid] = f
 
     fim_projeto = max(fins.values()) if fins else add_workdays(data_inicio, 10)
 

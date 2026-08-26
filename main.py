@@ -240,15 +240,11 @@ def executar_pipeline(
     print(f"   ✓ Total de Pacotes EAP : {len(rede_wbs['pacotes'])}")
     print(f"   ✓ Total de Atividades  : {total_tarefas} tarefas com estimativas (O, M, P)")
 
-    # 3. Dimensionamento e Alocação de Recursos (HH, Equipes e Custos)
+    # 3. Dimensionamento de Recursos (HH, Equipes e Custos)
     print(f"\n👥 3. Dimensionando Recursos Industriais e Homens-Hora (HH)...")
     atribuicoes, metricas_recursos = dimensionar_recursos_tarefas(rede_wbs)
-    caminho_hist_png = pasta_assets / "mc_histograma_recursos.png"
-    gerar_histograma_recursos_temporal(rede_wbs, metricas_recursos, str(caminho_hist_png))
     print(f"   ✓ Total de Homens-Hora : {metricas_recursos['hh_total_projeto']:.1f} HH")
     print(f"   ✓ Custo Total de M.O.  : R$ {metricas_recursos['custo_total_mo']:,.2f}")
-    print(f"   ✓ Pico de Mobilização  : {metricas_recursos['pico_efetivo_global']:.1f} profissionais (Semana {metricas_recursos['semana_pico_global']})")
-    print(f"   ✓ Histograma Gráfico   : {caminho_hist_png}")
 
     # 4. Simulação de Monte Carlo & Comparativo de Cenários
     print(f"\n🎲 4. Executando Simulação MCMC & Comparativo de Cenários ({n_simulacoes:,} iterações)...")
@@ -284,7 +280,14 @@ def executar_pipeline(
     print(f"   ✓ Makespan Final Nivelado  : {metricas_nivelamento['makespan_final_dias']:.1f} dias úteis (Dentro do alvo P85)")
     print(f"   ✓ Gráfico Comparativo      : {caminho_niv_png}")
 
-    # 6. Exportação MS Project XML (MSPDI com Recursos Nivelados)
+    # 6. Geração do Histograma Semanal de Recursos (Já com Cronograma Nivelado)
+    caminho_hist_png = pasta_assets / "mc_histograma_recursos.png"
+    gerar_histograma_recursos_temporal(rede_wbs, metricas_recursos, str(caminho_hist_png))
+    print(f"\n📊 6. Gerando Histograma Semanal de Recursos Nivelados...")
+    print(f"   ✓ Pico de Mobilização  : {metricas_recursos['pico_efetivo_global']:.1f} profissionais (Semana {metricas_recursos['semana_pico_global']})")
+    print(f"   ✓ Histograma Gráfico   : {caminho_hist_png}")
+
+    # 7. Exportação MS Project XML (MSPDI com Recursos Nivelados)
     if data_inicio_str:
         inicio = date.fromisoformat(data_inicio_str)
     else:

@@ -55,7 +55,7 @@ Distribuição do tempo global do projeto conforme pesos oficiais dos pacotes de
 | **CALD-PREP** - Caldeireiro de Traçado e Corte Plasma | Caldeiraria | 34.4 h | R$ 50.00/h | R$ 1,720.00 |
 | **OPER-CAL** - Operador de Calandra e Conformação | Caldeiraria | 34.4 h | R$ 50.00/h | R$ 1,720.00 |
 | **RIG-LOG** - Rigger / Operador de Carga, Berço e Expedição | Logística | 16.0 h | R$ 45.00/h | R$ 720.00 |
-| **TOTAL GERAL DE MÃO DE OBRA** | **Pico Inicial: 4.3 FTEs** | **1172.8 h** | — | **R$ 64,898.00** |
+| **TOTAL GERAL DE MÃO DE OBRA** | **Pico Inicial: 4.9 FTEs** | **1172.8 h** | — | **R$ 64,898.00** |
 
 ---
 
