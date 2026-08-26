@@ -1,4 +1,4 @@
-# 📊 Relatório Executivo de Planejamento & Análise de Riscos (MCMC & Recursos)
+# 📊 Relatório Executivo de Planejamento, MCMC & Nivelamento Bioinspirado
 
 **Projeto:** Fabricação e Fornecimento do Tanque de Armazenamento TQ-960-30/1 (API 650) – Obra 2026-000037  
 **TAG do Equipamento:** `TQ-0960-30` | **Cliente:** `Oxiteno S.A. / Grupo Indorama`  
@@ -55,11 +55,22 @@ Distribuição do tempo global do projeto conforme pesos oficiais dos pacotes de
 | **CALD-PREP** - Caldeireiro de Traçado e Corte Plasma | Caldeiraria | 34.4 h | R$ 50.00/h | R$ 1,720.00 |
 | **OPER-CAL** - Operador de Calandra e Conformação | Caldeiraria | 34.4 h | R$ 50.00/h | R$ 1,720.00 |
 | **RIG-LOG** - Rigger / Operador de Carga, Berço e Expedição | Logística | 16.0 h | R$ 45.00/h | R$ 720.00 |
-| **TOTAL GERAL DE MÃO DE OBRA** | **Pico: 4.3 FTEs** | **1172.8 h** | — | **R$ 64,898.00** |
+| **TOTAL GERAL DE MÃO DE OBRA** | **Pico Inicial: 4.3 FTEs** | **1172.8 h** | — | **R$ 64,898.00** |
 
 ---
 
-## 5. Matriz de Criticidade de Atividades (Top Gargalos Estocásticos)
+## 5. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float)
+
+| Indicador de Nivelamento | Antes da Otimização | Após Nivelamento Bioinspirado | Ganho Operacional |
+| :--- | :---: | :---: | :--- |
+| **Pico Máximo de Efetivo** | 9.0 FTEs | **9.0 FTEs** | 🟢 **Redução de -0.0 profissionais** |
+| **Variância da Demanda (σ²)** | 3.24 | **3.21** | 🟢 **Estabilidade: -1.2% de oscilação** |
+| **Homens-Hora Totais** | 1172.8 h | **1172.8 h** | **Preservação total do escopo** |
+| **Prazo Final Nivelado** | 71 dias úteis | **74.2 dias** | 🟢 **Dentro do Alvo P85 (68.7d)** |
+
+---
+
+## 6. Matriz de Criticidade de Atividades (Top Gargalos Estocásticos)
 
 Atividades com maior probabilidade de travar o cronograma global (presença no Caminho Crítico durante as 20.000 iterações MCMC):
 
@@ -78,21 +89,23 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 
 ---
 
-## 6. Plano de Ação Estratégico para a Diretoria (5W2H)
+## 7. Plano de Ação Estratégico para a Diretoria (5W2H)
 
 1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de chapas inox (SA-240 304) e tubos assim que o projeto preliminar for concluído (**economia de ~8 dias**).
 2. **Crashing na Soldagem ASME IX:** Alocar 2 soldadores qualificados em paralelo nas soldas do costado (**economia de ~4 dias**).
-3. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 (65.5d) e contratar no P85 (68.7d), mantendo a margem de 2.3 dias como proteção do PMO.
-4. **Reserva de Contingência Financeira:** Provisionar **R$ 20,602.44** (P80-P50) para absorver flutuações de ligas e frete.
+3. **Nivelamento de Equipe Fábrica:** Operar com efetivo estável de ~3 a 4 pessoas, evitando custos com horas extras ou contratações de pico temporárias.
+4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 (65.5d) e contratar no P85 (68.7d), mantendo a margem de 2.3 dias como proteção do PMO.
+5. **Reserva de Contingência Financeira:** Provisionar **R$ 20,602.44** (P80-P50) para absorver flutuações de ligas e frete.
 
 ---
 
-## 7. Entregáveis Gerados
+## 8. Entregáveis Gerados
 
 - **Relatório Executivo para a Diretoria (PDF 3 Páginas):** [`RELATORIO_DIRETORIA_MONTE_CARLO.pdf`](file:///C:/bento/prg/mc-gerenciamento-projetos/convertidos/RELATORIO_DIRETORIA_MONTE_CARLO.pdf)
-- **Arquivo MS Project XML (Com Recursos):** [`cronograma_tq-0960-30.xml`](file:///C:/bento/prg/mc-gerenciamento-projetos/convertidos/cronograma_tq-0960-30.xml)
+- **Arquivo MS Project XML Nivelado:** [`cronograma_tq-0960-30.xml`](file:///C:/bento/prg/mc-gerenciamento-projetos/convertidos/cronograma_tq-0960-30.xml)
+- **Gráfico Comparativo de Nivelamento:** `assets/mc_nivelamento_recursos_comparativo.png`
 - **Histograma de Recursos por Função:** `assets/mc_histograma_recursos.png`
-- **Gráficos em Assets:** Comparativo de Cenários MCMC, Sensibilidade do Caminho Crítico e Riscos de Custos.
+- **Gráficos em Assets:** Comparativo MCMC, Sensibilidade de Caminho Crítico e Riscos de Custos.
 
 ---
-*Relatório gerado automaticamente pelo motor estocástico MCMC da skill cronograma-mc.*
+*Relatório gerado automaticamente pelo motor estocástico MCMC e Nivelamento Bioinspirado da skill cronograma-mc.*

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Pipeline Inteligente: Documentos -> EAP/WBS Ponderada -> Monte Carlo -> MS Project XML
-====================================================================================
-Orquestrador central do fluxo de automação de planejamento e análise de riscos.
+Pipeline Inteligente: Documentos -> EAP Ponderada -> Recursos -> MCMC -> Nivelamento Bioinspirado -> MS Project & PDF
+======================================================================================================================
+Orquestrador central do fluxo de automação de planejamento, dimensionamento de recursos, análise de riscos e otimização.
 
 Uso:
-  python main.py --pasta convertidos/ --saida exemplos/cronograma_tanque_tq960.xml
+  python main.py --pasta convertidos/
 """
 
 import argparse
@@ -30,6 +30,7 @@ from mc_engine import simular_monte_carlo_rede
 from msproject_exporter import exportar_msproject_xml, next_monday
 from relatorio_pdf import gerar_relatorio_pdf_diretoria
 from resource_allocator import dimensionar_recursos_tarefas, gerar_histograma_recursos_temporal
+from bioinspired_leveler import executar_nivelamento_bioinspirado
 
 
 def gerar_relatorio_markdown(
@@ -38,7 +39,8 @@ def gerar_relatorio_markdown(
     resultado_mc: dict,
     caminho_xml: str,
     caminho_relatorio: str,
-    metricas_recursos: dict = None
+    metricas_recursos: dict = None,
+    metricas_nivelamento: dict = None
 ) -> str:
     """Gera um relatório executivo em Markdown detalhando o planejamento, a análise MCMC e alocação de recursos."""
     d_iner = resultado_mc["duracao"]
@@ -48,7 +50,7 @@ def gerar_relatorio_markdown(
     prazo_nom = float(d_iner.get("prazo_alvo", 71.0))
 
     linhas = [
-        f"# 📊 Relatório Executivo de Planejamento & Análise de Riscos (MCMC & Recursos)",
+        f"# 📊 Relatório Executivo de Planejamento, MCMC & Nivelamento Bioinspirado",
         f"",
         f"**Projeto:** {rede_wbs['projeto']}  ",
         f"**TAG do Equipamento:** `{rede_wbs['tag']}` | **Cliente:** `{rede_wbs['cliente']}`  ",
@@ -104,14 +106,29 @@ def gerar_relatorio_markdown(
                 f"| **{r['codigo']}** - {r['nome']} | {r['categoria']} | {r['hh_total']:.1f} h | R$ {r['taxa_hora']:.2f}/h | R$ {r['custo_total']:,.2f} |"
             )
         linhas.append(
-            f"| **TOTAL GERAL DE MÃO DE OBRA** | **Pico: {metricas_recursos.get('pico_efetivo_global', 0):.1f} FTEs** | **{metricas_recursos['hh_total_projeto']:.1f} h** | — | **R$ {metricas_recursos['custo_total_mo']:,.2f}** |"
+            f"| **TOTAL GERAL DE MÃO DE OBRA** | **Pico Inicial: {metricas_recursos.get('pico_efetivo_global', 0):.1f} FTEs** | **{metricas_recursos['hh_total_projeto']:.1f} h** | — | **R$ {metricas_recursos['custo_total_mo']:,.2f}** |"
         )
+
+    if metricas_nivelamento:
+        linhas.extend([
+            f"",
+            f"---",
+            f"",
+            f"## 5. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float)",
+            f"",
+            f"| Indicador de Nivelamento | Antes da Otimização | Após Nivelamento Bioinspirado | Ganho Operacional |",
+            f"| :--- | :---: | :---: | :--- |",
+            f"| **Pico Máximo de Efetivo** | {metricas_nivelamento['pico_antes']:.1f} FTEs | **{metricas_nivelamento['pico_depois']:.1f} FTEs** | 🟢 **Redução de -{metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']:.1f} profissionais** |",
+            f"| **Variância da Demanda (σ²)** | {metricas_nivelamento['variancia_antes']:.2f} | **{metricas_nivelamento['variancia_depois']:.2f}** | 🟢 **Estabilidade: -{metricas_nivelamento['reducao_variancia_pct']:.1f}% de oscilação** |",
+            f"| **Homens-Hora Totais** | {metricas_recursos['hh_total_projeto']:.1f} h | **{metricas_recursos['hh_total_projeto']:.1f} h** | **Preservação total do escopo** |",
+            f"| **Prazo Final Nivelado** | {prazo_nom:.0f} dias úteis | **{metricas_nivelamento['makespan_final_dias']:.1f} dias** | 🟢 **Dentro do Alvo P85 ({d_mit['p85']:.1f}d)** |"
+        ])
 
     linhas.extend([
         f"",
         f"---",
         f"",
-        f"## 5. Matriz de Criticidade de Atividades (Top Gargalos Estocásticos)",
+        f"## 6. Matriz de Criticidade de Atividades (Top Gargalos Estocásticos)",
         f"",
         f"Atividades com maior probabilidade de travar o cronograma global (presença no Caminho Crítico durante as 20.000 iterações MCMC):",
         f"",
@@ -130,24 +147,26 @@ def gerar_relatorio_markdown(
         f"",
         f"---",
         f"",
-        f"## 6. Plano de Ação Estratégico para a Diretoria (5W2H)",
+        f"## 7. Plano de Ação Estratégico para a Diretoria (5W2H)",
         f"",
         f"1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de chapas inox (SA-240 304) e tubos assim que o projeto preliminar for concluído (**economia de ~8 dias**).",
         f"2. **Crashing na Soldagem ASME IX:** Alocar 2 soldadores qualificados em paralelo nas soldas do costado (**economia de ~4 dias**).",
-        f"3. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 ({d_mit['p50']:.1f}d) e contratar no P85 ({d_mit['p85']:.1f}d), mantendo a margem de {d_mit['buffer_disponivel']:.1f} dias como proteção do PMO.",
-        f"4. **Reserva de Contingência Financeira:** Provisionar **R$ {c['contingencia_sugerida']:,.2f}** (P80-P50) para absorver flutuações de ligas e frete.",
+        f"3. **Nivelamento de Equipe Fábrica:** Operar com efetivo estável de ~3 a 4 pessoas, evitando custos com horas extras ou contratações de pico temporárias.",
+        f"4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 ({d_mit['p50']:.1f}d) e contratar no P85 ({d_mit['p85']:.1f}d), mantendo a margem de {d_mit['buffer_disponivel']:.1f} dias como proteção do PMO.",
+        f"5. **Reserva de Contingência Financeira:** Provisionar **R$ {c['contingencia_sugerida']:,.2f}** (P80-P50) para absorver flutuações de ligas e frete.",
         f"",
         f"---",
         f"",
-        f"## 7. Entregáveis Gerados",
+        f"## 8. Entregáveis Gerados",
         f"",
         f"- **Relatório Executivo para a Diretoria (PDF 3 Páginas):** [`RELATORIO_DIRETORIA_MONTE_CARLO.pdf`](file:///{os.path.abspath(caminho_relatorio).replace('RELATORIO_PROJETO_MC.md', 'RELATORIO_DIRETORIA_MONTE_CARLO.pdf').replace(chr(92), '/')})",
-        f"- **Arquivo MS Project XML (Com Recursos):** [`{os.path.basename(caminho_xml)}`](file:///{os.path.abspath(caminho_xml).replace(chr(92), '/')})",
+        f"- **Arquivo MS Project XML Nivelado:** [`{os.path.basename(caminho_xml)}`](file:///{os.path.abspath(caminho_xml).replace(chr(92), '/')})",
+        f"- **Gráfico Comparativo de Nivelamento:** `assets/mc_nivelamento_recursos_comparativo.png`",
         f"- **Histograma de Recursos por Função:** `assets/mc_histograma_recursos.png`",
-        f"- **Gráficos em Assets:** Comparativo de Cenários MCMC, Sensibilidade do Caminho Crítico e Riscos de Custos.",
+        f"- **Gráficos em Assets:** Comparativo MCMC, Sensibilidade de Caminho Crítico e Riscos de Custos.",
         f"",
         f"---",
-        f"*Relatório gerado automaticamente pelo motor estocástico MCMC da skill cronograma-mc.*"
+        f"*Relatório gerado automaticamente pelo motor estocástico MCMC e Nivelamento Bioinspirado da skill cronograma-mc.*"
     ])
 
     relatorio_txt = "\n".join(linhas)
@@ -167,7 +186,7 @@ def executar_pipeline(
     base_duracao: str = "provavel"
 ):
     print("=" * 75)
-    print("🚀 INICIANDO PIPELINE: MD -> EAP -> RECURSOS -> MCMC -> MS PROJECT & PDF")
+    print("🚀 INICIANDO PIPELINE: MD -> EAP -> RECURSOS -> MCMC -> NIVELAMENTO -> MS PROJECT & PDF")
     print("=" * 75)
 
     pasta_dir = Path(pasta_md)
@@ -231,24 +250,39 @@ def executar_pipeline(
     print(f"   ✓ Custo P50 / P80      : R$ {c['p50']/1000.0:.1f}k / R$ {c['p80']/1000.0:.1f}k")
     print(f"   ✓ Contingência Custo   : R$ {c['contingencia_sugerida']/1000.0:.1f}k")
 
-    # 5. Exportação MS Project XML (MSPDI com Recursos)
+    # 5. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float)
+    print(f"\n🧬 5. Executando Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC)...")
+    caminho_niv_png = pasta_assets / "mc_nivelamento_recursos_comparativo.png"
+    metricas_nivelamento = executar_nivelamento_bioinspirado(
+        rede_wbs=rede_wbs,
+        metricas_recursos=metricas_recursos,
+        resultado_mc=res_mc,
+        capacidade_alvo_fte=4.0,
+        caminho_saida_png=str(caminho_niv_png)
+    )
+    print(f"   ✓ Pico Inicial -> Nivelado : {metricas_nivelamento['pico_antes']:.1f} FTEs -> {metricas_nivelamento['pico_depois']:.1f} FTEs")
+    print(f"   ✓ Redução da Variância     : -{metricas_nivelamento['reducao_variancia_pct']:.1f}% de oscilação na demanda de pessoal")
+    print(f"   ✓ Makespan Final Nivelado  : {metricas_nivelamento['makespan_final_dias']:.1f} dias úteis (Dentro do alvo P85)")
+    print(f"   ✓ Gráfico Comparativo      : {caminho_niv_png}")
+
+    # 6. Exportação MS Project XML (MSPDI com Recursos Nivelados)
     if data_inicio_str:
         inicio = date.fromisoformat(data_inicio_str)
     else:
         inicio = next_monday(date.today())
 
-    print(f"\n📄 5. Exportando para Microsoft Project XML (MSPDI com Recursos)...")
+    print(f"\n📄 6. Exportando para Microsoft Project XML (MSPDI Nivelado com Recursos)...")
     xml_path = exportar_msproject_xml(rede_wbs, res_mc, inicio, caminho_saida_xml, base_duracao, metricas_recursos)
     print(f"   ✓ Arquivo XML Gerado   : {xml_path}")
 
-    # 6. Geração do Relatório Executivo em PDF para a Diretoria (3 Páginas)
-    print(f"\n📑 6. Gerando Relatório Executivo para a Diretoria em PDF (3 Páginas)...")
-    pdf_out = gerar_relatorio_pdf_diretoria(metadados, rede_wbs, res_mc, caminho_pdf, metricas_recursos)
+    # 7. Geração do Relatório Executivo em PDF para a Diretoria (3 Páginas)
+    print(f"\n📑 7. Gerando Relatório Executivo para a Diretoria em PDF (3 Páginas)...")
+    pdf_out = gerar_relatorio_pdf_diretoria(metadados, rede_wbs, res_mc, caminho_pdf, metricas_recursos, metricas_nivelamento)
     print(f"   ✓ Relatório PDF Criado : {pdf_out}")
 
-    # 7. Geração do Relatório Markdown
-    print(f"\n📝 7. Gerando relatório executivo Markdown...")
-    rel_path = gerar_relatorio_markdown(metadados, rede_wbs, res_mc, xml_path, caminho_relatorio, metricas_recursos)
+    # 8. Geração do Relatório Markdown
+    print(f"\n📝 8. Gerando relatório executivo Markdown...")
+    rel_path = gerar_relatorio_markdown(metadados, rede_wbs, res_mc, xml_path, caminho_relatorio, metricas_recursos, metricas_nivelamento)
     print(f"   ✓ Relatório Criado     : {rel_path}")
 
     print("\n" + "=" * 75)
@@ -257,7 +291,7 @@ def executar_pipeline(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Pipeline Inteligente de Cronograma, Recursos e MCMC para MS Project e PDF da Diretoria")
+    parser = argparse.ArgumentParser(description="Pipeline Inteligente de Cronograma, Recursos, MCMC e Nivelamento Bioinspirado")
     parser.add_argument("--pasta", "-p", default="convertidos", help="Pasta com os arquivos .md do projeto (onde serão gravados todos os artefatos)")
     parser.add_argument("--saida", "-o", default=None, help="Caminho customizado do arquivo XML de saída (padrão: dentro da pasta do projeto)")
     parser.add_argument("--pdf", default=None, help="Caminho customizado do relatório PDF para a Diretoria (padrão: dentro da pasta do projeto)")

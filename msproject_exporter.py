@@ -62,7 +62,7 @@ def exportar_msproject_xml(
     tarefas = rede_wbs["tarefas"]
     pacotes = rede_wbs["pacotes"]
 
-    # 1. Forward pass determinístico para datas
+    # 1. Forward pass com suporte a deslocamentos do nivelamento bioinspirado
     starts = {}
     fins = {}
     for t in tarefas:
@@ -71,12 +71,17 @@ def exportar_msproject_xml(
         dur_dias = t["pessimista"] if base_duracao == "pessimista" else (
             t["otimista"] if base_duracao == "otimista" else t["provavel"]
         )
+        shift_niv = t.get("shift_nivelamento", 0.0)
+
         if deps:
-            s = max(fins[d] for d in deps) + timedelta(days=1)
-            while s.weekday() >= 5:
-                s += timedelta(days=1)
+            s_base = max(fins[d] for d in deps) + timedelta(days=1)
+            while s_base.weekday() >= 5:
+                s_base += timedelta(days=1)
         else:
-            s = data_inicio
+            s_base = data_inicio
+
+        # Aplica o deslocamento otimizado pelo GA
+        s = add_workdays(s_base, shift_niv) if shift_niv > 0 else s_base
         starts[tid] = s
         fins[tid] = add_workdays(s, dur_dias)
 
