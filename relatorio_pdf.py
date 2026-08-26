@@ -149,10 +149,16 @@ def gerar_relatorio_pdf_diretoria(
     # =========================================================================
     # PÁGINA 1: GOVERNANÇA DE PRAZOS, FUNDAMENTAÇÃO MCMC & DIAGNÓSTICO
     # =========================================================================
+    d_ini_proj = metadados.get('data_inicio_projeto', date(2026, 8, 6))
+    d_fim_proj = metadados.get('data_fim_contratual', date(2026, 11, 2))
+    p_corridos = metadados.get('prazo_dias_corridos', 88)
+    p_uteis = metadados.get('prazo_dias_uteis', 63)
+
     story.append(Paragraph("ENGENHARIA DE FABRICAÇÃO PESADA & PESQUISA OPERACIONAL", st_tag))
     story.append(Paragraph("Relatório Integrado de Riscos MCMC, Recursos & Nivelamento Bioinspirado", st_title))
     story.append(Paragraph(
-        f"<b>Projeto:</b> {rede_wbs['projeto']} | <b>TAG:</b> {rede_wbs['tag']} | <b>Cliente:</b> {rede_wbs['cliente']} | <b>Norma:</b> {metadados.get('norma_principal', 'API 650 / NR-13')}",
+        f"<b>Projeto:</b> {rede_wbs['projeto']} | <b>TAG:</b> {rede_wbs['tag']} | <b>Cliente:</b> {rede_wbs['cliente']} | <b>Norma:</b> {metadados.get('norma_principal', 'API 650 / NR-13')}<br/>"
+        f"<b>Data Início (Recebimento OC):</b> {d_ini_proj.strftime('%d/%m/%Y')} | <b>Marco 5 (Entrega Camaçari/BA):</b> {d_fim_proj.strftime('%d/%m/%Y')} | <b>Prazo Contratual:</b> {p_corridos}d corridos (~{p_uteis}d úteis)",
         st_subtitle
     ))
     story.append(HRFlowable(width="100%", thickness=1.0, color=c_blue, spaceBefore=0, spaceAfter=5))

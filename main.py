@@ -291,9 +291,11 @@ def executar_pipeline(
     if data_inicio_str:
         inicio = date.fromisoformat(data_inicio_str)
     else:
-        inicio = next_monday(date.today())
+        inicio = metadados.get("data_inicio_projeto", date(2026, 8, 6))
 
-    print(f"\n📄 6. Exportando para Microsoft Project XML (MSPDI Nivelado com Recursos)...")
+    print(f"\n📄 7. Exportando para Microsoft Project XML (MSPDI Nivelado com Recursos)...")
+    print(f"   ✓ Data de Início Real  : {inicio.strftime('%d/%m/%Y')} (Recebimento da OC 641641)")
+    print(f"   ✓ Data Limite Contrato : {metadados.get('data_fim_contratual', date(2026, 11, 2)).strftime('%d/%m/%Y')} (Marco 5 TAP)")
     xml_path = exportar_msproject_xml(rede_wbs, res_mc, inicio, caminho_saida_xml, base_duracao, metricas_recursos)
     print(f"   ✓ Arquivo XML Gerado   : {xml_path}")
 
