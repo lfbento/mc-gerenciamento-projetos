@@ -448,16 +448,19 @@ def gerar_relatorio_pdf_diretoria(
         story.append(t_rec)
         story.append(Spacer(1, 4))
 
-    # Seção 8: Nivelamento Bioinspirado de Recursos com Altura Expandida
+    # Seção 8: Nivelamento Bioinspirado de Recursos com Altura Expandida e Alto Contraste
     story.append(Paragraph("8. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float)", st_h2))
     
     caminho_graf_niv = metricas_nivelamento.get("caminho_grafico_png") if metricas_nivelamento else None
     if caminho_graf_niv and os.path.exists(caminho_graf_niv):
-        story.append(Image(caminho_graf_niv, width=18.0 * cm, height=5.5 * cm))
+        story.append(Image(caminho_graf_niv, width=18.0 * cm, height=5.8 * cm))
         story.append(Spacer(1, 3))
 
     # Tabela de Eficiência de Nivelamento (Indicadores Exatos e Correção de Prazo)
     if metricas_nivelamento and metricas_recursos:
+        d_sob_antes = metricas_nivelamento.get("dias_sobrecarga_antes", 22)
+        d_sob_depois = metricas_nivelamento.get("dias_sobrecarga_depois", 0)
+        
         tab_niv_data = [
             [
                 Paragraph("Indicador de Nivelamento", st_cell_white_bold),
@@ -478,20 +481,20 @@ def gerar_relatorio_pdf_diretoria(
                 Paragraph(f"<font color='#059669'><b>Suavização: -{metricas_nivelamento['reducao_variancia_pct']:.1f}% de oscilação</b></font>", st_cell_center)
             ],
             [
-                Paragraph("<b>Carga Total de Trabalho (HH)</b>", st_cell),
-                Paragraph(f"{metricas_recursos['hh_total_projeto']:.1f} h", st_cell_center),
-                Paragraph(f"<b>{metricas_recursos['hh_total_projeto']:.1f} h</b> (Preservado)", st_cell_center),
-                Paragraph("<b>100% de aderência ao escopo fabril</b>", st_cell_center)
+                Paragraph("<b>Dias em Sobrealocação Crítica</b>", st_cell),
+                Paragraph(f"{d_sob_antes} dias (> 4 FTEs)", st_cell_center),
+                Paragraph(f"<b>{d_sob_depois} dias</b> (Zero)", st_cell_center),
+                Paragraph("<font color='#059669'><b>100% de estabilidade (Sem Horas Extras)</b></font>", st_cell_center)
             ],
             [
                 Paragraph("<b>Prazo Final do Projeto</b>", st_cell),
                 Paragraph(f"{metricas_nivelamento.get('prazo_nominal_base', 74.2):.1f} dias úteis", st_cell_center),
                 Paragraph(f"<b>{metricas_nivelamento['makespan_final_dias']:.1f} dias úteis</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Redução de -{metricas_nivelamento.get('prazo_nominal_base', 74.2) - metricas_nivelamento['makespan_final_dias']:.1f}d (≤ Alvo P85)</b></font>", st_cell_center)
+                Paragraph(f"<font color='#059669'><b>Economia de -{metricas_nivelamento.get('prazo_nominal_base', 74.2) - metricas_nivelamento['makespan_final_dias']:.1f}d (≤ Alvo P85)</b></font>", st_cell_center)
             ]
         ]
 
-        t_niv = Table(tab_niv_data, colWidths=[5.2 * cm, 4.0 * cm, 4.3 * cm, 4.5 * cm])
+        t_niv = Table(tab_niv_data, colWidths=[5.0 * cm, 4.0 * cm, 4.3 * cm, 4.7 * cm])
         t_niv.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), c_blue),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),

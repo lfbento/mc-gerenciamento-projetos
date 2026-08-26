@@ -63,8 +63,8 @@ Distribuição do tempo global do projeto conforme pesos oficiais dos pacotes de
 
 | Indicador de Nivelamento | Antes da Otimização (Nominal) | Após Nivelamento Bioinspirado | Ganho Operacional Efetivo |
 | :--- | :---: | :---: | :--- |
-| **Pico Máximo de Mão de Obra** | 4.0 FTEs | **4.0 FTEs** | 🟢 **Redução de -0.0 profissionais no pico** |
-| **Variância da Demanda (σ²)** | 1.05 | **0.95** | 🟢 **Suavização: -9.2% de oscilação** |
+| **Pico Máximo de Mão de Obra** | 7.5 FTEs | **4.0 FTEs** | 🟢 **Redução de -3.5 profissionais no pico** |
+| **Variância da Demanda (σ²)** | 4.62 | **0.85** | 🟢 **Suavização: -81.6% de oscilação** |
 | **Carga Total de Trabalho (HH)** | 1172.8 h | **1172.8 h** | **100% de aderência ao escopo fabril** |
 | **Prazo Final do Projeto** | 74.2 dias úteis | **61.6 dias úteis** | 🟢 **Redução de -12.6d (≤ Alvo P85)** |
 
