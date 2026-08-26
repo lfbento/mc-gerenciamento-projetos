@@ -399,7 +399,8 @@ def gerar_relatorio_pdf_diretoria(
     # =========================================================================
     story.append(Paragraph("7. Alocação de Mão de Obra e Histograma de Recursos por Função", st_h2))
     story.append(Paragraph(
-        "Distribuição semanal do efetivo operacional e consumo de Homens-Hora (HH) dimensionados conforme o escopo fabril:",
+        "Dimensionamento de Homens-Hora (HH) e composição de equipes fundamentado no <b>Guia de Estimativa de Recursos Industriais (@estimativa-recursos-fabricacao-industrial)</b> "
+        "(Storm / Richardson / ASME VIII / API 650 / NR-13), aplicando fatores de material Inox 304 (1.40x), complexidade (1.30x), NR-13 (1.15x) e eficiência de fábrica (75%):",
         st_body
     ))
 

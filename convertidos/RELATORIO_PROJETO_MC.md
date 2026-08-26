@@ -39,8 +39,9 @@ Distribuição do tempo global do projeto conforme pesos oficiais dos pacotes de
 | `6.0` | **EXPEDIÇÃO** | **1%** | ~0.6 dias úteis | 3 tarefas (Emissão, Compilação e Aprovação do ..., Embalagem Especial, Fabricação do B...) |
 
 ---
+## 4. Dimensionamento de Mão de Obra e Recursos (@estimativa-recursos-fabricacao-industrial)
 
-## 4. Dimensionamento de Mão de Obra e Alocação de Recursos (Storm / SENAI)
+Dimensionamento fundamentado no Guia de Estimativa de Recursos Industriais (Storm / Richardson / ASME VIII / API 650 / NR-13 / SENAI), considerando fatores de material Inox 304 (1.40x), complexidade (1.30x), NR-13 (+15%) e eficiência de 75%:
 
 | Especialidade / Função | Categoria | HH Total | Taxa Horária | Custo Total de M.O. |
 | :--- | :---: | :---: | :---: | :---: |

@@ -3,15 +3,22 @@
 """
 Motor de Dimensionamento e Alocação de Recursos Industriais
 ===========================================================
-Baseado no Guia de Estimativa de Recursos para Fabricação Industrial
-(Storm / Richardson / ASME VIII / API 650 / SENAI / NR-13).
+Implementado em conformidade estrita com o Guia / System Prompt:
+`@estimativa-recursos-fabricacao-industrial`
 
-Funções:
-  1. Dimensiona Homens-Hora (HH) por atividade com fatores de material, complexidade e NR-13.
-  2. Aloca equipes equilibradas para cumprir a duração estipulada de cada tarefa.
-  3. Mapeia a distribuição temporal de alocação de pessoal (FTEs e HH/semana).
-  4. Gera o Histograma de Alocação de Recursos por Função ao Longo do Tempo (Curva de Mobilização).
-  5. Estrutura os dados para as tags <Resources> e <Assignments> do MS Project XML (MSPDI).
+Base Normativa e Bibliográfica:
+  - Kenneth Storm (Industrial Piping and Equipment Estimating Manual - 2ª ed.)
+  - Richardson Engineering (Process Plant Construction Estimating Standards)
+  - Dennis R. Moss (Pressure Vessel Design Manual - 4ª ed.)
+  - Normas: API 650, ASME BPVC Sec. VIII Div.1 / Sec. IX, NR-13, AWS D1.1 e NBR 8800.
+  - Tabelas de Homem-Hora (HH) e Fatores de Produtividade SENAI/SESI Caldeiraria Pesada.
+
+Parâmetros de Engenharia:
+  - Fator Material Inox SA-240 304: 1.40x (vs. Aço Carbono)
+  - Fator de Complexidade API 650 (Costado, Bocais A1-W1 e BV M1): 1.30x
+  - Fator de Conformidade Regulatória NR-13: +15% (1.15x)
+  - Eficiência Operacional Padrão de Fábrica: 75%
+  - Jornada de Trabalho: 8h/dia (40h úteis/semana, 08:00-12:00 e 13:00-17:00)
 """
 
 import os
@@ -21,6 +28,14 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+
+# Constantes de Engenharia extraídas de @estimativa-recursos-fabricacao-industrial
+FATOR_MATERIAL_INOX_304 = 1.40
+FATOR_COMPLEXIDADE_API650 = 1.30
+FATOR_REGULATORIO_NR13 = 1.15
+EFICIENCIA_OFICINA = 0.75
+JORNADA_HORAS_DIA = 8.0
 
 # Catálogo Padrão de Recursos e Especialidades Industriais
 CATALOGO_RECURSOS = {

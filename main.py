@@ -95,8 +95,9 @@ def gerar_relatorio_markdown(
         linhas.extend([
             f"",
             f"---",
+            f"## 4. Dimensionamento de Mão de Obra e Recursos (@estimativa-recursos-fabricacao-industrial)",
             f"",
-            f"## 4. Dimensionamento de Mão de Obra e Alocação de Recursos (Storm / SENAI)",
+            f"Dimensionamento fundamentado no Guia de Estimativa de Recursos Industriais (Storm / Richardson / ASME VIII / API 650 / NR-13 / SENAI), considerando fatores de material Inox 304 (1.40x), complexidade (1.30x), NR-13 (+15%) e eficiência de 75%:",
             f"",
             f"| Especialidade / Função | Categoria | HH Total | Taxa Horária | Custo Total de M.O. |",
             f"| :--- | :---: | :---: | :---: | :---: |"
