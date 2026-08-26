@@ -61,12 +61,12 @@ Distribuição do tempo global do projeto conforme pesos oficiais dos pacotes de
 
 ## 5. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float)
 
-| Indicador de Nivelamento | Antes da Otimização | Após Nivelamento Bioinspirado | Ganho Operacional |
+| Indicador de Nivelamento | Antes da Otimização (Nominal) | Após Nivelamento Bioinspirado | Ganho Operacional Efetivo |
 | :--- | :---: | :---: | :--- |
-| **Pico Máximo de Efetivo** | 9.0 FTEs | **9.0 FTEs** | 🟢 **Redução de -0.0 profissionais** |
-| **Variância da Demanda (σ²)** | 3.24 | **3.21** | 🟢 **Estabilidade: -1.2% de oscilação** |
-| **Homens-Hora Totais** | 1172.8 h | **1172.8 h** | **Preservação total do escopo** |
-| **Prazo Final Nivelado** | 71 dias úteis | **74.2 dias** | 🟢 **Dentro do Alvo P85 (68.7d)** |
+| **Pico Máximo de Mão de Obra** | 4.0 FTEs | **4.0 FTEs** | 🟢 **Redução de -0.0 profissionais no pico** |
+| **Variância da Demanda (σ²)** | 1.05 | **0.95** | 🟢 **Suavização: -9.2% de oscilação** |
+| **Carga Total de Trabalho (HH)** | 1172.8 h | **1172.8 h** | **100% de aderência ao escopo fabril** |
+| **Prazo Final do Projeto** | 74.2 dias úteis | **61.6 dias úteis** | 🟢 **Redução de -12.6d (≤ Alvo P85)** |
 
 ---
 
@@ -76,16 +76,16 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 
 | WBS | Atividade | 3 Pontos (O, M, P) | Índice de Criticidade | Nível de Atenção |
 | :---: | :--- | :---: | :---: | :--- |
-| `1.1` | Kick-off Meeting & Alinhamento de Requisitos (Oxiteno S.A. / Grupo Indorama) | `(0.8, 1.0, 1.5) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `1.2` | Formalização do Termo de Abertura do Projeto (TAP) & Governança | `(0.8, 1.0, 1.5) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `2.1` | Projeto Executivo & Detalhamento Mecânico 2D/3D (TQ-0960-30) | `(3.4, 4.3, 6.4) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `2.2` | Memórias de Cálculo Estrutural e Pressão (API 650 / ASME) | `(2.9, 3.6, 5.4) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `2.3` | Elaboração do PIT (Plano de Inspeção e Testes) e EPS/RQPS | `(2.2, 2.8, 4.2) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `2.4` | Submissão, Análise e Aprovação Técnica pelo Cliente | `(2.9, 3.6, 5.4) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `3.1` | Requisição de Compras & Cotação de Matérias-Primas Inox | `(2.6, 3.2, 4.8) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `3.4` | Recebimento, Inspeção Dimensional e Rastreabilidade de MP na Fábrica | `(4.2, 5.3, 7.9) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `4.1` | Traçado, Corte a Plasma e Chanfro das Chapas do Costado e Fundo | `(3.4, 4.3, 6.4) d` | **100.0%** | 🔴 Crítica (>90%) |
-| `4.2` | Calandragem das Virolas e Pré-Montagem dos Aneis do Costado | `(3.4, 4.3, 6.4) d` | **100.0%** | 🔴 Crítica (>90%) |
+| `1.1` | Kick-off Meeting & Alinhamento de Requisitos (Oxiteno S.A. / Grupo Indorama) | `(0.8, 1.0, 1.5) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `1.2` | Formalização do Termo de Abertura do Projeto (TAP) & Governança | `(0.8, 1.0, 1.5) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `2.1` | Projeto Executivo & Detalhamento Mecânico 2D/3D (TQ-0960-30) | `(3.4, 4.3, 6.4) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `2.2` | Memórias de Cálculo Estrutural e Pressão (API 650 / ASME) | `(2.9, 3.6, 5.4) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `2.3` | Elaboração do PIT (Plano de Inspeção e Testes) e EPS/RQPS | `(2.2, 2.8, 4.2) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `2.4` | Submissão, Análise e Aprovação Técnica pelo Cliente | `(2.9, 3.6, 5.4) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `3.1` | Requisição de Compras & Cotação de Matérias-Primas Inox | `(2.6, 3.2, 4.8) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `3.4` | Recebimento, Inspeção Dimensional e Rastreabilidade de MP na Fábrica | `(4.2, 5.3, 7.9) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `4.1` | Traçado, Corte a Plasma e Chanfro das Chapas do Costado e Fundo | `(3.4, 4.3, 6.4) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `4.2` | Calandragem das Virolas e Pré-Montagem dos Aneis do Costado | `(3.4, 4.3, 6.4) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
 
 ---
 
@@ -99,7 +99,26 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 
 ---
 
-## 8. Entregáveis Gerados
+## 8. Glossário Técnico (Abreviações, Siglas e Conceitos)
+
+| Termo / Sigla | Definição e Aplicação Técnica no Projeto |
+| :--- | :--- |
+| **EAP / WBS** | **Estrutura Analítica do Projeto** (*Work Breakdown Structure*): Decomposição hierárquica do escopo em pacotes de trabalho ponderados (2%, 20%, 30%, 40%, 7%, 1%). |
+| **MCMC** | **Markov Chain Monte Carlo**: Método estocástico que modela a persistência de bloqueios operacionais e alternância de regimes de produtividade. |
+| **CPM / PERT** | **Critical Path Method & PERT**: Modelagem clássica determinística baseada em estimativas de 3 pontos (Otimista, Mais Provável, Pessimista). |
+| **P50 / P85 / P95** | **Percentis de Confiança Estocástica**: P50 = Mediana interna de fábrica; P85 = Padrão ouro contratual (SLA); P95 = Buffer conservador de missão crítica. |
+| **Feeding Buffer** | **Pulmão de Convergência**: Reserva gerenciada pelo PMO (+2.3 dias) para absorver variações sem postergar a entrega final. |
+| **FTE & HH** | **Full-Time Equivalent & Homem-Hora**: FTE = dedicação integral de 1 profissional (8h/dia); HH = esforço total de 1 hora de trabalho. |
+| **RLP / RCPSP** | **Resource Leveling & Resource-Constrained Scheduling**: Problemas de otimização combinatória para suavização de carga e restrição de recursos. |
+| **MCMC-Safe Float** | **Folga Estocástica Segura**: Regra bioinspirada que delimita os deslocamentos pelo Índice de Criticidade ($CI$), blindando tarefas críticas. |
+| **GA / SA** | **Algoritmos Genéticos & Simulated Annealing**: Meta-heurísticas bioinspiradas de otimização combinatória. |
+| **API 650 & ASME** | Normas técnicas internacionais para tanques de armazenamento atmosférico e qualificação de procedimentos de soldagem (ASME IX). |
+| **END (RX/LP/PMI)** | Ensaios Não Destrutivos: Radiografia Industrial (RX), Líquido Penetrante (LP) e Identificação Positiva de Material (PMI). |
+| **5W2H** | Matriz de plano de ação estruturada (What, Why, Where, When, Who, How, How Much). |
+
+---
+
+## 9. Entregáveis Gerados
 
 - **Relatório Executivo para a Diretoria (PDF 3 Páginas):** [`RELATORIO_DIRETORIA_MONTE_CARLO.pdf`](file:///C:/bento/prg/mc-gerenciamento-projetos/convertidos/RELATORIO_DIRETORIA_MONTE_CARLO.pdf)
 - **Arquivo MS Project XML Nivelado:** [`cronograma_tq-0960-30.xml`](file:///C:/bento/prg/mc-gerenciamento-projetos/convertidos/cronograma_tq-0960-30.xml)

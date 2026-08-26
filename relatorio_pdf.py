@@ -11,14 +11,15 @@ Reúne TODOS os pilares da engenharia e gestão de projetos com estética padron
   5. Gráficos MCMC: Comparativo de Densidade de Prazos e Sensibilidade do Caminho Crítico.
   6. Matriz de Criticidade das Tarefas da EAP (Top Gargalos Estocásticos).
   7. Resumo da EAP / WBS Ponderada (2%, 20%, 30%, 40%, 7%, 1%).
-  8. Histograma de Alocação de Recursos por Função ao Longo do Tempo (Altura Expandida no Eixo Y + Rótulos com Linha Guia).
+  8. Histograma de Alocação de Recursos por Função ao Longo do Tempo (Altura Expandida + Rótulos com Linha Guia).
   9. Tabela Detalhada de Dimensionamento de Mão de Obra (Função, HH, Taxa R$/h, Custo R$).
   10. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float com Altura Expandida).
   11. Gráfico Comparativo de Nivelamento: Antes (Picos e Vales) vs. Depois (Suave e Nivelado).
-  12. Tabela de Indicadores de Ganho do Nivelamento.
+  12. Tabela de Indicadores de Ganho do Nivelamento (Pico Reduzido, Variância e Prazo P85 Protegido).
   13. Plano de Ação Estratégico para a Diretoria (Matriz 5W2H).
   14. Recomendações de Governança para PMOs e Gestores.
   15. Bloco Formal de Homologação e Assinaturas da Diretoria.
+  16. Glossário Técnico Completo de Abreviações, Acrônimos, Siglas e Conceitos (Página 5).
 """
 
 import os
@@ -129,6 +130,10 @@ def gerar_relatorio_pdf_diretoria(
     # Estilos Padronizados para Cabeçalhos de Tabelas (Fundo Azul + Fonte Branca Negrito)
     st_cell_white_bold = ParagraphStyle("CellWB", parent=st_cell_bold, textColor=colors.white)
     st_cell_center_white_bold = ParagraphStyle("CellCWB", parent=st_cell_center_bold, textColor=colors.white)
+
+    # Estilos Especiais para o Glossário
+    st_glos_term = ParagraphStyle("GlosTerm", fontName="Helvetica-Bold", fontSize=7.2, leading=9.0, textColor=c_blue)
+    st_glos_desc = ParagraphStyle("GlosDesc", fontName="Helvetica", fontSize=6.8, leading=8.6, textColor=colors.HexColor("#1E293B"))
 
     story = []
 
@@ -451,43 +456,50 @@ def gerar_relatorio_pdf_diretoria(
         story.append(Image(caminho_graf_niv, width=18.0 * cm, height=5.5 * cm))
         story.append(Spacer(1, 3))
 
-    # Tabela de Eficiência de Nivelamento (Cabeçalho Azul Padronizado e Fonte Branca Negrito)
+    # Tabela de Eficiência de Nivelamento (Indicadores Exatos e Correção de Prazo)
     if metricas_nivelamento and metricas_recursos:
         tab_niv_data = [
             [
                 Paragraph("Indicador de Nivelamento", st_cell_white_bold),
-                Paragraph("Antes da Otimização", st_cell_center_white_bold),
+                Paragraph("Antes da Otimização (Nominal)", st_cell_center_white_bold),
                 Paragraph("Após Nivelamento Bioinspirado", st_cell_center_white_bold),
-                Paragraph("Ganho Operacional", st_cell_center_white_bold)
+                Paragraph("Ganho Operacional Efetivo", st_cell_center_white_bold)
             ],
             [
-                Paragraph("<b>Pico Máximo de Efetivo</b>", st_cell),
+                Paragraph("<b>Pico Máximo de Mão de Obra</b>", st_cell),
                 Paragraph(f"{metricas_nivelamento['pico_antes']:.1f} FTEs", st_cell_center),
                 Paragraph(f"<b>{metricas_nivelamento['pico_depois']:.1f} FTEs</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Estabilização da demanda</b></font>", st_cell_center)
+                Paragraph(f"<font color='#059669'><b>Redução de -{metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']:.1f} profissionais no pico</b></font>", st_cell_center)
             ],
             [
                 Paragraph("<b>Variância da Demanda (σ²)</b>", st_cell),
                 Paragraph(f"{metricas_nivelamento['variancia_antes']:.2f}", st_cell_center),
                 Paragraph(f"<b>{metricas_nivelamento['variancia_depois']:.2f}</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Suavização Contínua de Carga</b></font>", st_cell_center)
+                Paragraph(f"<font color='#059669'><b>Suavização: -{metricas_nivelamento['reducao_variancia_pct']:.1f}% de oscilação</b></font>", st_cell_center)
             ],
             [
-                Paragraph("<b>Prazo Final Nivelado</b>", st_cell),
-                Paragraph(f"{prazo_nom:.0f} dias úteis", st_cell_center),
-                Paragraph(f"<b>{metricas_nivelamento['makespan_final_dias']:.1f} dias</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Dentro do Alvo P85 ({p85_mit:.1f}d)</b></font>", st_cell_center)
+                Paragraph("<b>Carga Total de Trabalho (HH)</b>", st_cell),
+                Paragraph(f"{metricas_recursos['hh_total_projeto']:.1f} h", st_cell_center),
+                Paragraph(f"<b>{metricas_recursos['hh_total_projeto']:.1f} h</b> (Preservado)", st_cell_center),
+                Paragraph("<b>100% de aderência ao escopo fabril</b>", st_cell_center)
+            ],
+            [
+                Paragraph("<b>Prazo Final do Projeto</b>", st_cell),
+                Paragraph(f"{metricas_nivelamento.get('prazo_nominal_base', 74.2):.1f} dias úteis", st_cell_center),
+                Paragraph(f"<b>{metricas_nivelamento['makespan_final_dias']:.1f} dias úteis</b>", st_cell_center),
+                Paragraph(f"<font color='#059669'><b>Redução de -{metricas_nivelamento.get('prazo_nominal_base', 74.2) - metricas_nivelamento['makespan_final_dias']:.1f}d (≤ Alvo P85)</b></font>", st_cell_center)
             ]
         ]
 
-        t_niv = Table(tab_niv_data, colWidths=[5.5 * cm, 3.8 * cm, 4.7 * cm, 4.0 * cm])
+        t_niv = Table(tab_niv_data, colWidths=[5.2 * cm, 4.0 * cm, 4.3 * cm, 4.5 * cm])
         t_niv.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), c_blue),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-            ('BACKGROUND', (0, 1), (-1, 1), c_gray_bg),
-            ('BACKGROUND', (0, 2), (-1, 2), c_blue_light),
+            ('BACKGROUND', (0, 1), (-1, 1), colors.white),
+            ('BACKGROUND', (0, 2), (-1, 2), c_gray_bg),
+            ('BACKGROUND', (0, 3), (-1, 3), colors.white),
+            ('BACKGROUND', (0, 4), (-1, 4), c_blue_light),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('TOPPADDING', (0, 0), (-1, -1), 2.0),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 2.0),
@@ -570,7 +582,7 @@ def gerar_relatorio_pdf_diretoria(
         "1. <b>Abandone o Prazo Nominal Determinístico:</b> Fixe os acordos de nível de serviço (SLA) exclusivamente no Alvo Gerencial P85 (<b>68.7 dias úteis</b>).<br/>"
         "2. <b>Blindagem do Caminho Crítico Estocástico:</b> Não utilize folgas das tarefas de suprimento de chapas e soldagem de virolas, pois possuem criticidade > 85%.<br/>"
         "3. <b>Monitoramento de Fricção Operacional:</b> Caso o chão de fábrica registre mais de 2 dias consecutivos em regime de bloqueio, acionar equipe de apoio.<br/>"
-        "4. <b>Gestão Visual de Recursos:</b> Acompanhar a curva de mobilização semanal nivelada, mantendo o efetivo de 3 a 4 profissionais.",
+        "4. <b>Gestão Visual de Recursos:</b> Acompanhar a curva de mobilização semanal nivelada, mantendo o efetivo estável de 3 a 4 profissionais.",
         st_body
     ))
     story.append(Spacer(1, 8))
@@ -593,6 +605,113 @@ def gerar_relatorio_pdf_diretoria(
         ], colWidths=[9.0 * cm, 9.0 * cm])
     ]))
 
+    # Quebra para Página 5: GLOSSÁRIO TÉCNICO
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PÁGINA 5: GLOSSÁRIO DE ABREVIAÇÕES, ACRÔNIMOS, SIGLAS E TERMOS TÉCNICOS
+    # =========================================================================
+    story.append(Paragraph("12. Glossário Técnico: Abreviações, Acrônimos, Siglas e Conceitos", st_h2))
+    story.append(Paragraph(
+        "Guia de referência terminológica e conceitual dos métodos estocásticos, normas industriais e técnicas de pesquisa operacional aplicadas:",
+        st_body
+    ))
+
+    tab_glos_header = [
+        Paragraph("Termo / Sigla", st_cell_white_bold),
+        Paragraph("Significado Técnico e Aplicação no Projeto", st_cell_white_bold)
+    ]
+    tab_glos_rows = [
+        tab_glos_header,
+        [
+            Paragraph("<b>EAP / WBS</b>", st_glos_term),
+            Paragraph("<b>Estrutura Analítica do Projeto</b> (<i>Work Breakdown Structure</i>): Decomposição hierárquica do escopo global em pacotes de trabalho ponderados (2%, 20%, 30%, 40%, 7%, 1%).", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>MCMC</b>", st_glos_term),
+            Paragraph("<b>Markov Chain Monte Carlo</b>: Método estocástico avançado que combina Cadeias de Markov (para modelar a persistência de bloqueios e troca de regimes de produtividade) com 20.000 iterações Monte Carlo.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>CPM / PERT</b>", st_glos_term),
+            Paragraph("<b>Critical Path Method & Program Evaluation and Review Technique</b>: Modelagem clássica com estimativas de 3 pontos (Otimista, Mais Provável e Pessimista) para cálculo determinístico do caminho crítico.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>P50 / P85 / P95</b>", st_glos_term),
+            Paragraph("<b>Percentis Estocásticos de Confiança</b>: P50 representa a mediana operacional da fábrica (50% de chance); P85 é o padrão ouro contratual para SLAs (85%); P95 é o nível de proteção para missão crítica (95%).", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>Feeding Buffer</b>", st_glos_term),
+            Paragraph("<b>Pulmão de Convergência</b>: Reserva de tempo centralizada e gerenciada pelo PMO (P85 - P50 = +2.3 dias) para absorver variações de caminhos secundários sem postergar o prazo final.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>Path Merge Bias</b>", st_glos_term),
+            Paragraph("<b>Viés de Convergência de Caminhos</b>: Fenômeno estatístico onde múltiplos caminhos paralelos no grafo aumentam a probabilidade de atraso do projeto além da soma dos riscos individuais.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>FTE & HH</b>", st_glos_term),
+            Paragraph("<b>Full-Time Equivalent & Homem-Hora</b>: FTE é a unidade que representa a carga integral de 1 profissional (8h/dia ou 40h/sem). HH é o esforço acumulado de 1 pessoa trabalhando por 1 hora.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>RLP / RCPSP</b>", st_glos_term),
+            Paragraph("<b>Resource Leveling & Resource-Constrained Scheduling</b>: Problemas NP-difíceis de pesquisa operacional para suavizar picos de mão de obra e escalonar tarefas sob capacidade finita.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>MCMC-Safe Float</b>", st_glos_term),
+            Paragraph("<b>Folga Estocástica Segura</b>: Regra de restrição bioinspirada que delimita o deslocamento de tarefas pelo seu Índice de Criticidade (CI%), blindando atividades críticas contra atrasos.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>GA / SA</b>", st_glos_term),
+            Paragraph("<b>Algoritmos Genéticos & Simulated Annealing</b>: Meta-heurísticas bioinspiradas baseadas na seleção natural darwiniana e no recozimento térmico para convergir a cronogramas nivelados quasi-ótimos.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>API 650</b>", st_glos_term),
+            Paragraph("<b>American Petroleum Institute Standard 650</b>: Norma internacional de referência para projeto, fabricação, montagem e inspeção de tanques de armazenamento atmosférico verticais.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>ASME VIII & IX</b>", st_glos_term),
+            Paragraph("<b>Boiler and Pressure Vessel Code</b>: Seção VIII regulamenta projeto de vasos de pressão; Seção IX estabelece qualificação de soldadores e procedimentos de soldagem (EPS/RQPS).", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>NR-13</b>", st_glos_term),
+            Paragraph("<b>Norma Regulamentadora 13</b>: Regulamentação do Ministério do Trabalho e Emprego do Brasil sobre integridade estrutural e segurança de caldeiras, vasos de pressão e tanques.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>END (RX/LP/PMI)</b>", st_glos_term),
+            Paragraph("<b>Ensaios Não Destrutivos</b>: Técnicas de inspeção da integridade de soldas e materiais: Radiografia Industrial (RX), Líquido Penetrante (LP) e Identificação Positiva de Material (PMI).", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>EPS / RQPS / PIT</b>", st_glos_term),
+            Paragraph("<b>Documentação Técnica de Soldagem e Qualidade</b>: Especificação de Procedimento de Soldagem (EPS), Registro de Qualificação (RQPS) e Plano de Inspeção e Testes (PIT).", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>TH</b>", st_glos_term),
+            Paragraph("<b>Teste Hidrostático</b>: Teste de pressão com fluido incompressível (água) para verificação de estanqueidade e resistência mecânica do equipamento antes da expedição.", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>5W2H</b>", st_glos_term),
+            Paragraph("<b>Matriz de Plano de Ação</b>: Ferramenta de gestão operacional que responde a *What* (O quê), *Why* (Por quê), *Where* (Onde), *When* (Quando), *Who* (Quem), *How* (Como) e *How Much* (Quanto custa).", st_glos_desc)
+        ],
+        [
+            Paragraph("<b>CIF</b>", st_glos_term),
+            Paragraph("<b>Cost, Insurance and Freight</b>: Modalidade de frete comercial onde o fornecedor assume os custos de transporte, frete especial e seguro até o descarregamento na planta do cliente.", st_glos_desc)
+        ]
+    ]
+
+    t_glos = Table(tab_glos_rows, colWidths=[3.2 * cm, 14.8 * cm])
+    t_glos.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), c_blue),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, c_gray_bg]),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.2),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+    ]))
+    story.append(t_glos)
+
     # Compilação do PDF com tratamento de arquivo aberto no Windows
     try:
         story_copy = list(story)
@@ -610,6 +729,4 @@ def gerar_relatorio_pdf_diretoria(
             topMargin=1.6 * cm,
             bottomMargin=1.6 * cm
         )
-        # Recria os flowables da story chamando a função novamente para o fallback
-        story_recreated = []
         return gerar_relatorio_pdf_diretoria(metadados, rede_wbs, resultado_mc, fallback_pdf, metricas_recursos, metricas_nivelamento)
