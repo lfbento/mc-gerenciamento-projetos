@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Gerador de Relatório Executivo em PDF para a Diretoria (MCMC, Recursos & Nivelamento Bioinspirado)
-================================================================================================
-Produz um documento formal, executivo e de alto padrão visual (3 páginas)
-incorporando:
-  - Cards de KPIs no Topo (Nominal, P50, P85, P95).
-  - Fundamentação Teórica MCMC (Inércia Operacional, Troca de Regimes e Path Merge Bias).
-  - Tabela de Governança de Prazos e Dimensionamento de Feeding Buffers.
-  - Gráficos de Densidade de Probabilidade e Sensibilidade de Caminho Crítico.
-  - Nivelamento Bioinspirado por Algoritmo Genético (Comparativo Antes vs. Depois).
-  - Tabela de Dimensionamento de Mão de Obra e Indicadores de Eficiência.
-  - Recomendações Estratégicas para PMO/Diretoria e Bloco de Homologação.
+Gerador de Relatório Executivo em PDF para a Diretoria Completo e Integrado
+==========================================================================
+Reúne TODOS os pilares da engenharia e gestão de projetos:
+  1. Cards de KPIs no Topo (Nominal, P50, P85, P95).
+  2. Fundamentação Teórica MCMC (Inércia, Troca de Regimes e Path Merge Bias).
+  3. Diagnóstico de Risco: Cenário Inercial vs. Mitigado.
+  4. Tabela de Governança de Prazos e Dimensionamento de Buffers.
+  5. Gráficos MCMC: Comparativo de Densidade de Prazos e Sensibilidade do Caminho Crítico.
+  6. Matriz de Criticidade das Tarefas da EAP (Top Gargalos Estocásticos).
+  7. Resumo da EAP / WBS Ponderada (2%, 20%, 30%, 40%, 7%, 1%).
+  8. Histograma de Alocação de Recursos por Função ao Longo do Tempo (Manpower Loading Semanal + Curva S).
+  9. Tabela Detalhada de Dimensionamento de Mão de Obra (Função, HH, Taxa R$/h, Custo R$).
+  10. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float).
+  11. Gráfico Comparativo de Nivelamento: Antes (Picos e Vales) vs. Depois (Suave e Nivelado).
+  12. Tabela de Indicadores de Ganho do Nivelamento.
+  13. Plano de Ação Estratégico para a Diretoria (Matriz 5W2H).
+  14. Recomendações de Governança para PMOs e Gestores.
+  15. Bloco Formal de Homologação e Assinaturas da Diretoria.
 """
 
 import os
@@ -53,7 +60,7 @@ class NumberedCanvas(canvas.Canvas):
         
         # Cabeçalho Institucional (Páginas > 1)
         if self._pageNumber > 1:
-            self.drawString(1.5 * cm, 28.5 * cm, "NACIONAL INDÚSTRIA MECÂNICA S/A • RELATÓRIO EXECUTIVO MCMC & NIVELAMENTO BIOINSPIRADO")
+            self.drawString(1.5 * cm, 28.5 * cm, "NACIONAL INDÚSTRIA MECÂNICA S/A • RELATÓRIO INTEGRADO MCMC, RECURSOS & NIVELAMENTO")
             self.drawRightString(19.5 * cm, 28.5 * cm, "CONFIDENCIAL — DIRETORIA EXECUTIVA")
             self.setStrokeColor(colors.HexColor("#CBD5E1"))
             self.setLineWidth(0.5)
@@ -64,7 +71,7 @@ class NumberedCanvas(canvas.Canvas):
         self.setStrokeColor(colors.HexColor("#E2E8F0"))
         self.setLineWidth(0.5)
         self.line(1.5 * cm, 1.2 * cm, 19.5 * cm, 1.2 * cm)
-        self.drawString(1.5 * cm, 0.85 * cm, "Relatório Técnico Especializado • Métodos Estocásticos MCMC, Algoritmos Bioinspirados e Gestão de Recursos")
+        self.drawString(1.5 * cm, 0.85 * cm, "Relatório Técnico Integrado • Métodos Estocásticos MCMC, Alocação de Recursos e Nivelamento Bioinspirado")
         self.drawRightString(19.5 * cm, 0.85 * cm, f"Página {self._pageNumber} de {page_count}")
         self.restoreState()
 
@@ -77,7 +84,7 @@ def gerar_relatorio_pdf_diretoria(
     metricas_recursos: Optional[Dict[str, Any]] = None,
     metricas_nivelamento: Optional[Dict[str, Any]] = None
 ) -> str:
-    """Gera o relatório executivo completo de 3 páginas para a Diretoria."""
+    """Gera o relatório executivo completo de alta resolução para a Diretoria."""
     os.makedirs(os.path.dirname(os.path.abspath(caminho_pdf)) or ".", exist_ok=True)
     
     doc = SimpleDocTemplate(
@@ -102,18 +109,18 @@ def gerar_relatorio_pdf_diretoria(
     
     # Estilos Tipográficos
     st_tag = ParagraphStyle("Tag", fontName="Helvetica-Bold", fontSize=7.5, textColor=colors.HexColor("#2563EB"), leading=9.5, spaceAfter=2)
-    st_title = ParagraphStyle("Title", fontName="Helvetica-Bold", fontSize=14.5, leading=17, textColor=c_blue, spaceAfter=3)
-    st_subtitle = ParagraphStyle("Subtitle", fontName="Helvetica", fontSize=9, leading=11.5, textColor=colors.HexColor("#475569"), spaceAfter=7)
+    st_title = ParagraphStyle("Title", fontName="Helvetica-Bold", fontSize=14.0, leading=16.5, textColor=c_blue, spaceAfter=3)
+    st_subtitle = ParagraphStyle("Subtitle", fontName="Helvetica", fontSize=8.8, leading=11.2, textColor=colors.HexColor("#475569"), spaceAfter=6)
     
-    st_h2 = ParagraphStyle("H2", fontName="Helvetica-Bold", fontSize=9.8, leading=12.5, textColor=c_blue, spaceBefore=5, spaceAfter=2.5)
-    st_body = ParagraphStyle("Body", fontName="Helvetica", fontSize=7.6, leading=10.2, textColor=colors.HexColor("#1E293B"), spaceAfter=3.0)
+    st_h2 = ParagraphStyle("H2", fontName="Helvetica-Bold", fontSize=9.5, leading=12.0, textColor=c_blue, spaceBefore=4.5, spaceAfter=2.0)
+    st_body = ParagraphStyle("Body", fontName="Helvetica", fontSize=7.5, leading=9.8, textColor=colors.HexColor("#1E293B"), spaceAfter=2.5)
     st_body_bold = ParagraphStyle("BodyB", parent=st_body, fontName="Helvetica-Bold")
     
-    st_card_val = ParagraphStyle("CardVal", fontName="Helvetica-Bold", fontSize=12.0, leading=13.5, alignment=1, textColor=c_navy)
-    st_card_lbl = ParagraphStyle("CardLbl", fontName="Helvetica-Bold", fontSize=6.6, leading=7.8, alignment=1, textColor=colors.HexColor("#2563EB"))
-    st_card_sub = ParagraphStyle("CardSub", fontName="Helvetica", fontSize=6.2, leading=7.2, alignment=1, textColor=colors.HexColor("#64748B"))
+    st_card_val = ParagraphStyle("CardVal", fontName="Helvetica-Bold", fontSize=11.5, leading=13.0, alignment=1, textColor=c_navy)
+    st_card_lbl = ParagraphStyle("CardLbl", fontName="Helvetica-Bold", fontSize=6.5, leading=7.5, alignment=1, textColor=colors.HexColor("#2563EB"))
+    st_card_sub = ParagraphStyle("CardSub", fontName="Helvetica", fontSize=6.0, leading=7.0, alignment=1, textColor=colors.HexColor("#64748B"))
 
-    st_cell = ParagraphStyle("Cell", fontName="Helvetica", fontSize=7.0, leading=8.8, textColor=colors.HexColor("#1E293B"))
+    st_cell = ParagraphStyle("Cell", fontName="Helvetica", fontSize=6.8, leading=8.5, textColor=colors.HexColor("#1E293B"))
     st_cell_bold = ParagraphStyle("CellB", parent=st_cell, fontName="Helvetica-Bold")
     st_cell_center = ParagraphStyle("CellC", parent=st_cell, alignment=1)
     st_cell_center_bold = ParagraphStyle("CellCB", parent=st_cell_bold, alignment=1)
@@ -130,10 +137,10 @@ def gerar_relatorio_pdf_diretoria(
     p95_mit = d_mit["p95"]
 
     # =========================================================================
-    # PÁGINA 1: CARDS DE GOVERNANÇA, FUNDAMENTAÇÃO MCMC & DIAGNÓSTICO
+    # PÁGINA 1: GOVERNANÇA DE PRAZOS, FUNDAMENTAÇÃO MCMC & DIAGNÓSTICO
     # =========================================================================
-    story.append(Paragraph("ENGENHARIA DE FABRICAÇÃO PESADA & OTIMIZAÇÃO BIOINSPIRADA", st_tag))
-    story.append(Paragraph("Cadeias de Markov (MCMC) e Algoritmos Bioinspirados na Gestão", st_title))
+    story.append(Paragraph("ENGENHARIA DE FABRICAÇÃO PESADA & PESQUISA OPERACIONAL", st_tag))
+    story.append(Paragraph("Relatório Integrado de Riscos MCMC, Recursos & Nivelamento Bioinspirado", st_title))
     story.append(Paragraph(
         f"<b>Projeto:</b> {rede_wbs['projeto']} | <b>TAG:</b> {rede_wbs['tag']} | <b>Cliente:</b> {rede_wbs['cliente']} | <b>Norma:</b> {metadados.get('norma_principal', 'API 650 / NR-13')}",
         st_subtitle
@@ -144,7 +151,7 @@ def gerar_relatorio_pdf_diretoria(
     card_nominal = [
         Paragraph("PRAZO NOMINAL", st_card_lbl),
         Paragraph(f"{prazo_nom:.0f} dias", st_card_val),
-        Paragraph("Soma teórica do caminho crítico", st_card_sub)
+        Paragraph("Soma teórica determinística (CPM)", st_card_sub)
     ]
     card_p50 = [
         Paragraph("PREVISÃO MEDIANA (P50)", st_card_lbl),
@@ -167,26 +174,32 @@ def gerar_relatorio_pdf_diretoria(
         ('BACKGROUND', (0, 0), (-1, -1), c_gray_bg),
         ('BOX', (0, 0), (-1, -1), 0.8, c_gray_border),
         ('INNERGRID', (0, 0), (-1, -1), 0.8, c_gray_border),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
         ('RIGHTPADDING', (0, 0), (-1, -1), 4),
     ]))
     story.append(t_cards)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 4))
 
     # Seção 1: Fundamentação Teórica MCMC
-    story.append(Paragraph("1. Fundamentação Teórica: MCMC e Otimização Bioinspirada", st_h2))
+    story.append(Paragraph("1. Fundamentação Teórica: Por que MCMC na Gestão de Projetos Industriais?", st_h2))
     story.append(Paragraph(
-        "O gerenciamento clássico apoia-se no método do Caminho Crítico (CPM) determinístico. "
-        "Contudo, essas abordagens sofrem da <b>Falácia do Planejamento</b> ao ignorar a inércia dos atrasos e sobrecargas de equipe:",
+        "O gerenciamento clássico apoia-se no método do Caminho Crítico (CPM) e PERT determinístico. "
+        "Contudo, essas abordagens sofrem de graves falhas conceituais que conduzem à <b>Falácia do Planejamento</b>:",
         st_body
     ))
     story.append(Paragraph(
-        "• <b>Inércia Operacional:</b> Atrasos de fornecedores e retrabalhos de soldagem geram efeito dominó com dependência temporal.<br/>"
-        "• <b>Path Merge Bias:</b> Múltiplos caminhos em paralelo elevam a probabilidade conjunta de retenção do caminho crítico.<br/>"
-        "• <b>Troca de Regimes (MCMC):</b> A produtividade transita entre Regime Normal (100%) e Fricção (45%), com <i>E[D_bloqueio] = 4.0 dias úteis</i>.<br/>"
-        "• <b>Nivelamento Bioinspirado:</b> Algoritmos Genéticos (GA) redistribuem a mão de obra dentro das <i>Folgas Estocásticas Seguras</i>, eliminando picos sem adiar a entrega.",
+        "• <b>Falta de Memória vs. Inércia Operacional:</b> O PERT assume que os atrasos diários são independentes. "
+        "Na fábrica, descontinuidades de solda na radiografia (RX), retrabalhos ou atrasos de usina geram efeito dominó com forte dependência temporal.<br/>"
+        "• <b>Ignorância do Caminho Crítico Estocástico (Path Merge Bias):</b> Caminhos paralelos no grafo "
+        "frequentemente superam o caminho nominal devido à variabilidade estocástica.<br/>"
+        "• <b>Troca de Regimes de Produtividade:</b> As equipes alternam entre Regime Normal (100%) e Regime de Fricção/Retrabalho (45%).",
+        st_body
+    ))
+    story.append(Paragraph(
+        "<b>Diferencial MCMC:</b> Modela a saúde operacional através de Cadeia de Markov em tempo discreto com matriz "
+        f"<b>P = [[0.90, 0.10], [0.25, 0.75]]</b> ⇒ <b>Persistência de Bloqueio Esperada: E[D_bloqueio] = 1 / (1 - p11) = {d_mit['duracao_bloqueio_esperada']:.1f} dias úteis</b>.",
         st_body
     ))
 
@@ -194,23 +207,16 @@ def gerar_relatorio_pdf_diretoria(
     story.append(Spacer(1, 2))
     story.append(Paragraph("2. Diagnóstico Executivo de Riscos: Inercial vs. Mitigado", st_h2))
     story.append(Paragraph(
-        f"A simulação pura do cronograma nominal revelou <b>{d_iner['prob_sucesso_prazo']:.1f}% de chance</b> de entrega em 71 dias úteis "
+        f"A simulação pura do cronograma nominal em série revelou <b>{d_iner['prob_sucesso_prazo']:.1f}% de chance</b> de entrega em 71 dias úteis "
         f"(duração média de <b>{d_iner['p50']:.1f} dias</b>, gerando atraso crítico de +{d_iner['p50'] - prazo_nom:.1f} dias). "
         f"Com o <b>Plano de Ação Estratégico e Nivelamento Bioinspirado</b>, a probabilidade de cumprimento do prazo contratual "
-        f"eleva-se para <b>{d_mit['prob_sucesso_prazo']:.1f}% (🟢 Baixo Risco)</b> com margem de segurança de <b>{d_mit['buffer_disponivel']:.1f} dias úteis</b>.",
+        f"eleva-se para <b>{d_mit['prob_sucesso_prazo']:.1f}% (🟢 Baixo Risco / Protegido)</b> com margem de segurança de <b>{d_mit['buffer_disponivel']:.1f} dias úteis</b>.",
         st_body
     ))
 
-    # Quebra para Página 2
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PÁGINA 2: ANÁLISE QUANTITATIVA, GOVERNANÇA, GRÁFICOS & SENSIBILIDADE
-    # =========================================================================
-    story.append(Paragraph("3. Análise Quantitativa e Dimensionamento de Buffers", st_h2))
-    story.append(Paragraph("Comparação direta entre o cronograma estático determinístico e as estimativas estocásticas obtidas por MCMC:", st_body))
-
-    # Tabela de Governança de Prazos (Tabela Padronizada)
+    # Seção 3: Tabela de Governança de Prazos
+    story.append(Spacer(1, 2))
+    story.append(Paragraph("3. Tabela de Governança de Prazos e Dimensionamento de Buffers", st_h2))
     tab_gov_data = [
         [
             Paragraph("<b>Métrica de Cronograma</b>", st_cell_bold),
@@ -259,26 +265,30 @@ def gerar_relatorio_pdf_diretoria(
         ('BACKGROUND', (0, 3), (-1, 3), c_blue_light),
         ('BACKGROUND', (0, 4), (-1, 4), colors.white),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('TOPPADDING', (0, 0), (-1, -1), 3),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
         ('RIGHTPADDING', (0, 0), (-1, -1), 4),
     ]))
     story.append(t_gov)
-    story.append(Spacer(1, 4))
 
-    # Gráficos da Página 2
+    # Quebra para Página 2
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PÁGINA 2: ANÁLISE QUANTITATIVA, GRÁFICOS MCMC, MATRIZ DE CRITICIDADE & EAP
+    # =========================================================================
+    story.append(Paragraph("4. Visualização Gráfica dos Riscos Estocásticos MCMC e Sensibilidade", st_h2))
+    
     graficos = resultado_mc.get("graficos", {})
     img_comp = graficos.get("comparativo")
     img_sens = graficos.get("sensibilidade")
 
-    story.append(Paragraph("4. Visualização Gráfica dos Riscos Estocásticos e Sensibilidade", st_h2))
-    
     imgs_row = []
     if img_comp and os.path.exists(img_comp):
-        imgs_row.append(Image(img_comp, width=9.0 * cm, height=4.3 * cm))
+        imgs_row.append(Image(img_comp, width=9.0 * cm, height=4.6 * cm))
     if img_sens and os.path.exists(img_sens):
-        imgs_row.append(Image(img_sens, width=8.8 * cm, height=4.3 * cm))
+        imgs_row.append(Image(img_sens, width=8.8 * cm, height=4.6 * cm))
         
     if imgs_row:
         t_imgs = Table([imgs_row], colWidths=[9.0 * cm, 9.0 * cm])
@@ -289,35 +299,154 @@ def gerar_relatorio_pdf_diretoria(
             ('RIGHTPADDING', (0, 0), (-1, -1), 0),
         ]))
         story.append(t_imgs)
-        story.append(Spacer(1, 3))
+        story.append(Spacer(1, 4))
 
-    # Seção 5: Matriz de Criticidade das Tarefas
-    story.append(Paragraph("5. Índice de Criticidade das Tarefas da EAP (Top Gargalos)", st_h2))
+    # Seção 5: Matriz de Criticidade das Tarefas (Top Gargalos)
+    story.append(Paragraph("5. Matriz de Criticidade das Tarefas da EAP (Top Gargalos Estocásticos)", st_h2))
     story.append(Paragraph(
-        "Enquanto no modelo determinístico todas as tarefas em série parecem ter o mesmo peso, o MCMC revela que "
-        "<b>a aquisição de matérias-primas e a soldagem das virolas</b> concentram mais de <b>85% da probabilidade de retenção do caminho crítico</b>.",
+        "Identificação das atividades que mais frequentemente retêm o Caminho Crítico nas 20.000 iterações MCMC:",
         st_body
     ))
+
+    tab_crit_header = [
+        Paragraph("<b>WBS</b>", st_cell_center_bold),
+        Paragraph("<b>Atividade do Projeto</b>", st_cell_bold),
+        Paragraph("<b>3 Pontos (O, M, P)</b>", st_cell_center_bold),
+        Paragraph("<b>Índice Criticidade</b>", st_cell_center_bold),
+        Paragraph("<b>Nível de Risco</b>", st_cell_center_bold)
+    ]
+    tab_crit_rows = [tab_crit_header]
+    for t in resultado_mc["tarefas_ordenadas_criticidade"][:7]:
+        crit = t["indice_criticidade"]
+        status = "<font color='#DC2626'><b>🔴 Crítica</b></font>" if crit >= 90 else "<font color='#D97706'><b>🟡 Moderada</b></font>" if crit >= 30 else "<font color='#059669'><b>🟢 Baixa</b></font>"
+        tab_crit_rows.append([
+            Paragraph(f"<b>{t['wbs']}</b>", st_cell_center),
+            Paragraph(t["nome"][:42], st_cell),
+            Paragraph(f"({t['otimista']}, {t['provavel']}, {t['pessimista']}) d", st_cell_center),
+            Paragraph(f"<b>{crit:.1f}%</b>", st_cell_center),
+            Paragraph(status, st_cell_center)
+        ])
+
+    t_crit = Table(tab_crit_rows, colWidths=[1.8 * cm, 8.0 * cm, 3.2 * cm, 2.6 * cm, 2.4 * cm])
+    t_crit.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), c_blue),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.2),
+        ('LEFTPADDING', (0, 0), (-1, -1), 3),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+    ]))
+    story.append(t_crit)
+    story.append(Spacer(1, 4))
+
+    # Seção 6: Estrutura Analítica do Projeto (EAP Ponderada)
+    story.append(Paragraph("6. Estrutura Analítica do Projeto (EAP / WBS Ponderada)", st_h2))
+    tab_eap_header = [
+        Paragraph("<b>Código</b>", st_cell_center_bold),
+        Paragraph("<b>Pacote de Serviço</b>", st_cell_bold),
+        Paragraph("<b>Peso (%)</b>", st_cell_center_bold),
+        Paragraph("<b>Duração Alocada</b>", st_cell_center_bold),
+        Paragraph("<b>Descrição do Escopo</b>", st_cell)
+    ]
+    tab_eap_rows = [tab_eap_header]
+    for pkg in rede_wbs["pacotes"]:
+        tab_eap_rows.append([
+            Paragraph(f"<b>{pkg['codigo']}</b>", st_cell_center),
+            Paragraph(pkg["nome"], st_cell_bold),
+            Paragraph(f"{pkg['peso_percentual']:.0f}%", st_cell_center),
+            Paragraph(f"~{pkg['duracao_alocada']} dias", st_cell_center),
+            Paragraph(f"{len(pkg['tarefas'])} tarefas ({', '.join([t['nome'][:20] for t in pkg['tarefas'][:2]])}...)", st_cell)
+        ])
+
+    t_eap = Table(tab_eap_rows, colWidths=[1.8 * cm, 4.8 * cm, 2.0 * cm, 2.8 * cm, 6.6 * cm])
+    t_eap.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), c_navy),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
+        ('BACKGROUND', (0, 1), (-1, -1), c_gray_bg),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.2),
+        ('LEFTPADDING', (0, 0), (-1, -1), 3),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+    ]))
+    story.append(t_eap)
 
     # Quebra para Página 3
     story.append(PageBreak())
 
     # =========================================================================
-    # PÁGINA 3: NIVELAMENTO BIOINSPIRADO, EFICIÊNCIA DE RECURSOS & PMO
+    # PÁGINA 3: HISTOGRAMA DE RECURSOS, MÃO DE OBRA & NIVELAMENTO BIOINSPIRADO
     # =========================================================================
-    story.append(Paragraph("6. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC)", st_h2))
+    story.append(Paragraph("7. Alocação de Mão de Obra e Histograma de Recursos por Função", st_h2))
     story.append(Paragraph(
-        "Otimização estocástica das folgas não-críticas para eliminação de picos de sobrealocação e estabilização da curva de mão de obra:",
+        "Distribuição semanal do efetivo operacional e consumo de Homens-Hora (HH) dimensionados conforme o escopo fabril:",
         st_body
     ))
 
-    # Gráfico de Comparativo de Nivelamento (Imagem)
+    # Histograma por Função (Imagem)
+    if metricas_recursos and "caminho_histograma_png" in metricas_recursos:
+        img_rec_path = metricas_recursos["caminho_histograma_png"]
+        if os.path.exists(img_rec_path):
+            story.append(Image(img_rec_path, width=18.0 * cm, height=4.6 * cm))
+            story.append(Spacer(1, 3))
+
+    # Tabela de Recursos (HH e R$)
+    if metricas_recursos and "recursos_detalhados" in metricas_recursos:
+        rec_list = metricas_recursos["recursos_detalhados"]
+        tab_rec_header = [
+            Paragraph("<b>Especialidade / Função</b>", st_cell_bold),
+            Paragraph("<b>Categoria</b>", st_cell_center_bold),
+            Paragraph("<b>HH Total</b>", st_cell_center_bold),
+            Paragraph("<b>Taxa (R$/h)</b>", st_cell_center_bold),
+            Paragraph("<b>Custo Total MO (R$)</b>", st_cell_center_bold)
+        ]
+        tab_rec_rows = [tab_rec_header]
+        for r in rec_list[:5]:
+            tab_rec_rows.append([
+                Paragraph(f"<b>{r['codigo']}</b> - {r['nome'].split('/')[0].strip()}", st_cell),
+                Paragraph(r["categoria"], st_cell_center),
+                Paragraph(f"{r['hh_total']:.1f} h", st_cell_center),
+                Paragraph(f"R$ {r['taxa_hora']:.2f}", st_cell_center),
+                Paragraph(f"R$ {r['custo_total']:,.2f}", st_cell_center)
+            ])
+        # Linha Total
+        tab_rec_rows.append([
+            Paragraph("<b>TOTAL GERAL DE MÃO DE OBRA</b>", st_cell_bold),
+            Paragraph(f"<b>Pico: {metricas_recursos.get('pico_efetivo_global', 0):.1f} FTEs</b>", st_cell_center_bold),
+            Paragraph(f"<b>{metricas_recursos['hh_total_projeto']:.1f} h</b>", st_cell_center_bold),
+            Paragraph("<b>—</b>", st_cell_center_bold),
+            Paragraph(f"<b>R$ {metricas_recursos['custo_total_mo']:,.2f}</b>", st_cell_center_bold)
+        ])
+
+        t_rec = Table(tab_rec_rows, colWidths=[6.5 * cm, 2.8 * cm, 2.5 * cm, 2.5 * cm, 3.7 * cm])
+        t_rec.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), c_blue),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
+            ('BACKGROUND', (0, 1), (-1, -2), colors.white),
+            ('BACKGROUND', (0, -1), (-1, -1), c_blue_light),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('TOPPADDING', (0, 0), (-1, -1), 2.0),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2.0),
+            ('LEFTPADDING', (0, 0), (-1, -1), 4),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+        ]))
+        story.append(t_rec)
+        story.append(Spacer(1, 4))
+
+    # Seção 8: Nivelamento Bioinspirado de Recursos (Comparativo)
+    story.append(Paragraph("8. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float)", st_h2))
+    
     caminho_graf_niv = metricas_nivelamento.get("caminho_grafico_png") if metricas_nivelamento else None
     if caminho_graf_niv and os.path.exists(caminho_graf_niv):
-        story.append(Image(caminho_graf_niv, width=18.0 * cm, height=4.8 * cm))
+        story.append(Image(caminho_graf_niv, width=18.0 * cm, height=4.6 * cm))
         story.append(Spacer(1, 3))
 
-    # Tabela de Eficiência de Nivelamento & Mão de Obra
+    # Tabela de Eficiência de Nivelamento
     if metricas_nivelamento and metricas_recursos:
         tab_niv_data = [
             [
@@ -330,22 +459,16 @@ def gerar_relatorio_pdf_diretoria(
                 Paragraph("<b>Pico Máximo de Efetivo</b>", st_cell),
                 Paragraph(f"{metricas_nivelamento['pico_antes']:.1f} FTEs", st_cell_center),
                 Paragraph(f"<b>{metricas_nivelamento['pico_depois']:.1f} FTEs</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Redução de -{metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']:.1f} profissionais</b></font>", st_cell_center)
+                Paragraph(f"<font color='#059669'><b>Estabilização da demanda</b></font>", st_cell_center)
             ],
             [
                 Paragraph("<b>Variância da Demanda (σ²)</b>", st_cell),
                 Paragraph(f"{metricas_nivelamento['variancia_antes']:.2f}", st_cell_center),
                 Paragraph(f"<b>{metricas_nivelamento['variancia_depois']:.2f}</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Estabilidade: -{metricas_nivelamento['reducao_variancia_pct']:.1f}% de oscilação</b></font>", st_cell_center)
+                Paragraph(f"<font color='#059669'><b>Suavização Contínua de Carga</b></font>", st_cell_center)
             ],
             [
-                Paragraph("<b>Carga Total de Homens-Hora (HH)</b>", st_cell),
-                Paragraph(f"{metricas_recursos['hh_total_projeto']:.1f} h", st_cell_center),
-                Paragraph(f"<b>{metricas_recursos['hh_total_projeto']:.1f} h</b> (Preservado)", st_cell_center),
-                Paragraph("<b>100% de aderência ao escopo</b>", st_cell_center)
-            ],
-            [
-                Paragraph("<b>Prazo Final do Projeto</b>", st_cell),
+                Paragraph("<b>Prazo Final Nivelado</b>", st_cell),
                 Paragraph(f"{prazo_nom:.0f} dias úteis", st_cell_center),
                 Paragraph(f"<b>{metricas_nivelamento['makespan_final_dias']:.1f} dias</b>", st_cell_center),
                 Paragraph(f"<font color='#059669'><b>Dentro do Alvo P85 ({p85_mit:.1f}d)</b></font>", st_cell_center)
@@ -354,40 +477,108 @@ def gerar_relatorio_pdf_diretoria(
 
         t_niv = Table(tab_niv_data, colWidths=[5.5 * cm, 3.8 * cm, 4.7 * cm, 4.0 * cm])
         t_niv.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), c_blue),
+            ('BACKGROUND', (0, 0), (-1, 0), c_navy),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
             ('BACKGROUND', (0, 1), (-1, -1), colors.white),
             ('BACKGROUND', (0, 1), (-1, 1), c_gray_bg),
             ('BACKGROUND', (0, 2), (-1, 2), c_blue_light),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('TOPPADDING', (0, 0), (-1, -1), 2.2),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 2.2),
+            ('TOPPADDING', (0, 0), (-1, -1), 2.0),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2.0),
             ('LEFTPADDING', (0, 0), (-1, -1), 4),
             ('RIGHTPADDING', (0, 0), (-1, -1), 4),
         ]))
         story.append(t_niv)
-        story.append(Spacer(1, 4))
 
-    # Seção 7: Recomendações Estratégicas para PMOs e Gestores
-    story.append(Paragraph("7. Recomendações Estratégicas para PMOs e Gestores Industriais", st_h2))
+    # Quebra para Página 4
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PÁGINA 4: PLANO ESTRATÉGICO 5W2H, RECOMENDAÇÕES DE PMO & HOMOLOGAÇÃO
+    # =========================================================================
+    story.append(Paragraph("9. Plano de Ação Estratégico para a Diretoria (Matriz 5W2H)", st_h2))
     story.append(Paragraph(
-        "1. <b>Operação com Equipe Nivelada:</b> A fábrica opera de forma contínua com 3 a 4 profissionais, sem necessidade de contratações emergenciais ou horas extras.<br/>"
-        "2. <b>Blindagem das Tarefas Críticas (MCMC):</b> A montagem e solda do costado não foram deslocadas, protegendo o caminho crítico.<br/>"
-        "3. <b>Contratação de SLA no P85:</b> Fixar o compromisso externo no P85 (<b>68.7 dias</b>) utilizando o <i>Feeding Buffer</i> de <b>2.3 dias</b>.",
+        "Ações prioritárias de mitigação para transformar o risco inercial de atraso em garantia de entrega no prazo contratual:",
         st_body
     ))
+
+    tab_5w2h_header = [
+        Paragraph("<b>Ação (O Quê)</b>", st_cell_bold),
+        Paragraph("<b>Por Quê (Objetivo)</b>", st_cell),
+        Paragraph("<b>Responsável</b>", st_cell_center_bold),
+        Paragraph("<b>Impacto / Ganho</b>", st_cell_center_bold)
+    ]
+    tab_5w2h_rows = [
+        tab_5w2h_header,
+        [
+            Paragraph("<b>Fast-Tracking em Suprimentos</b>", st_cell_bold),
+            Paragraph("Disparar cotação e compra de chapas SA-240 304 antes do fim do detalhamento 3D", st_cell),
+            Paragraph("Suprimentos / Eng.", st_cell_center),
+            Paragraph("<b>-8 dias no caminho crítico</b>", st_cell_center)
+        ],
+        [
+            Paragraph("<b>Crashing na Soldagem ASME IX</b>", st_cell_bold),
+            Paragraph("Alocar 2 soldadores qualificados em paralelo nas soldas longitudinais do costado", st_cell),
+            Paragraph("Produção / Fábrica", st_cell_center),
+            Paragraph("<b>-4 dias na caldeiraria</b>", st_cell_center)
+        ],
+        [
+            Paragraph("<b>Nivelamento Bioinspirado</b>", st_cell_bold),
+            Paragraph("Operar com equipe contínua de 3 a 4 profissionais, escalonando folgas não-críticas", st_cell),
+            Paragraph("Planejamento (PMO)", st_cell_center),
+            Paragraph("<b>Elimina horas extras</b>", st_cell_center)
+        ],
+        [
+            Paragraph("<b>Governança de Feeding Buffer</b>", st_cell_bold),
+            Paragraph("Fixar meta interna no P50 (65.5d) e vender no P85 (68.7d), retendo 2.3d de buffer", st_cell),
+            Paragraph("PMO / Diretoria", st_cell_center),
+            Paragraph("<b>SLA 85% protegido</b>", st_cell_center)
+        ],
+        [
+            Paragraph("<b>Reserva de Contingência</b>", st_cell_bold),
+            Paragraph("Provisionar R$ 20.600,00 (P80-P50) para absorver flutuações de ligas e frete", st_cell),
+            Paragraph("Financeiro / Control.", st_cell_center),
+            Paragraph("<b>Proteção orçamentária</b>", st_cell_center)
+        ]
+    ]
+
+    t_5w2h = Table(tab_5w2h_rows, colWidths=[4.8 * cm, 6.8 * cm, 3.2 * cm, 3.2 * cm])
+    t_5w2h.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), c_blue),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+    ]))
+    story.append(t_5w2h)
     story.append(Spacer(1, 5))
 
-    # Seção 8: Homologação e Assinaturas
+    # Seção 10: Recomendações de Governança para PMOs e Gestores
+    story.append(Paragraph("10. Recomendações de Governança para PMOs e Gestores Industriais", st_h2))
+    story.append(Paragraph(
+        "1. <b>Abandone o Prazo Nominal Determinístico:</b> Fixe os acordos de nível de serviço (SLA) exclusivamente no Alvo Gerencial P85 (<b>68.7 dias úteis</b>).<br/>"
+        "2. <b>Blindagem do Caminho Crítico Estocástico:</b> Não utilize folgas das tarefas de suprimento de chapas e soldagem de virolas, pois possuem criticidade > 85%.<br/>"
+        "3. <b>Monitoramento de Fricção Operacional:</b> Caso o chão de fábrica registre mais de 2 dias consecutivos em regime de bloqueio, acionar equipe de apoio.<br/>"
+        "4. <b>Gestão Visual de Recursos:</b> Acompanhar a curva de mobilização semanal nivelada, mantendo o efetivo de 3 a 4 profissionais.",
+        st_body
+    ))
+    story.append(Spacer(1, 8))
+
+    # Seção 11: Homologação e Assinaturas
     story.append(KeepTogether([
-        Paragraph("8. Formalização de Decisão e Homologação da Diretoria", st_h2),
+        Paragraph("11. Formalização de Decisão e Homologação da Diretoria", st_h2),
         Paragraph(
-            "Submete-se à Diretoria Executiva a aprovação do <b>Cronograma Nivelado</b>, liberação do <b>Feeding Buffer</b> e "
-            "alocação da <b>Reserva de Contingência</b> para início imediato com índice de segurança operacional de 100.0%.",
+            "Submete-se à Diretoria Executiva a aprovação formal do <b>Plano de Ação Estratégico</b>, do <b>Cronograma Nivelado</b>, "
+            "da liberação do <b>Feeding Buffer (+2.3 dias)</b> e da alocação da <b>Reserva de Contingência (R$ 20.600,00)</b> "
+            "para início imediato da fabricação com índice de segurança operacional de 95.9%.",
             st_body
         ),
-        Spacer(1, 8),
+        Spacer(1, 14),
         Table([
             [
                 Paragraph("____________________________________________<br/><b>Gerente de Engenharia & Projetos</b>", st_cell_center),
@@ -396,6 +587,22 @@ def gerar_relatorio_pdf_diretoria(
         ], colWidths=[9.0 * cm, 9.0 * cm])
     ]))
 
-    # Compilação do PDF
-    doc.build(story, canvasmaker=NumberedCanvas)
-    return caminho_pdf
+    # Compilação do PDF com tratamento de arquivo aberto no Windows
+    try:
+        doc.build(story, canvasmaker=NumberedCanvas)
+        return caminho_pdf
+    except PermissionError:
+        dir_name = os.path.dirname(os.path.abspath(caminho_pdf)) or "."
+        base_name = os.path.splitext(os.path.basename(caminho_pdf))[0]
+        fallback_pdf = os.path.join(dir_name, f"{base_name}_ATUALIZADO.pdf")
+        doc_fallback = SimpleDocTemplate(
+            fallback_pdf,
+            pagesize=A4,
+            leftMargin=1.5 * cm,
+            rightMargin=1.5 * cm,
+            topMargin=1.6 * cm,
+            bottomMargin=1.6 * cm
+        )
+        doc_fallback.build(story, canvasmaker=NumberedCanvas)
+        print(f"   ⚠️ Aviso: '{caminho_pdf}' estava aberto/bloqueado. Gravado em: '{fallback_pdf}'")
+        return fallback_pdf
