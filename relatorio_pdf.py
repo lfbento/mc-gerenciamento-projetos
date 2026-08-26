@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Gerador de Relatório Executivo em PDF para a Diretoria (MCMC & Governança)
-==========================================================================
+Gerador de Relatório Executivo em PDF para a Diretoria (MCMC, Recursos & Governança)
+==================================================================================
 Produz um documento formal, executivo e de alto padrão visual (3 páginas)
 incorporando:
   - Cards de KPIs no Topo (Nominal, P50, P85, P95).
   - Fundamentação Teórica MCMC (Inércia Operacional, Troca de Regimes e Path Merge Bias).
   - Tabela de Governança de Prazos e Dimensionamento de Feeding Buffers.
   - Gráficos de Densidade de Probabilidade e Sensibilidade de Caminho Crítico.
+  - Histograma de Alocação de Recursos por Função ao Longo do Tempo (Semanas de Projeto).
+  - Tabela de Dimensionamento de Mão de Obra (HHs e Custos).
   - Matriz de Decisão 5W2H e Recomendações Estratégicas para PMO/Diretoria.
 """
 
 import os
 from datetime import date
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
@@ -51,7 +53,7 @@ class NumberedCanvas(canvas.Canvas):
         
         # Cabeçalho Institucional (Páginas > 1)
         if self._pageNumber > 1:
-            self.drawString(1.5 * cm, 28.5 * cm, "NACIONAL INDÚSTRIA MECÂNICA S/A • RELATÓRIO EXECUTIVO MCMC & GOVERNANÇA")
+            self.drawString(1.5 * cm, 28.5 * cm, "NACIONAL INDÚSTRIA MECÂNICA S/A • RELATÓRIO EXECUTIVO MCMC & ALOCAÇÃO DE RECURSOS")
             self.drawRightString(19.5 * cm, 28.5 * cm, "CONFIDENCIAL — DIRETORIA EXECUTIVA")
             self.setStrokeColor(colors.HexColor("#CBD5E1"))
             self.setLineWidth(0.5)
@@ -61,9 +63,9 @@ class NumberedCanvas(canvas.Canvas):
         self.setFont("Helvetica", 7.5)
         self.setStrokeColor(colors.HexColor("#E2E8F0"))
         self.setLineWidth(0.5)
-        self.line(1.5 * cm, 1.3 * cm, 19.5 * cm, 1.3 * cm)
-        self.drawString(1.5 * cm, 0.95 * cm, "Relatório Técnico Especializado • Métodos Estocásticos, MCMC e Gestão de Riscos")
-        self.drawRightString(19.5 * cm, 0.95 * cm, f"Página {self._pageNumber} de {page_count}")
+        self.line(1.5 * cm, 1.2 * cm, 19.5 * cm, 1.2 * cm)
+        self.drawString(1.5 * cm, 0.85 * cm, "Relatório Técnico Especializado • Métodos Estocásticos MCMC, Dimensionamento de Recursos e Riscos")
+        self.drawRightString(19.5 * cm, 0.85 * cm, f"Página {self._pageNumber} de {page_count}")
         self.restoreState()
 
 
@@ -71,7 +73,8 @@ def gerar_relatorio_pdf_diretoria(
     metadados: Dict[str, Any],
     rede_wbs: Dict[str, Any],
     resultado_mc: Dict[str, Any],
-    caminho_pdf: str = "RELATORIO_DIRETORIA_MONTE_CARLO.pdf"
+    caminho_pdf: str = "RELATORIO_DIRETORIA_MONTE_CARLO.pdf",
+    metricas_recursos: Optional[Dict[str, Any]] = None
 ) -> str:
     """Gera o relatório executivo completo de 3 páginas para a Diretoria."""
     os.makedirs(os.path.dirname(os.path.abspath(caminho_pdf)) or ".", exist_ok=True)
@@ -81,8 +84,8 @@ def gerar_relatorio_pdf_diretoria(
         pagesize=A4,
         leftMargin=1.5 * cm,
         rightMargin=1.5 * cm,
-        topMargin=1.8 * cm,
-        bottomMargin=1.8 * cm
+        topMargin=1.6 * cm,
+        bottomMargin=1.6 * cm
     )
 
     styles = getSampleStyleSheet()
@@ -97,19 +100,19 @@ def gerar_relatorio_pdf_diretoria(
     c_gray_border = colors.HexColor("#CBD5E1")
     
     # Estilos Tipográficos
-    st_tag = ParagraphStyle("Tag", fontName="Helvetica-Bold", fontSize=8, textColor=colors.HexColor("#2563EB"), leading=10, spaceAfter=2)
-    st_title = ParagraphStyle("Title", fontName="Helvetica-Bold", fontSize=15, leading=18, textColor=c_blue, spaceAfter=3)
-    st_subtitle = ParagraphStyle("Subtitle", fontName="Helvetica", fontSize=9.5, leading=12.5, textColor=colors.HexColor("#475569"), spaceAfter=8)
+    st_tag = ParagraphStyle("Tag", fontName="Helvetica-Bold", fontSize=7.5, textColor=colors.HexColor("#2563EB"), leading=9.5, spaceAfter=2)
+    st_title = ParagraphStyle("Title", fontName="Helvetica-Bold", fontSize=14.5, leading=17, textColor=c_blue, spaceAfter=3)
+    st_subtitle = ParagraphStyle("Subtitle", fontName="Helvetica", fontSize=9, leading=11.5, textColor=colors.HexColor("#475569"), spaceAfter=7)
     
-    st_h2 = ParagraphStyle("H2", fontName="Helvetica-Bold", fontSize=10.5, leading=13.5, textColor=c_blue, spaceBefore=8, spaceAfter=4)
-    st_body = ParagraphStyle("Body", fontName="Helvetica", fontSize=8.2, leading=11.2, textColor=colors.HexColor("#1E293B"), spaceAfter=4)
+    st_h2 = ParagraphStyle("H2", fontName="Helvetica-Bold", fontSize=10, leading=13, textColor=c_blue, spaceBefore=6, spaceAfter=3)
+    st_body = ParagraphStyle("Body", fontName="Helvetica", fontSize=7.8, leading=10.6, textColor=colors.HexColor("#1E293B"), spaceAfter=3.5)
     st_body_bold = ParagraphStyle("BodyB", parent=st_body, fontName="Helvetica-Bold")
     
-    st_card_val = ParagraphStyle("CardVal", fontName="Helvetica-Bold", fontSize=13, leading=15, alignment=1, textColor=c_navy)
-    st_card_lbl = ParagraphStyle("CardLbl", fontName="Helvetica-Bold", fontSize=7, leading=8.5, alignment=1, textColor=colors.HexColor("#2563EB"))
-    st_card_sub = ParagraphStyle("CardSub", fontName="Helvetica", fontSize=6.8, leading=8, alignment=1, textColor=colors.HexColor("#64748B"))
+    st_card_val = ParagraphStyle("CardVal", fontName="Helvetica-Bold", fontSize=12.5, leading=14, alignment=1, textColor=c_navy)
+    st_card_lbl = ParagraphStyle("CardLbl", fontName="Helvetica-Bold", fontSize=6.8, leading=8, alignment=1, textColor=colors.HexColor("#2563EB"))
+    st_card_sub = ParagraphStyle("CardSub", fontName="Helvetica", fontSize=6.5, leading=7.5, alignment=1, textColor=colors.HexColor("#64748B"))
 
-    st_cell = ParagraphStyle("Cell", fontName="Helvetica", fontSize=7.5, leading=9.5, textColor=colors.HexColor("#1E293B"))
+    st_cell = ParagraphStyle("Cell", fontName="Helvetica", fontSize=7.2, leading=9.0, textColor=colors.HexColor("#1E293B"))
     st_cell_bold = ParagraphStyle("CellB", parent=st_cell, fontName="Helvetica-Bold")
     st_cell_center = ParagraphStyle("CellC", parent=st_cell, alignment=1)
     st_cell_center_bold = ParagraphStyle("CellCB", parent=st_cell_bold, alignment=1)
@@ -134,7 +137,7 @@ def gerar_relatorio_pdf_diretoria(
         f"<b>Projeto:</b> {rede_wbs['projeto']} | <b>TAG:</b> {rede_wbs['tag']} | <b>Cliente:</b> {rede_wbs['cliente']} | <b>Norma:</b> {metadados.get('norma_principal', 'API 650 / NR-13')}",
         st_subtitle
     ))
-    story.append(HRFlowable(width="100%", thickness=1.2, color=c_blue, spaceBefore=0, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1.0, color=c_blue, spaceBefore=0, spaceAfter=6))
 
     # Cards de Destaque de Governança (Top Grid)
     card_nominal = [
@@ -163,13 +166,13 @@ def gerar_relatorio_pdf_diretoria(
         ('BACKGROUND', (0, 0), (-1, -1), c_gray_bg),
         ('BOX', (0, 0), (-1, -1), 0.8, c_gray_border),
         ('INNERGRID', (0, 0), (-1, -1), 0.8, c_gray_border),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
         ('RIGHTPADDING', (0, 0), (-1, -1), 4),
     ]))
     story.append(t_cards)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
     # Seção 1: Fundamentação Teórica MCMC
     story.append(Paragraph("1. Fundamentação Teórica: Por que MCMC na Gestão de Projetos Industriais?", st_h2))
@@ -187,7 +190,7 @@ def gerar_relatorio_pdf_diretoria(
         st_body
     ))
 
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 3))
     story.append(Paragraph("<b>Diferencial do MCMC (Markov Chain Monte Carlo):</b>", st_body_bold))
     story.append(Paragraph(
         "O MCMC modela a saúde operacional através de uma Cadeia de Markov em tempo discreto <i>S_t ∈ {0: Normal, 1: Fricção}</i> com matriz <i>P</i>:<br/>"
@@ -198,7 +201,7 @@ def gerar_relatorio_pdf_diretoria(
     ))
 
     # Seção 2: Diagnóstico Executivo de Risco
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 3))
     story.append(Paragraph("2. Diagnóstico Executivo de Riscos: Inercial vs. Mitigado", st_h2))
     story.append(Paragraph(
         f"A simulação pura do cronograma nominal em série revelou <b>{d_iner['prob_sucesso_prazo']:.1f}% de chance</b> de entrega em 71 dias úteis "
@@ -217,7 +220,7 @@ def gerar_relatorio_pdf_diretoria(
     story.append(Paragraph("3. Análise Quantitativa e Dimensionamento de Buffers", st_h2))
     story.append(Paragraph("Comparação direta entre o cronograma estático determinístico e as estimativas estocásticas obtidas por MCMC:", st_body))
 
-    # Tabela de Governança de Prazos (Tabela Padronizada do PDF)
+    # Tabela de Governança de Prazos (Tabela Padronizada)
     tab_gov_data = [
         [
             Paragraph("<b>Métrica de Cronograma</b>", st_cell_bold),
@@ -266,13 +269,13 @@ def gerar_relatorio_pdf_diretoria(
         ('BACKGROUND', (0, 3), (-1, 3), c_blue_light),
         ('BACKGROUND', (0, 4), (-1, 4), colors.white),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('TOPPADDING', (0, 0), (-1, -1), 3.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
         ('RIGHTPADDING', (0, 0), (-1, -1), 4),
     ]))
     story.append(t_gov)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # Gráficos da Página 2
     graficos = resultado_mc.get("graficos", {})
@@ -283,9 +286,9 @@ def gerar_relatorio_pdf_diretoria(
     
     imgs_row = []
     if img_comp and os.path.exists(img_comp):
-        imgs_row.append(Image(img_comp, width=9.0 * cm, height=4.5 * cm))
+        imgs_row.append(Image(img_comp, width=9.0 * cm, height=4.4 * cm))
     if img_sens and os.path.exists(img_sens):
-        imgs_row.append(Image(img_sens, width=8.8 * cm, height=4.5 * cm))
+        imgs_row.append(Image(img_sens, width=8.8 * cm, height=4.4 * cm))
         
     if imgs_row:
         t_imgs = Table([imgs_row], colWidths=[9.0 * cm, 9.0 * cm])
@@ -310,89 +313,84 @@ def gerar_relatorio_pdf_diretoria(
     story.append(PageBreak())
 
     # =========================================================================
-    # PÁGINA 3: PLANO DE AÇÃO 5W2H, DIRETRIZES DE PMO & HOMOLOGAÇÃO
+    # PÁGINA 3: HISTOGRAMA DE RECURSOS AO LONGO DO TEMPO, PLANO DE AÇÃO & PMO
     # =========================================================================
-    story.append(Paragraph("6. Plano de Ação Estratégico para Aprovação da Diretoria (5W2H)", st_h2))
-    
-    plano_acao_dados = [
-        [
-            Paragraph("<b>#</b>", st_cell_center_bold),
-            Paragraph("<b>Ação Estratégica (O quê)</b>", st_cell_bold),
-            Paragraph("<b>Como / Justificativa Operacional</b>", st_cell_bold),
-            Paragraph("<b>Responsável</b>", st_cell_bold),
-            Paragraph("<b>Impacto</b>", st_cell_center_bold)
-        ],
-        [
-            Paragraph("1", st_cell_center),
-            Paragraph("<b>Fast-Tracking em Suprimentos</b>", st_cell),
-            Paragraph("Disparar cotação e compra de chapas inox (SA-240 304) e tubos logo após a aprovação do projeto preliminar (2.1), sem esperar a homologação burocrática.", st_cell),
-            Paragraph("Suprimentos / Eng. Projetos", st_cell),
-            Paragraph("<b>- 8.0 dias</b>", st_cell_center_bold)
-        ],
-        [
-            Paragraph("2", st_cell_center),
-            Paragraph("<b>Crashing na Soldagem ASME IX</b>", st_cell),
-            Paragraph("Alocar 2 soldadores qualificados em paralelo nas soldas longitudinais e circunferenciais do costado para neutralizar gargalo.", st_cell),
-            Paragraph("Gerência de Produção", st_cell),
-            Paragraph("<b>- 4.0 dias</b>", st_cell_center_bold)
-        ],
-        [
-            Paragraph("3", st_cell_center),
-            Paragraph("<b>Governança de Feeding Buffer</b>", st_cell),
-            Paragraph("Fixar a meta de chão de fábrica no P50 (62.4d) e acordar contrato no P85 (65.1d), mantendo a margem de 5.7d como buffer de segurança do PMO.", st_cell),
-            Paragraph("Gerente do Projeto", st_cell),
-            Paragraph("<b>Proteção Total</b>", st_cell_center_bold)
-        ],
-        [
-            Paragraph("4", st_cell_center),
-            Paragraph("<b>Reserva de Contingência (P80-P50)</b>", st_cell),
-            Paragraph(f"Provisionar R$ {c_mc['contingencia_sugerida']:,.2f} para neutralizar flutuações de ligas nobres e frete especial CIF Camaçari/BA.", st_cell),
-            Paragraph("Diretoria Financeira", st_cell),
-            Paragraph("<b>Custo Seguro</b>", st_cell_center)
-        ]
-    ]
+    story.append(Paragraph("6. Dimensionamento de Mão de Obra e Histograma de Alocação Temporal", st_h2))
+    story.append(Paragraph(
+        "Distribuição semanal do efetivo operacional e consumo de Homens-Hora (HH) dimensionados conforme o escopo fabril:",
+        st_body
+    ))
 
-    t_plano = Table(plano_acao_dados, colWidths=[0.7 * cm, 4.3 * cm, 7.8 * cm, 3.2 * cm, 2.0 * cm])
-    t_plano.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), c_blue),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
-        ('BACKGROUND', (0, 1), (-1, 1), colors.white),
-        ('BACKGROUND', (0, 2), (-1, 2), c_gray_bg),
-        ('BACKGROUND', (0, 3), (-1, 3), colors.white),
-        ('BACKGROUND', (0, 4), (-1, 4), c_gray_bg),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('TOPPADDING', (0, 0), (-1, -1), 3.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3.5),
-        ('LEFTPADDING', (0, 0), (-1, -1), 4),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
-    ]))
-    story.append(t_plano)
-    story.append(Spacer(1, 6))
+    # Histograma de Recursos (Imagem)
+    if metricas_recursos and "caminho_histograma_png" in metricas_recursos:
+        img_rec_path = metricas_recursos["caminho_histograma_png"]
+        if os.path.exists(img_rec_path):
+            story.append(Image(img_rec_path, width=18.0 * cm, height=5.0 * cm))
+            story.append(Spacer(1, 4))
+
+    # Tabela Resumo de Mão de Obra por Função
+    if metricas_recursos and "recursos_detalhados" in metricas_recursos:
+        rec_list = metricas_recursos["recursos_detalhados"]
+        tab_rec_header = [
+            Paragraph("<b>Especialidade / Função</b>", st_cell_bold),
+            Paragraph("<b>Categoria</b>", st_cell_center_bold),
+            Paragraph("<b>HH Total</b>", st_cell_center_bold),
+            Paragraph("<b>Taxa (R$/h)</b>", st_cell_center_bold),
+            Paragraph("<b>Custo Total MO (R$)</b>", st_cell_center_bold)
+        ]
+        tab_rec_rows = [tab_rec_header]
+        for r in rec_list[:6]: # Top 6 recursos
+            tab_rec_rows.append([
+                Paragraph(f"<b>{r['codigo']}</b> - {r['nome'].split('/')[0].strip()}", st_cell),
+                Paragraph(r["categoria"], st_cell_center),
+                Paragraph(f"{r['hh_total']:.1f} h", st_cell_center),
+                Paragraph(f"R$ {r['taxa_hora']:.2f}", st_cell_center),
+                Paragraph(f"R$ {r['custo_total']:,.2f}", st_cell_center)
+            ])
+        # Linha Total
+        tab_rec_rows.append([
+            Paragraph("<b>TOTAL GERAL DE MÃO DE OBRA</b>", st_cell_bold),
+            Paragraph(f"<b>Pico: {metricas_recursos.get('pico_efetivo_global', 0):.1f} FTEs</b>", st_cell_center_bold),
+            Paragraph(f"<b>{metricas_recursos['hh_total_projeto']:.1f} h</b>", st_cell_center_bold),
+            Paragraph("<b>—</b>", st_cell_center_bold),
+            Paragraph(f"<b>R$ {metricas_recursos['custo_total_mo']:,.2f}</b>", st_cell_center_bold)
+        ])
+
+        t_rec = Table(tab_rec_rows, colWidths=[6.5 * cm, 2.8 * cm, 2.5 * cm, 2.5 * cm, 3.7 * cm])
+        t_rec.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), c_blue),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
+            ('BACKGROUND', (0, 1), (-1, -2), colors.white),
+            ('BACKGROUND', (0, -1), (-1, -1), c_blue_light),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+            ('LEFTPADDING', (0, 0), (-1, -1), 4),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+        ]))
+        story.append(t_rec)
+        story.append(Spacer(1, 5))
 
     # Seção 7: Recomendações Estratégicas para PMOs e Gestores
     story.append(Paragraph("7. Recomendações Estratégicas para PMOs e Gestores Industriais", st_h2))
     story.append(Paragraph(
-        "1. <b>Abandone o Prazo Determinístico Nominal:</b> Apresentar uma data única baseada em soma aritmética de estimativas gera compromissos com menos de 2% de probabilidade de cumprimento.<br/>"
-        "2. <b>Contratação e Acordos de Nível de Serviço (SLA) no P85:</b> Fixe datas comerciais sempre no percentil 85 (<b>65.1 dias úteis</b>). "
-        "Utilize a diferença entre P85 e P50 (<b>2.7 dias</b>) como o <i>Feeding Buffer centralizado</i> gerenciado pelo líder do projeto.<br/>"
-        "3. <b>Monitoramento da Taxa de Transição de Fricção:</b> Se a produção permanecer mais de 2 dias consecutivos em regime de bloqueio ou retrabalho de solda, "
-        "intervenções técnicas devem ter prioridade máxima sobre o início de novas frentes.<br/>"
-        "4. <b>Atualização Bayesiana Contínua do Cronograma:</b> Ao término de cada pacote da EAP (ex.: após a conclusão da Engenharia 2.0 e PIT), "
-        "reexecute a simulação MCMC condicionada aos dias reais já consumidos para atualizar a distribuição a posteriori dos marcos subsequentes.",
+        "1. <b>Abandone o Prazo Determinístico Nominal:</b> Fixe acordos de SLA no P85 (<b>65.1 dias úteis</b>) e utilize o <i>Feeding Buffer</i> de <b>2.7 dias</b>.<br/>"
+        "2. <b>Monitoramento de Fricção Operacional:</b> Se o chão de fábrica registrar mais de 2 dias consecutivos em regime de bloqueio, aplicar ações corretivas imediatas.<br/>"
+        "3. <b>Alocação de Soldadores ASME IX:</b> Manter a dupla de soldadores qualificados nas semanas de pico (Semanas 7 a 10) para garantir a produtividade.",
         st_body
     ))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
     # Seção 8: Homologação e Assinaturas
     story.append(KeepTogether([
         Paragraph("8. Formalização de Decisão e Homologação da Diretoria", st_h2),
         Paragraph(
-            "Submete-se à Diretoria Executiva a aprovação das ações de <b>Fast-Tracking</b>, liberação do <b>Feeding Buffer</b> e "
+            "Submete-se à Diretoria Executiva a aprovação da <b>Mobilização de Recursos</b>, liberação do <b>Feeding Buffer</b> e "
             "alocação da <b>Reserva de Contingência</b> para início imediato com índice de segurança operacional de 100.0%.",
             st_body
         ),
-        Spacer(1, 14),
+        Spacer(1, 10),
         Table([
             [
                 Paragraph("____________________________________________<br/><b>Gerente de Engenharia & Projetos</b>", st_cell_center),

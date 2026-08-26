@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Exportador para Microsoft Project XML (MSPDI) com Suporte Completo à EAP (WBS)
-=============================================================================
-Converte a árvore WBS ponderada e as estimativas de 3 pontos com resultados
-do Monte Carlo em arquivo .xml perfeitamente compatível com o MS Project 2010+.
+Exportador para Microsoft Project XML (MSPDI) com Suporte Completo à EAP e Recursos
+==================================================================================
+Converte a árvore WBS ponderada, estimativas de 3 pontos, resultados MCMC
+e Tabela de Recursos/Atribuições em arquivo .xml perfeitamente compatível com o MS Project 2010+.
 """
 
 import os
 import xml.etree.ElementTree as ET
 from datetime import date, timedelta
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional
 
 
 NS = "http://schemas.microsoft.com/project/2007"
@@ -28,12 +28,13 @@ def el(parent, tag, text=None):
     return e
 
 
-def add_workdays(d: date, n: int) -> date:
+def add_workdays(d: date, n: float) -> date:
     """Soma n dias úteis (seg-sex), exclusive o dia inicial."""
-    while n > 0:
+    dias_inteiros = max(1, int(round(n)))
+    while dias_inteiros > 0:
         d += timedelta(days=1)
         if d.weekday() < 5:
-            n -= 1
+            dias_inteiros -= 1
     return d
 
 
@@ -50,11 +51,12 @@ def exportar_msproject_xml(
     resultado_mc: Dict[str, Any],
     data_inicio: date,
     caminho_saida: str,
-    base_duracao: str = "provavel"
+    base_duracao: str = "provavel",
+    metricas_recursos: Optional[Dict[str, Any]] = None
 ) -> str:
     """
     Gera o arquivo Project XML (MSPDI) contendo toda a hierarquia WBS,
-    vínculos de precedência, campos customizados e resultados do Monte Carlo.
+    vínculos de precedência, campos customizados, tabela de recursos e atribuições.
     """
     nome_proj = rede_wbs.get("projeto", "Cronograma de Projeto")
     tarefas = rede_wbs["tarefas"]
@@ -97,61 +99,75 @@ def exportar_msproject_xml(
     d_mc = resultado_mc.get("duracao", {})
     c_mc = resultado_mc.get("custo", {})
     comentarios = (
-        f"CRONOGRAMA GERADO POR PIPELINE INTELIGENTE COM EAP PADRONIZADA.\n"
-        f"Análise de Monte Carlo (20.000 simulações):\n"
-        f" • Prazo P50: {d_mc.get('p50', 0):.1f} dias úteis | P90: {d_mc.get('p90', 0):.1f} dias úteis\n"
-        f" • Probabilidade de cumprimento do prazo contratual: {d_mc.get('prob_sucesso_prazo', 0):.1f}%\n"
-        f" • Buffer de contingência sugerido: {d_mc.get('buffer_sugerido', 0):.1f} dias úteis\n"
-        f" • Custo Médio Estimado: R$ {c_mc.get('media', 0)/1000.0:.1f}k (Contingência P80-P50: R$ {c_mc.get('contingencia_sugerida', 0)/1000.0:.1f}k)\n"
-        f"Text1/2/3 = Estimativas Otimista/Provável/Pessimista | Text4 = Índice de Criticidade (%) | Text5 = Pacote WBS."
+        f"CRONOGRAMA GERADO POR PIPELINE INTELIGENTE COM EAP PADRONIZADA (MCMC).\n"
+        f"Alvo Gerencial P85: {d_mc.get('p85', 0):.1f} dias úteis | P50 Fábrica: {d_mc.get('p50', 0):.1f} dias.\n"
+        f"Custo Operacional Estimado (P50): R$ {c_mc.get('p50', 0):,.2f} | Reserva Contingência (P80-P50): R$ {c_mc.get('contingencia_sugerida', 0):,.2f}.\n"
+        f"Recursos Dimensionados: {metricas_recursos.get('hh_total_projeto', 0):.1f} HH Totais | Pico: {metricas_recursos.get('pico_efetivo_global', 0):.1f} FTEs." if metricas_recursos else ""
     )
     el(root, "Comments", comentarios)
 
+    # 3. Calendário Padrão (Segunda a Sexta, 8h/dia)
+    cals = ET.SubElement(root, f"{{{NS}}}Calendars")
+    cal = ET.SubElement(cals, f"{{{NS}}}Calendar")
+    el(cal, "UID", "1")
+    el(cal, "Name", "Padrao_Caldeiraria")
+    el(cal, "IsBaseCalendar", "1")
+    wds = ET.SubElement(cal, f"{{{NS}}}WeekDays")
+    for day_type in range(1, 8):
+        wd = ET.SubElement(wds, f"{{{NS}}}WeekDay")
+        el(wd, "DayType", str(day_type))
+        if day_type in [2, 3, 4, 5, 6]:
+            el(wd, "DayWorking", "1")
+            wt = ET.SubElement(wd, f"{{{NS}}}WorkingTimes")
+            t1 = ET.SubElement(wt, f"{{{NS}}}WorkingTime")
+            el(t1, "FromTime", "08:00:00")
+            el(t1, "ToTime", "12:00:00")
+            t2 = ET.SubElement(wt, f"{{{NS}}}WorkingTime")
+            el(t2, "FromTime", "13:00:00")
+            el(t2, "ToTime", "17:00:00")
+        else:
+            el(wd, "DayWorking", "0")
+
+    # 4. Criação da Estrutura de Tarefas (Tasks)
     tasks_el = ET.SubElement(root, f"{{{NS}}}Tasks")
 
-    # Tarefa Resumo do Projeto Geral (UID 1)
-    t_raiz = ET.SubElement(tasks_el, f"{{{NS}}}Task")
-    el(t_raiz, "UID", "1")
-    el(t_raiz, "ID", "1")
-    el(t_raiz, "Name", nome_proj)
-    el(t_raiz, "Type", "0")
-    el(t_raiz, "IsNull", "0")
-    el(t_raiz, "CreateDate", f"{date.today().isoformat()}T08:00:00")
-    el(t_raiz, "WBS", "0")
-    el(t_raiz, "OutlineNumber", "0")
-    el(t_raiz, "OutlineLevel", "1")
-    el(t_raiz, "Priority", "500")
-    el(t_raiz, "Start", f"{data_inicio.isoformat()}T08:00:00")
-    el(t_raiz, "Finish", f"{fim_projeto.isoformat()}T17:00:00")
-    el(t_raiz, "Duration", f"PT{int((fim_projeto - data_inicio).days * 8)}H")
-    el(t_raiz, "DurationFormat", "7")
-    el(t_raiz, "Summary", "1")
-    el(t_raiz, "Notes", comentarios)
+    # Tarefa Raiz do Projeto (OutlineLevel = 0)
+    t_root = ET.SubElement(tasks_el, f"{{{NS}}}Task")
+    el(t_root, "UID", "0")
+    el(t_root, "ID", "0")
+    el(t_root, "Name", nome_proj)
+    el(t_root, "Type", "0")
+    el(t_root, "IsNull", "0")
+    el(t_root, "CreateDate", f"{date.today().isoformat()}T08:00:00")
+    el(t_root, "WBS", "0")
+    el(t_root, "OutlineNumber", "0")
+    el(t_root, "OutlineLevel", "0")
+    el(t_root, "Priority", "500")
+    el(t_root, "Start", f"{data_inicio.isoformat()}T08:00:00")
+    el(t_root, "Finish", f"{fim_projeto.isoformat()}T17:00:00")
+    el(t_root, "Summary", "1")
 
     # Mapeamento de UIDs
-    # Pacotes WBS recebem UIDs (ex: 2..7), tarefas detalhadas recebem UIDs subsequentes
-    uid_counter = 2
+    id_counter = 1
     uid_map_tarefas = {}
     uid_map_pacotes = {}
-
-    for pkg in pacotes:
-        uid_map_pacotes[pkg["codigo"]] = uid_counter
-        uid_counter += 1
+    
+    for i, pkg in enumerate(pacotes, start=1):
+        uid_map_pacotes[pkg["codigo"]] = id_counter
+        id_counter += 1
         for t in pkg["tarefas"]:
-            uid_map_tarefas[t["id"]] = uid_counter
-            uid_counter += 1
+            uid_map_tarefas[t["id"]] = id_counter
+            id_counter += 1
 
-    id_counter = 2
+    id_counter = 1
     for pkg in pacotes:
         pkg_uid = uid_map_pacotes[pkg["codigo"]]
         pkg_tarefas = pkg["tarefas"]
-        
-        # Datas do pacote WBS
         pkg_start = min(starts[t["id"]] for t in pkg_tarefas)
         pkg_finish = max(fins[t["id"]] for t in pkg_tarefas)
         dur_pkg_dias = max(1, (pkg_finish - pkg_start).days)
 
-        # 1. Cria o nó de Tarefa Resumo do Pacote WBS (OutlineLevel = 1)
+        # Tarefa Resumo do Pacote WBS (OutlineLevel = 1)
         t_pkg = ET.SubElement(tasks_el, f"{{{NS}}}Task")
         el(t_pkg, "UID", str(pkg_uid))
         el(t_pkg, "ID", str(id_counter))
@@ -170,13 +186,14 @@ def exportar_msproject_xml(
         el(t_pkg, "Summary", "1")
         id_counter += 1
 
-        # 2. Cria as subatividades do pacote WBS (OutlineLevel = 2)
+        # Subatividades do pacote WBS (OutlineLevel = 2)
         for t in pkg_tarefas:
             t_uid = uid_map_tarefas[t["id"]]
             s_data = starts[t["id"]]
             f_data = fins[t["id"]]
             dur_dias = t["provavel"]
             crit_val = t.get("indice_criticidade", 0.0)
+            hh_t = t.get("hh_total", dur_dias * 8.0)
 
             t_elem = ET.SubElement(tasks_el, f"{{{NS}}}Task")
             el(t_elem, "UID", str(t_uid))
@@ -193,14 +210,15 @@ def exportar_msproject_xml(
             el(t_elem, "Finish", f"{f_data.isoformat()}T17:00:00")
             el(t_elem, "Duration", f"PT{int(dur_dias * 8)}H")
             el(t_elem, "DurationFormat", "7")
+            el(t_elem, "Work", f"PT{int(hh_t)}H0M0S")
             el(t_elem, "Summary", "0")
 
-            # Predecessoras (Vínculos Finish-to-Start)
+            # Predecessoras (FS)
             for dep_id in t.get("deps", []):
                 if dep_id in uid_map_tarefas:
                     pl = ET.SubElement(t_elem, f"{{{NS}}}PredecessorLink")
                     el(pl, "PredecessorUID", str(uid_map_tarefas[dep_id]))
-                    el(pl, "Type", "1")  # 1 = Termino-a-Inicio (FS)
+                    el(pl, "Type", "1")
                     el(pl, "LinkLag", "0")
 
             # Campos Customizados
@@ -216,15 +234,48 @@ def exportar_msproject_xml(
                 el(ea, "FieldID", str(fid))
                 el(ea, "Value", str(val))
 
-            # Notas da Tarefa
+            # Notas da Tarefa com Recursos
+            recursos_desc = t.get("nomes_recursos_str", "Conforme equipe padrão")
             notas = (
                 f"Estimativas de 3 Pontos: Otimista = {t['otimista']}d | Provável = {t['provavel']}d | Pessimista = {t['pessimista']}d.\n"
-                f"Índice de Criticidade (Monte Carlo): {crit_val:.1f}% das 20.000 iterações no Caminho Crítico."
+                f"Índice de Criticidade MCMC: {crit_val:.1f}% no Caminho Crítico.\n"
+                f"Alocação de Recursos: {recursos_desc} | Total: {hh_t:.1f} HH."
             )
             el(t_elem, "Notes", notas)
             id_counter += 1
 
-    # Definição dos Cabeçalhos dos Campos Customizados
+    # 5. Tabela de Recursos (Resources)
+    resources_el = ET.SubElement(root, f"{{{NS}}}Resources")
+    if metricas_recursos and "catalogo" in metricas_recursos:
+        catalogo = metricas_recursos["catalogo"]
+        for cod_rec, info in catalogo.items():
+            r_elem = ET.SubElement(resources_el, f"{{{NS}}}Resource")
+            el(r_elem, "UID", str(info["uid"]))
+            el(r_elem, "ID", str(info["id"]))
+            el(r_elem, "Name", info["nome"])
+            el(r_elem, "Type", "1") # 1 = Work
+            el(r_elem, "IsNull", "0")
+            el(r_elem, "MaxUnits", str(info.get("max_units", 1.0)))
+            el(r_elem, "StandardRate", f"{info['taxa_hora']:.2f}")
+            el(r_elem, "StandardRateFormat", "2")
+            el(r_elem, "Cost", "0")
+
+    # 6. Tabela de Atribuições (Assignments)
+    assignments_el = ET.SubElement(root, f"{{{NS}}}Assignments")
+    if metricas_recursos and "atribuicoes" in metricas_recursos:
+        for asgn in metricas_recursos["atribuicoes"]:
+            tid = asgn["task_id"]
+            if tid in uid_map_tarefas:
+                task_uid = uid_map_tarefas[tid]
+                a_elem = ET.SubElement(assignments_el, f"{{{NS}}}Assignment")
+                el(a_elem, "UID", str(asgn["uid"]))
+                el(a_elem, "TaskUID", str(task_uid))
+                el(a_elem, "ResourceUID", str(asgn["resource_uid"]))
+                el(a_elem, "Units", str(asgn["units"]))
+                el(a_elem, "Work", f"PT{int(asgn['work_hours'])}H0M0S")
+                el(a_elem, "Cost", f"{asgn['cost']:.2f}")
+
+    # 7. Definição dos Cabeçalhos dos Campos Customizados
     ea_proj = ET.SubElement(root, f"{{{NS}}}ExtendedAttributes")
     campos_def = [
         (FIELD_TEXT1, "Text1", "Estimativa Otimista"),

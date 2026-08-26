@@ -1,8 +1,8 @@
-# 📊 Relatório Executivo de Planejamento & Análise de Riscos (MCMC & Governança)
+# 📊 Relatório Executivo de Planejamento & Análise de Riscos (MCMC & Recursos)
 
 **Projeto:** Fabricação e Fornecimento do Tanque de Armazenamento TQ-960-30/1 (API 650) – Obra 2026-000037  
 **TAG do Equipamento:** `TQ-0960-30` | **Cliente:** `Oxiteno S.A. / Grupo Indorama`  
-**Data da Análise:** 25/08/2026 | **Normas:** `API 650 / NR-13`  
+**Data da Análise:** 26/08/2026 | **Normas:** `API 650 / NR-13`  
 
 ---
 
@@ -40,7 +40,26 @@ Distribuição do tempo global do projeto conforme pesos oficiais dos pacotes de
 
 ---
 
-## 4. Matriz de Criticidade de Atividades (Top Gargalos Estocásticos)
+## 4. Dimensionamento de Mão de Obra e Alocação de Recursos (Storm / SENAI)
+
+| Especialidade / Função | Categoria | HH Total | Taxa Horária | Custo Total de M.O. |
+| :--- | :---: | :---: | :---: | :---: |
+| **AJUD-OP** - Ajudante Operacional de Caldeiraria e Fábrica | Apoio | 410.4 h | R$ 30.00/h | R$ 12,312.00 |
+| **SOLD-ASME** - Soldador Qualificado ASME IX (TIG/MIG/SAW) | Soldagem | 182.4 h | R$ 65.00/h | R$ 11,856.00 |
+| **CALD-MONT** - Caldeireiro Montador / Ajustador de Equipamentos | Montagem | 127.2 h | R$ 55.00/h | R$ 6,996.00 |
+| **ENG-PROJ** - Engenheiro Mecânico de Projetos / Cálculos | Engenharia | 103.6 h | R$ 110.00/h | R$ 11,396.00 |
+| **INSP-END** - Inspetor de Soldagem / END Nível II (SNQC) | Qualidade | 103.2 h | R$ 90.00/h | R$ 9,288.00 |
+| **COMP-TEC** - Comprador Técnico Industrial / Diligenciamento | Suprimentos | 78.8 h | R$ 55.00/h | R$ 4,334.00 |
+| **PROJ-CAD** - Projetista Mecânico / Modelador 3D | Engenharia | 42.4 h | R$ 65.00/h | R$ 2,756.00 |
+| **PINT-IND** - Pintor Industrial / Tratador de Superfície Inox | Tratamento | 40.0 h | R$ 45.00/h | R$ 1,800.00 |
+| **CALD-PREP** - Caldeireiro de Traçado e Corte Plasma | Caldeiraria | 34.4 h | R$ 50.00/h | R$ 1,720.00 |
+| **OPER-CAL** - Operador de Calandra e Conformação | Caldeiraria | 34.4 h | R$ 50.00/h | R$ 1,720.00 |
+| **RIG-LOG** - Rigger / Operador de Carga, Berço e Expedição | Logística | 16.0 h | R$ 45.00/h | R$ 720.00 |
+| **TOTAL GERAL DE MÃO DE OBRA** | **Pico: 4.3 FTEs** | **1172.8 h** | — | **R$ 64,898.00** |
+
+---
+
+## 5. Matriz de Criticidade de Atividades (Top Gargalos Estocásticos)
 
 Atividades com maior probabilidade de travar o cronograma global (presença no Caminho Crítico durante as 20.000 iterações MCMC):
 
@@ -59,7 +78,7 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 
 ---
 
-## 5. Plano de Ação Estratégico para a Diretoria (5W2H)
+## 6. Plano de Ação Estratégico para a Diretoria (5W2H)
 
 1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de chapas inox (SA-240 304) e tubos assim que o projeto preliminar for concluído (**economia de ~8 dias**).
 2. **Crashing na Soldagem ASME IX:** Alocar 2 soldadores qualificados em paralelo nas soldas do costado (**economia de ~4 dias**).
@@ -68,10 +87,11 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 
 ---
 
-## 6. Entregáveis Gerados
+## 7. Entregáveis Gerados
 
 - **Relatório Executivo para a Diretoria (PDF 3 Páginas):** [`RELATORIO_DIRETORIA_MONTE_CARLO.pdf`](file:///C:/bento/prg/mc-gerenciamento-projetos/convertidos/RELATORIO_DIRETORIA_MONTE_CARLO.pdf)
-- **Arquivo MS Project XML:** [`cronograma_tq-0960-30.xml`](file:///C:/bento/prg/mc-gerenciamento-projetos/convertidos/cronograma_tq-0960-30.xml)
+- **Arquivo MS Project XML (Com Recursos):** [`cronograma_tq-0960-30.xml`](file:///C:/bento/prg/mc-gerenciamento-projetos/convertidos/cronograma_tq-0960-30.xml)
+- **Histograma de Recursos por Função:** `assets/mc_histograma_recursos.png`
 - **Gráficos em Assets:** Comparativo de Cenários MCMC, Sensibilidade do Caminho Crítico e Riscos de Custos.
 
 ---
