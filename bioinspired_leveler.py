@@ -220,29 +220,29 @@ def executar_nivelamento_bioinspirado(
     dias_antes_x = np.arange(len(perfil_antes))
     dias_depois_x = np.arange(len(perfil_depois))
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5.0), sharex=True, sharey=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10.2, 5.6), sharex=True, sharey=True)
 
     # Gráfico 1: Antes do Nivelamento
     ax1.fill_between(dias_antes_x, perfil_antes, color="#DC2626", alpha=0.35, step="post")
     ax1.step(dias_antes_x, perfil_antes, color="#DC2626", lw=2, where="post", label=f"Demanda Inicial (Pico: {pico_antes:.1f} FTEs | Variância: {var_antes:.2f})")
     ax1.axhline(capacidade_alvo_fte, color="#0F172A", ls="--", lw=1.5, label=f"Capacidade Alvo Nominal ({capacidade_alvo_fte:.1f} FTEs)")
-    ax1.set_title("Antes do Nivelamento (Picos Artificiais de Sobrealocação e Vales de Ociosidade)", fontsize=9.5, fontweight="bold", color="#991B1B")
-    ax1.set_ylabel("Efetivo (FTEs)", fontsize=8.5, fontweight="bold")
+    ax1.set_title("Antes do Nivelamento (Picos Artificiais de Sobrealocação e Vales de Ociosidade)", fontsize=10, fontweight="bold", color="#991B1B")
+    ax1.set_ylabel("Efetivo (FTEs)", fontsize=9, fontweight="bold")
     ax1.grid(True, linestyle=":", alpha=0.6)
-    ax1.legend(loc="upper right", fontsize=8)
+    ax1.legend(loc="upper right", fontsize=8.2)
 
     # Gráfico 2: Após o Nivelamento Bioinspirado
     ax2.fill_between(dias_depois_x, perfil_depois, color="#059669", alpha=0.45, step="post")
     ax2.step(dias_depois_x, perfil_depois, color="#059669", lw=2, where="post", label=f"Demanda Nivelada por GA (Pico: {pico_depois:.1f} FTEs | Redução Variância: -{reducao_var_pct:.1f}%)")
     ax2.axhline(capacidade_alvo_fte, color="#0F172A", ls="--", lw=1.5, label=f"Capacidade Alvo Nominal ({capacidade_alvo_fte:.1f} FTEs)")
-    ax2.set_title("Após Nivelamento Bioinspirado Guiado por MCMC (Carga Suave e Contínua)", fontsize=9.5, fontweight="bold", color="#065F46")
-    ax2.set_xlabel("Linha do Tempo do Projeto (Dias Úteis)", fontsize=8.5, fontweight="bold")
-    ax2.set_ylabel("Efetivo (FTEs)", fontsize=8.5, fontweight="bold")
+    ax2.set_title("Após Nivelamento Bioinspirado Guiado por MCMC (Carga Suave e Contínua)", fontsize=10, fontweight="bold", color="#065F46")
+    ax2.set_xlabel("Linha do Tempo do Projeto (Dias Úteis)", fontsize=9, fontweight="bold")
+    ax2.set_ylabel("Efetivo (FTEs)", fontsize=9, fontweight="bold")
     ax2.grid(True, linestyle=":", alpha=0.6)
-    ax2.legend(loc="upper right", fontsize=8)
+    ax2.legend(loc="upper right", fontsize=8.2)
 
     fig.tight_layout()
-    fig.savefig(caminho_saida_png, dpi=150)
+    fig.savefig(caminho_saida_png, dpi=160)
     plt.close(fig)
 
     metricas_nivelamento = {

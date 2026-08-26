@@ -3,17 +3,17 @@
 """
 Gerador de Relatório Executivo em PDF para a Diretoria Completo e Integrado
 ==========================================================================
-Reúne TODOS os pilares da engenharia e gestão de projetos:
+Reúne TODOS os pilares da engenharia e gestão de projetos com estética padronizada:
   1. Cards de KPIs no Topo (Nominal, P50, P85, P95).
   2. Fundamentação Teórica MCMC (Inércia, Troca de Regimes e Path Merge Bias).
   3. Diagnóstico de Risco: Cenário Inercial vs. Mitigado.
-  4. Tabela de Governança de Prazos e Dimensionamento de Buffers.
+  4. Tabela de Governança de Prazos e Dimensionamento de Buffers (Cabeçalhos Azuis e Fonte Branca Negrito).
   5. Gráficos MCMC: Comparativo de Densidade de Prazos e Sensibilidade do Caminho Crítico.
   6. Matriz de Criticidade das Tarefas da EAP (Top Gargalos Estocásticos).
   7. Resumo da EAP / WBS Ponderada (2%, 20%, 30%, 40%, 7%, 1%).
-  8. Histograma de Alocação de Recursos por Função ao Longo do Tempo (Manpower Loading Semanal + Curva S).
+  8. Histograma de Alocação de Recursos por Função ao Longo do Tempo (Altura Expandida no Eixo Y + Rótulos com Linha Guia).
   9. Tabela Detalhada de Dimensionamento de Mão de Obra (Função, HH, Taxa R$/h, Custo R$).
-  10. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float).
+  10. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float com Altura Expandida).
   11. Gráfico Comparativo de Nivelamento: Antes (Picos e Vales) vs. Depois (Suave e Nivelado).
   12. Tabela de Indicadores de Ganho do Nivelamento.
   13. Plano de Ação Estratégico para a Diretoria (Matriz 5W2H).
@@ -98,7 +98,7 @@ def gerar_relatorio_pdf_diretoria(
 
     styles = getSampleStyleSheet()
     
-    # Cores Corporativas
+    # Cores Corporativas Padronizadas
     c_navy = colors.HexColor("#0F172A")
     c_blue = colors.HexColor("#1E3A8A")
     c_blue_light = colors.HexColor("#EFF6FF")
@@ -120,10 +120,15 @@ def gerar_relatorio_pdf_diretoria(
     st_card_lbl = ParagraphStyle("CardLbl", fontName="Helvetica-Bold", fontSize=6.5, leading=7.5, alignment=1, textColor=colors.HexColor("#2563EB"))
     st_card_sub = ParagraphStyle("CardSub", fontName="Helvetica", fontSize=6.0, leading=7.0, alignment=1, textColor=colors.HexColor("#64748B"))
 
+    # Estilos de Células de Tabela
     st_cell = ParagraphStyle("Cell", fontName="Helvetica", fontSize=6.8, leading=8.5, textColor=colors.HexColor("#1E293B"))
     st_cell_bold = ParagraphStyle("CellB", parent=st_cell, fontName="Helvetica-Bold")
     st_cell_center = ParagraphStyle("CellC", parent=st_cell, alignment=1)
     st_cell_center_bold = ParagraphStyle("CellCB", parent=st_cell_bold, alignment=1)
+
+    # Estilos Padronizados para Cabeçalhos de Tabelas (Fundo Azul + Fonte Branca Negrito)
+    st_cell_white_bold = ParagraphStyle("CellWB", parent=st_cell_bold, textColor=colors.white)
+    st_cell_center_white_bold = ParagraphStyle("CellCWB", parent=st_cell_center_bold, textColor=colors.white)
 
     story = []
 
@@ -214,16 +219,16 @@ def gerar_relatorio_pdf_diretoria(
         st_body
     ))
 
-    # Seção 3: Tabela de Governança de Prazos
+    # Seção 3: Tabela de Governança de Prazos (Preenchimento Azul Padronizado e Fonte Branca Negrito)
     story.append(Spacer(1, 2))
     story.append(Paragraph("3. Tabela de Governança de Prazos e Dimensionamento de Buffers", st_h2))
     tab_gov_data = [
         [
-            Paragraph("<b>Métrica de Cronograma</b>", st_cell_bold),
-            Paragraph("<b>Prazo Estimado</b>", st_cell_center_bold),
-            Paragraph("<b>Buffer Adicional</b>", st_cell_center_bold),
-            Paragraph("<b>Prob. Cumprimento</b>", st_cell_center_bold),
-            Paragraph("<b>Perfil de Governança Indicado</b>", st_cell_bold)
+            Paragraph("Métrica de Cronograma", st_cell_white_bold),
+            Paragraph("Prazo Estimado", st_cell_center_white_bold),
+            Paragraph("Buffer Adicional", st_cell_center_white_bold),
+            Paragraph("Prob. Cumprimento", st_cell_center_white_bold),
+            Paragraph("Perfil de Governança Indicado", st_cell_white_bold)
         ],
         [
             Paragraph("<b>Baseline CPM (Nominal)</b>", st_cell),
@@ -286,9 +291,9 @@ def gerar_relatorio_pdf_diretoria(
 
     imgs_row = []
     if img_comp and os.path.exists(img_comp):
-        imgs_row.append(Image(img_comp, width=9.0 * cm, height=4.6 * cm))
+        imgs_row.append(Image(img_comp, width=9.0 * cm, height=4.8 * cm))
     if img_sens and os.path.exists(img_sens):
-        imgs_row.append(Image(img_sens, width=8.8 * cm, height=4.6 * cm))
+        imgs_row.append(Image(img_sens, width=8.8 * cm, height=4.8 * cm))
         
     if imgs_row:
         t_imgs = Table([imgs_row], colWidths=[9.0 * cm, 9.0 * cm])
@@ -301,7 +306,7 @@ def gerar_relatorio_pdf_diretoria(
         story.append(t_imgs)
         story.append(Spacer(1, 4))
 
-    # Seção 5: Matriz de Criticidade das Tarefas (Top Gargalos)
+    # Seção 5: Matriz de Criticidade das Tarefas (Top Gargalos com Cabeçalho Azul e Fonte Branca Negrito)
     story.append(Paragraph("5. Matriz de Criticidade das Tarefas da EAP (Top Gargalos Estocásticos)", st_h2))
     story.append(Paragraph(
         "Identificação das atividades que mais frequentemente retêm o Caminho Crítico nas 20.000 iterações MCMC:",
@@ -309,11 +314,11 @@ def gerar_relatorio_pdf_diretoria(
     ))
 
     tab_crit_header = [
-        Paragraph("<b>WBS</b>", st_cell_center_bold),
-        Paragraph("<b>Atividade do Projeto</b>", st_cell_bold),
-        Paragraph("<b>3 Pontos (O, M, P)</b>", st_cell_center_bold),
-        Paragraph("<b>Índice Criticidade</b>", st_cell_center_bold),
-        Paragraph("<b>Nível de Risco</b>", st_cell_center_bold)
+        Paragraph("WBS", st_cell_center_white_bold),
+        Paragraph("Atividade do Projeto", st_cell_white_bold),
+        Paragraph("3 Pontos (O, M, P)", st_cell_center_white_bold),
+        Paragraph("Índice Criticidade", st_cell_center_white_bold),
+        Paragraph("Nível de Risco", st_cell_center_white_bold)
     ]
     tab_crit_rows = [tab_crit_header]
     for t in resultado_mc["tarefas_ordenadas_criticidade"][:7]:
@@ -342,14 +347,14 @@ def gerar_relatorio_pdf_diretoria(
     story.append(t_crit)
     story.append(Spacer(1, 4))
 
-    # Seção 6: Estrutura Analítica do Projeto (EAP Ponderada)
+    # Seção 6: Estrutura Analítica do Projeto (EAP Ponderada com Cabeçalho Azul e Fonte Branca Negrito)
     story.append(Paragraph("6. Estrutura Analítica do Projeto (EAP / WBS Ponderada)", st_h2))
     tab_eap_header = [
-        Paragraph("<b>Código</b>", st_cell_center_bold),
-        Paragraph("<b>Pacote de Serviço</b>", st_cell_bold),
-        Paragraph("<b>Peso (%)</b>", st_cell_center_bold),
-        Paragraph("<b>Duração Alocada</b>", st_cell_center_bold),
-        Paragraph("<b>Descrição do Escopo</b>", st_cell)
+        Paragraph("Código", st_cell_center_white_bold),
+        Paragraph("Pacote de Serviço", st_cell_white_bold),
+        Paragraph("Peso (%)", st_cell_center_white_bold),
+        Paragraph("Duração Alocada", st_cell_center_white_bold),
+        Paragraph("Descrição do Escopo", st_cell_white_bold)
     ]
     tab_eap_rows = [tab_eap_header]
     for pkg in rede_wbs["pacotes"]:
@@ -363,7 +368,7 @@ def gerar_relatorio_pdf_diretoria(
 
     t_eap = Table(tab_eap_rows, colWidths=[1.8 * cm, 4.8 * cm, 2.0 * cm, 2.8 * cm, 6.6 * cm])
     t_eap.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), c_navy),
+        ('BACKGROUND', (0, 0), (-1, 0), c_blue),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
         ('BACKGROUND', (0, 1), (-1, -1), c_gray_bg),
@@ -387,22 +392,22 @@ def gerar_relatorio_pdf_diretoria(
         st_body
     ))
 
-    # Histograma por Função (Imagem)
+    # Histograma por Função com Altura Expandida (Imagem)
     if metricas_recursos and "caminho_histograma_png" in metricas_recursos:
         img_rec_path = metricas_recursos["caminho_histograma_png"]
         if os.path.exists(img_rec_path):
-            story.append(Image(img_rec_path, width=18.0 * cm, height=4.6 * cm))
+            story.append(Image(img_rec_path, width=18.0 * cm, height=5.5 * cm))
             story.append(Spacer(1, 3))
 
-    # Tabela de Recursos (HH e R$)
+    # Tabela de Recursos (Cabeçalho Azul Padronizado e Fonte Branca Negrito)
     if metricas_recursos and "recursos_detalhados" in metricas_recursos:
         rec_list = metricas_recursos["recursos_detalhados"]
         tab_rec_header = [
-            Paragraph("<b>Especialidade / Função</b>", st_cell_bold),
-            Paragraph("<b>Categoria</b>", st_cell_center_bold),
-            Paragraph("<b>HH Total</b>", st_cell_center_bold),
-            Paragraph("<b>Taxa (R$/h)</b>", st_cell_center_bold),
-            Paragraph("<b>Custo Total MO (R$)</b>", st_cell_center_bold)
+            Paragraph("Especialidade / Função", st_cell_white_bold),
+            Paragraph("Categoria", st_cell_center_white_bold),
+            Paragraph("HH Total", st_cell_center_white_bold),
+            Paragraph("Taxa (R$/h)", st_cell_center_white_bold),
+            Paragraph("Custo Total MO (R$)", st_cell_center_white_bold)
         ]
         tab_rec_rows = [tab_rec_header]
         for r in rec_list[:5]:
@@ -438,22 +443,22 @@ def gerar_relatorio_pdf_diretoria(
         story.append(t_rec)
         story.append(Spacer(1, 4))
 
-    # Seção 8: Nivelamento Bioinspirado de Recursos (Comparativo)
+    # Seção 8: Nivelamento Bioinspirado de Recursos com Altura Expandida
     story.append(Paragraph("8. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float)", st_h2))
     
     caminho_graf_niv = metricas_nivelamento.get("caminho_grafico_png") if metricas_nivelamento else None
     if caminho_graf_niv and os.path.exists(caminho_graf_niv):
-        story.append(Image(caminho_graf_niv, width=18.0 * cm, height=4.6 * cm))
+        story.append(Image(caminho_graf_niv, width=18.0 * cm, height=5.5 * cm))
         story.append(Spacer(1, 3))
 
-    # Tabela de Eficiência de Nivelamento
+    # Tabela de Eficiência de Nivelamento (Cabeçalho Azul Padronizado e Fonte Branca Negrito)
     if metricas_nivelamento and metricas_recursos:
         tab_niv_data = [
             [
-                Paragraph("<b>Indicador de Nivelamento</b>", st_cell_bold),
-                Paragraph("<b>Antes da Otimização</b>", st_cell_center_bold),
-                Paragraph("<b>Após Nivelamento Bioinspirado</b>", st_cell_center_bold),
-                Paragraph("<b>Ganho Operacional</b>", st_cell_center_bold)
+                Paragraph("Indicador de Nivelamento", st_cell_white_bold),
+                Paragraph("Antes da Otimização", st_cell_center_white_bold),
+                Paragraph("Após Nivelamento Bioinspirado", st_cell_center_white_bold),
+                Paragraph("Ganho Operacional", st_cell_center_white_bold)
             ],
             [
                 Paragraph("<b>Pico Máximo de Efetivo</b>", st_cell),
@@ -477,7 +482,7 @@ def gerar_relatorio_pdf_diretoria(
 
         t_niv = Table(tab_niv_data, colWidths=[5.5 * cm, 3.8 * cm, 4.7 * cm, 4.0 * cm])
         t_niv.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), c_navy),
+            ('BACKGROUND', (0, 0), (-1, 0), c_blue),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('GRID', (0, 0), (-1, -1), 0.5, c_gray_border),
             ('BACKGROUND', (0, 1), (-1, -1), colors.white),
@@ -503,11 +508,12 @@ def gerar_relatorio_pdf_diretoria(
         st_body
     ))
 
+    # Tabela 5W2H (Cabeçalho Azul Padronizado e Fonte Branca Negrito)
     tab_5w2h_header = [
-        Paragraph("<b>Ação (O Quê)</b>", st_cell_bold),
-        Paragraph("<b>Por Quê (Objetivo)</b>", st_cell),
-        Paragraph("<b>Responsável</b>", st_cell_center_bold),
-        Paragraph("<b>Impacto / Ganho</b>", st_cell_center_bold)
+        Paragraph("Ação (O Quê)", st_cell_white_bold),
+        Paragraph("Por Quê (Objetivo)", st_cell_white_bold),
+        Paragraph("Responsável", st_cell_center_white_bold),
+        Paragraph("Impacto / Ganho", st_cell_center_white_bold)
     ]
     tab_5w2h_rows = [
         tab_5w2h_header,
@@ -589,7 +595,8 @@ def gerar_relatorio_pdf_diretoria(
 
     # Compilação do PDF com tratamento de arquivo aberto no Windows
     try:
-        doc.build(story, canvasmaker=NumberedCanvas)
+        story_copy = list(story)
+        doc.build(story_copy, canvasmaker=NumberedCanvas)
         return caminho_pdf
     except PermissionError:
         dir_name = os.path.dirname(os.path.abspath(caminho_pdf)) or "."
@@ -603,6 +610,6 @@ def gerar_relatorio_pdf_diretoria(
             topMargin=1.6 * cm,
             bottomMargin=1.6 * cm
         )
-        doc_fallback.build(story, canvasmaker=NumberedCanvas)
-        print(f"   ⚠️ Aviso: '{caminho_pdf}' estava aberto/bloqueado. Gravado em: '{fallback_pdf}'")
-        return fallback_pdf
+        # Recria os flowables da story chamando a função novamente para o fallback
+        story_recreated = []
+        return gerar_relatorio_pdf_diretoria(metadados, rede_wbs, resultado_mc, fallback_pdf, metricas_recursos, metricas_nivelamento)

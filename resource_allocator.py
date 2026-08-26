@@ -293,18 +293,18 @@ def gerar_histograma_recursos_temporal(
                     fte_semanal = units * (dias_na_semana / 5.0)
                     alocacao_semanal[cod_rec][sem] += fte_semanal
 
-    # 3. Plotagem do Histograma Empilhado
+    # 3. Plotagem do Histograma Empilhado (Altura expandida e rótulos com linha guia)
     semanas_x = [f"Sem {s+1}" for s in range(num_semanas)]
     x_indices = np.arange(num_semanas)
     
-    fig, ax1 = plt.subplots(figsize=(10, 4.8))
+    fig, ax1 = plt.subplots(figsize=(10.2, 5.6))
     
     bottom_y = np.zeros(num_semanas)
     for cod in codigos_ativos:
         valores = alocacao_semanal[cod]
         info = CATALOGO_RECURSOS[cod]
         nome_label = f"{info['categoria']} ({info['nome'].split('/')[0].strip()})"
-        ax1.bar(x_indices, valores, bottom=bottom_y, label=nome_label, color=info["cor"], edgecolor="white", alpha=0.88, width=0.7)
+        ax1.bar(x_indices, valores, bottom=bottom_y, label=nome_label, color=info["cor"], edgecolor="white", alpha=0.90, width=0.68)
         bottom_y += valores
 
     pico_efetivo = float(np.max(bottom_y))
@@ -314,28 +314,50 @@ def gerar_histograma_recursos_temporal(
     ax2 = ax1.twinx()
     hh_por_semana = bottom_y * 40.0 # 40h por FTE/semana
     hh_acumulado = np.cumsum(hh_por_semana)
-    ax2.plot(x_indices, hh_acumulado, color="#0F172A", lw=2.5, marker="o", markersize=4, label="Curva S (HH Acumulado)")
-    ax2.set_ylabel("Homem-Hora Acumulado (HH)", fontsize=9, fontweight="bold", color="#0F172A")
+    ax2.plot(x_indices, hh_acumulado, color="#0F172A", lw=2.4, marker="o", markersize=4.5, label="Curva S (HH Acumulado)")
+    ax2.set_ylabel("Homem-Hora Acumulado (HH)", fontsize=9.5, fontweight="bold", color="#0F172A")
     ax2.tick_params(axis='y', labelcolor="#0F172A")
+
+    # Rótulos Numéricos com Linha e Caixa Flutuante fora das barras
+    for i, val in enumerate(bottom_y):
+        if val > 0.05:
+            hh_sem = int(round(val * 40.0))
+            texto_rotulo = f"{val:.1f} FTE\n({hh_sem}h)"
+            ax1.annotate(
+                texto_rotulo,
+                xy=(x_indices[i], val),
+                xytext=(x_indices[i], val + 0.45),
+                ha="center",
+                va="bottom",
+                fontsize=7.2,
+                fontweight="bold",
+                color="#0F172A",
+                bbox=dict(boxstyle="round,pad=0.22", facecolor="#F8FAFC", edgecolor="#94A3B8", alpha=0.92, lw=0.6),
+                arrowprops=dict(arrowstyle="-", color="#64748B", lw=0.8, ls=":")
+            )
 
     ax1.set_xlabel("Cronograma Semanal do Projeto", fontsize=10, fontweight="bold")
     ax1.set_ylabel("Efetivo Alocado (Pessoas / FTEs)", fontsize=10, fontweight="bold")
-    ax1.set_title(f"Histograma de Alocação de Recursos por Função ao Longo do Tempo\n(Pico de Mobilização: {pico_efetivo:.1f} profissionais na Semana {semana_pico})", fontsize=11, fontweight="bold")
+    ax1.set_title(f"Histograma de Alocação de Recursos por Função ao Longo do Tempo\n(Pico de Mobilização: {pico_efetivo:.1f} profissionais na Semana {semana_pico} | Total: {metricas_recursos['hh_total_projeto']:.1f} HH)", fontsize=11, fontweight="bold", pad=12)
     ax1.set_xticks(x_indices)
     ax1.set_xticklabels(semanas_x, rotation=0, fontsize=8.5)
-    ax1.set_ylim(0, max(12, pico_efetivo * 1.25))
     
-    # Linha e anotação de pico
+    # Altura vertical expandida com margem para os rótulos
+    limite_y_max = max(7.0, pico_efetivo * 1.45)
+    ax1.set_ylim(0, limite_y_max)
+    ax2.set_ylim(0, metricas_recursos["hh_total_projeto"] * 1.25)
+    
+    # Linha de pico de mobilização
     ax1.axhline(pico_efetivo, color="#DC2626", ls="--", lw=1.2, alpha=0.7)
-    ax1.text(0.1, pico_efetivo + 0.3, f"Pico Máximo: {pico_efetivo:.1f} FTEs", color="#DC2626", fontweight="bold", fontsize=8.5)
+    ax1.text(0.1, pico_efetivo + 0.15, f"Pico Máximo: {pico_efetivo:.1f} FTEs", color="#DC2626", fontweight="bold", fontsize=8.5)
 
-    # Legenda compacta organizada
+    # Legenda organizada e nítida
     handles1, labels1 = ax1.get_legend_handles_labels()
     handles2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(handles1 + handles2, labels1 + labels2, loc="upper left", bbox_to_anchor=(0.0, 0.98), fontsize=7.2, frameon=True, ncol=2)
 
     fig.tight_layout()
-    fig.savefig(caminho_saida_png, dpi=150)
+    fig.savefig(caminho_saida_png, dpi=160)
     plt.close(fig)
 
     metricas_recursos["pico_efetivo_global"] = round(pico_efetivo, 1)
