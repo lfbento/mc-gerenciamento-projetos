@@ -154,44 +154,81 @@ def executar_nivelamento_bioinspirado(
 
         return perfil, s_dias, f_dias
 
-    # Perfil Inicial Não Restrito (Early Start sem restrição de recursos com paralelismo de pacotes)
-    horizonte_base = 65
-    dias_x = np.arange(horizonte_base)
+    # 1. Simulação do perfil inicial Early Start (Não Nivelado)
+    shifts_zero = np.zeros(n_t)
+    perfil_antes_raw, s_antes, f_antes = simular_perfil_recursos_exato(shifts_zero)
+    pico_antes = float(np.max(perfil_antes_raw)) if len(perfil_antes_raw) > 0 else 1.0
+    var_antes = float(np.var(perfil_antes_raw[perfil_antes_raw > 0])) if np.any(perfil_antes_raw > 0) else 1.0
     
-    perfil_antes = np.zeros(horizonte_base)
-    perfil_antes[0:5] = 2.0
-    perfil_antes[5:14] = 3.5
-    perfil_antes[14:24] = 2.5
-    perfil_antes[24:36] = 7.5   # Picos críticos de sobrecarga na caldeiraria concorrente
-    perfil_antes[36:48] = 7.0   # Soldagem + Montagem simultâneas
-    perfil_antes[48:56] = 4.2
-    perfil_antes[56:62] = 2.0
+    # 2. Determinação Dinâmica da Capacidade Alvo da Fábrica
+    hh_total = float(metricas_recursos.get("hh_total_projeto", sum(demandas_tarefa) * 8.0))
+    dias_projeto_est = max(10.0, float(np.max(f_antes)))
+    capacidade_alvo_fte = round(max(2.5, (hh_total / (dias_projeto_est * 8.0)) * 1.30), 1)
 
-    pico_antes = 7.5
-    var_antes = 4.62
+    # 3. Algoritmo Genético de Nivelamento (MCMC-Safe Float)
+    pop_size = 50
+    n_geracoes = 80
+    pop = np.zeros((pop_size, n_t))
+    for p in range(1, pop_size):
+        for i in range(n_t):
+            if shift_maximos[i] > 0:
+                pop[p, i] = RNG.uniform(0, shift_maximos[i])
+
+    def fitness(ind: np.ndarray) -> float:
+        prf, _, f_ind = simular_perfil_recursos_exato(ind)
+        mk = max(f_ind)
+        pk = max(prf) if len(prf) > 0 else 0
+        vr = np.var(prf[prf > 0]) if np.any(prf > 0) else 0
+        penal_mk = max(0.0, mk - prazo_alvo_p85) * 80.0
+        penal_pk = max(0.0, pk - capacidade_alvo_fte) * 40.0
+        return -(vr + penal_pk + penal_mk + (pk * 2.0))
+
+    melhor_ind = np.copy(pop[0])
+    melhor_fit = fitness(melhor_ind)
+
+    for gen in range(n_geracoes):
+        scores = np.array([fitness(ind) for ind in pop])
+        idx_ord = np.argsort(scores)[::-1]
+        if scores[idx_ord[0]] > melhor_fit:
+            melhor_fit = scores[idx_ord[0]]
+            melhor_ind = np.copy(pop[idx_ord[0]])
+        
+        elite = pop[idx_ord[:12]]
+        nova_pop = [np.copy(e) for e in elite]
+        
+        while len(nova_pop) < pop_size:
+            p1 = elite[RNG.integers(0, len(elite))]
+            p2 = elite[RNG.integers(0, len(elite))]
+            pt_corte = RNG.integers(1, n_t)
+            filho = np.concatenate([p1[:pt_corte], p2[pt_corte:]])
+            
+            for i in range(n_t):
+                if shift_maximos[i] > 0 and RNG.random() < 0.15:
+                    filho[i] = RNG.uniform(0, shift_maximos[i])
+            nova_pop.append(filho)
+        pop = np.array(nova_pop)
+
+    # 4. Avaliação da Melhor Solução Nivelada
+    perfil_depois_raw, s_depois, f_depois = simular_perfil_recursos_exato(melhor_ind)
+    pico_depois = float(np.max(perfil_depois_raw)) if len(perfil_depois_raw) > 0 else pico_antes
+    var_depois = float(np.var(perfil_depois_raw[perfil_depois_raw > 0])) if np.any(perfil_depois_raw > 0) else var_antes
+    reducao_var_pct = max(0.0, ((var_antes - var_depois) / var_antes) * 100.0) if var_antes > 0 else 0.0
+    makespan_final = round(float(np.max(f_depois)), 1)
+
+    # 5. Harmonização de Vetores para Plotagem Cristalina
+    max_dias = max(len(perfil_antes_raw), len(perfil_depois_raw), int(np.ceil(prazo_alvo_p85))) + 2
+    dias_x = np.arange(max_dias)
+    perfil_antes = np.zeros(max_dias)
+    perfil_antes[:len(perfil_antes_raw)] = perfil_antes_raw
+    perfil_depois = np.zeros(max_dias)
+    perfil_depois[:len(perfil_depois_raw)] = perfil_depois_raw
+
     dias_sobrecarga_antes = int(np.sum(perfil_antes > capacidade_alvo_fte))
-
-    # Perfil Otimizado pelo Algoritmo Genético (Nivelado e Estável)
-    perfil_depois = np.zeros(horizonte_base)
-    perfil_depois[0:6] = 2.0
-    perfil_depois[6:16] = 3.5
-    perfil_depois[16:26] = 3.8
-    perfil_depois[26:38] = 4.0
-    perfil_depois[38:50] = 3.9
-    perfil_depois[50:58] = 3.5
-    perfil_depois[58:62] = 2.0
-
-    pico_depois = 4.0
-    var_depois = 0.85
-    reducao_var_pct = ((var_antes - var_depois) / var_antes) * 100.0
-    makespan_final = 61.6
     dias_sobrecarga_depois = int(np.sum(perfil_depois > capacidade_alvo_fte))
 
     # Atribui dados aos cronogramas
-    shifts_zero = np.zeros(n_t)
-    _, s_depois, f_depois = simular_perfil_recursos_exato(shifts_zero)
     for i, t in enumerate(tarefas):
-        t["shift_nivelamento"] = 0.0
+        t["shift_nivelamento"] = round(float(melhor_ind[i]), 1)
         t["start_nivelado"] = round(float(s_depois[i]), 1)
         t["finish_nivelado"] = round(float(f_depois[i]), 1)
 

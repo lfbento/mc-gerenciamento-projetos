@@ -201,12 +201,12 @@ def extrair_metadados_projeto(pasta_convertidos: str) -> Dict[str, Any]:
 
     # 5. Cliente
     m_cli = re.search(r"(?:Cliente / Sponsor|Cliente|Raz[ãa]o Social|Empresa):\s*([^\n\r*#|]+)", texto_completo, re.IGNORECASE)
-    if m_cli and len(m_cli.group(1).strip()) > 3 and not m_cli.group(1).strip().startswith(":"):
+    if "RNEST" in texto_completo or "Petrobras" in texto_completo or "4515511508" in texto_completo:
+        dados["cliente"] = "PETROBRAS / RNEST (Refinaria Abreu e Lima - Ipojuca/PE)"
+    elif m_cli and len(m_cli.group(1).strip()) > 3 and not m_cli.group(1).strip().startswith(":"):
         dados["cliente"] = m_cli.group(1).strip()
     elif "Oxiteno" in texto_completo or "Indorama" in texto_completo:
-        dados["cliente"] = "Oxiteno S.A. / Grupo Indorama"
-    elif "Petrobras" in texto_completo or "RNEST" in texto_completo:
-        dados["cliente"] = "Petrobras / RNEST (Ipojuca/PE)"
+        dados["cliente"] = "INDORAMA (Indovinya) — Camaçari/BA"
 
     # 6. Orçamento
     m_orc = re.search(r"(?:Or[çc]amento Total Estimado|Or[çc]amento Total|pre[çc]o fixo|valor total estimado|valor total do pedido|valor total bruto dos produtos|Valor da Nota Fiscal|Valor total)[^\n\r]*?R?\$?\s*([\d\.]+\,\d{2})", texto_completo, re.IGNORECASE)
@@ -231,7 +231,32 @@ def extrair_metadados_projeto(pasta_convertidos: str) -> Dict[str, Any]:
             dados["orcamento_total"] = max(valores_rs)
 
     # 7. Detecção inteligente de normas e escopo de materiais por tipo de equipamento
-    if "API 650" in texto_completo or "Tanque" in dados["nome_projeto"] or "TQ-" in dados.get("tag_equipamento", ""):
+    if "Feixe" in dados["nome_projeto"] or "Feixes" in dados["nome_projeto"] or "Trocador" in dados["nome_projeto"] or "P-360" in dados.get("tag_equipamento", ""):
+        dados["norma_principal"] = "ASME Section VIII Div 1 / NR-13 / PETROBRAS N-133"
+        dados["materiais"] = [
+            "Tubos sem Costura SA-213-TP304L Ø25,4x2,11mm",
+            "Aletas de Alumínio AL1060 tipo G-FIN por Encravamento",
+            "Cabeçotes Meia-Cana SA-312-304L Ø10\" e Chapas SA-240-304L",
+            "Flanges SA-182-F304L 300#/600# WN-RTJ/RF",
+            "Perfis Estruturais W150 ASTM A-572 Gr. 50 e Chapas ASTM A-36",
+            "Fixadores Revestidos ASTM B766 Classe 8 Tipo II"
+        ]
+        dados["ensaios_testes"] = [
+            "Radiografia Total (RX 100% ASME VIII UW-51)",
+            "Líquido Penetrante (LP Apêndice 8)",
+            "Inspeção PMI de Ligas Inox 304L (API RP 578)",
+            "Teste Hidrostático (TH) Testemunhado (81 / 34 kgf/cm² g) com OIA Tipo A"
+        ]
+        dados["pintura_tratamento"] = [
+            "Decapagem e Passivação Integral das Partes em Aço Inox 304L",
+            "Jateamento Abrasivo e Pintura Anticorrosiva do Aço Carbono (ET-5290.00-22311-455-GBR)"
+        ]
+        dados["expedicao_databook"] = [
+            "Data Book Técnico de Fabricação (PETROBRAS N-381/N-2064) com ART",
+            "Comunicado de Liberação de Material (CLM) emitido pelo OIA Tipo A",
+            "Embalagem Pesada, Berços de Apoio e Transporte Rodoviário DDP RNEST"
+        ]
+    elif "API 650" in texto_completo or "Tanque" in dados["nome_projeto"] or "TQ-" in dados.get("tag_equipamento", ""):
         dados["norma_principal"] = "API 650 / NR-13 / ASME IX"
         dados["materiais"] = [
             "Chapas de Aço Inoxidável SA-240 304",
@@ -255,31 +280,6 @@ def extrair_metadados_projeto(pasta_convertidos: str) -> Dict[str, Any]:
             "Data Book Completo (SOP-BRA-019-01) com ART e Certificados 3.1",
             "Embalagem e Berço de Transporte",
             "Transporte Rodoviário CIF Especial Camaçari/BA"
-        ]
-    elif "Feixe" in texto_completo or "Trocador" in dados["nome_projeto"] or "P-360" in dados.get("tag_equipamento", ""):
-        dados["norma_principal"] = "ASME Section VIII Div 1 / TEMA / NR-13 / PETROBRAS N-133"
-        dados["materiais"] = [
-            "Tubos sem Costura SA-213-TP304L Ø25,4x2,11mm",
-            "Aletas de Alumínio AL1060 tipo G-FIN por Encravamento",
-            "Cabeçotes Meia-Cana SA-312-304L Ø10\" e Chapas SA-240-304L",
-            "Flanges SA-182-F304L 300#/600# WN-RTJ/RF",
-            "Perfis Estruturais W150 ASTM A-572 Gr. 50 e Chapas ASTM A-36",
-            "Fixadores Revestidos ASTM B766 Classe 8 Tipo II"
-        ]
-        dados["ensaios_testes"] = [
-            "Radiografia Total (RX 100% ASME VIII UW-51)",
-            "Líquido Penetrante (LP Apêndice 8)",
-            "Inspeção PMI de Ligas Inox 304L (API RP 578)",
-            "Teste Hidrostático (TH) Testemunhado (81 / 34 kgf/cm² g) com OIA Tipo A"
-        ]
-        dados["pintura_tratamento"] = [
-            "Decapagem e Passivação Integral das Partes em Aço Inox 304L",
-            "Jateamento Abrasivo e Pintura Anticorrosiva do Aço Carbono (ET-5290.00-22311-455-GBR)"
-        ]
-        dados["expedicao_databook"] = [
-            "Data Book Técnico de Fabricação (PETROBRAS N-381/N-2064) com ART",
-            "Comunicado de Liberação de Material (CLM) emitido pelo OIA Tipo A",
-            "Embalagem Pesada, Berços de Apoio e Transporte Rodoviário DDP RNEST"
         ]
 
     return dados
