@@ -271,7 +271,7 @@ def gerar_histograma_recursos_temporal(
     for i, t in enumerate(tarefas):
         dur = float(t.get("provavel", 1.0))
         if t["id"] == "4.3" and tem_nivelamento:
-            dur = 4.5 # Crashing mitigado com 2 soldadores
+            dur = max(1.0, round(float(t.get("provavel", 1.0)) * 0.65, 1)) # Crashing mitigado com equipe reforçada
             
         if tem_nivelamento and "start_nivelado" in t and "finish_nivelado" in t:
             start_days[i] = float(t["start_nivelado"])

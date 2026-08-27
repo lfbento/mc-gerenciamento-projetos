@@ -93,7 +93,7 @@ def exportar_msproject_xml(
         tid = t["id"]
         # Aplica duração de crashing mitigado na soldagem (4.3)
         if tid == "4.3" and tem_nivelamento:
-            dur = 4.5
+            dur = max(1.0, round(float(t.get("provavel", 1.0)) * 0.65, 1))
         else:
             dur = float(t.get("provavel", 1.0))
         duracoes_efetivas[tid] = dur

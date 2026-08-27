@@ -158,7 +158,7 @@ def gerar_relatorio_pdf_diretoria(
     story.append(Paragraph("Relatório Integrado de Riscos MCMC, Recursos & Nivelamento Bioinspirado", st_title))
     story.append(Paragraph(
         f"<b>Projeto:</b> {rede_wbs['projeto']} | <b>TAG:</b> {rede_wbs['tag']} | <b>Cliente:</b> {rede_wbs['cliente']} | <b>Norma:</b> {metadados.get('norma_principal', 'API 650 / NR-13')}<br/>"
-        f"<b>Data Início (Recebimento OC):</b> {d_ini_proj.strftime('%d/%m/%Y')} | <b>Marco 5 (Entrega Camaçari/BA):</b> {d_fim_proj.strftime('%d/%m/%Y')} | <b>Prazo Contratual:</b> {p_corridos}d corridos (~{p_uteis}d úteis)",
+        f"<b>Data Início (Recebimento OC):</b> {d_ini_proj.strftime('%d/%m/%Y')} | <b>Marco Final (Entrega Contratual):</b> {d_fim_proj.strftime('%d/%m/%Y')} | <b>Prazo Contratual:</b> {p_corridos}d corridos (~{p_uteis}d úteis)",
         st_subtitle
     ))
     story.append(HRFlowable(width="100%", thickness=1.0, color=c_blue, spaceBefore=0, spaceAfter=5))
@@ -223,7 +223,7 @@ def gerar_relatorio_pdf_diretoria(
     story.append(Spacer(1, 2))
     story.append(Paragraph("2. Diagnóstico Executivo de Riscos: Inercial vs. Mitigado", st_h2))
     story.append(Paragraph(
-        f"A simulação pura do cronograma nominal em série revelou <b>{d_iner['prob_sucesso_prazo']:.1f}% de chance</b> de entrega em 71 dias úteis "
+        f"A simulação pura do cronograma nominal em série revelou <b>{d_iner['prob_sucesso_prazo']:.1f}% de chance</b> de entrega em {prazo_nom:.0f} dias úteis "
         f"(duração média de <b>{d_iner['p50']:.1f} dias</b>, gerando atraso crítico de +{d_iner['p50'] - prazo_nom:.1f} dias). "
         f"Com o <b>Plano de Ação Estratégico e Nivelamento Bioinspirado</b>, a probabilidade de cumprimento do prazo contratual "
         f"eleva-se para <b>{d_mit['prob_sucesso_prazo']:.1f}% (🟢 Baixo Risco / Protegido)</b> com margem de segurança de <b>{d_mit['buffer_disponivel']:.1f} dias úteis</b>.",
@@ -468,18 +468,25 @@ def gerar_relatorio_pdf_diretoria(
         d_sob_antes = metricas_nivelamento.get("dias_sobrecarga_antes", 22)
         d_sob_depois = metricas_nivelamento.get("dias_sobrecarga_depois", 0)
         
+        base_prazo_nom = metricas_nivelamento.get('prazo_nominal_base', prazo_nom)
+        makespan_niv_val = metricas_nivelamento['makespan_final_dias']
+        if base_prazo_nom > makespan_niv_val:
+            ganho_prazo_str = f"Economia de -{base_prazo_nom - makespan_niv_val:.1f}d"
+        else:
+            ganho_prazo_str = "Alinhado ao Alvo"
+        
         tab_niv_data = [
             [
                 Paragraph("Indicador de Nivelamento", st_cell_white_bold),
-                Paragraph("Antes da Otimização (Nominal)", st_cell_center_white_bold),
-                Paragraph("Após Nivelamento Bioinspirado", st_cell_center_white_bold),
+                Paragraph("Antes da Otimização", st_cell_center_white_bold),
+                Paragraph("Após Nivelamento GA", st_cell_center_white_bold),
                 Paragraph("Ganho Operacional Efetivo", st_cell_center_white_bold)
             ],
             [
                 Paragraph("<b>Pico Máximo de Mão de Obra</b>", st_cell),
                 Paragraph(f"{metricas_nivelamento['pico_antes']:.1f} FTEs", st_cell_center),
                 Paragraph(f"<b>{metricas_nivelamento['pico_depois']:.1f} FTEs</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Redução de -{metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']:.1f} profissionais no pico</b></font>", st_cell_center)
+                Paragraph(f"<font color='#059669'><b>Redução de -{metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']:.1f} profissionais</b></font>", st_cell_center)
             ],
             [
                 Paragraph("<b>Variância da Demanda (σ²)</b>", st_cell),
@@ -489,15 +496,15 @@ def gerar_relatorio_pdf_diretoria(
             ],
             [
                 Paragraph("<b>Dias em Sobrealocação Crítica</b>", st_cell),
-                Paragraph(f"{d_sob_antes} dias (> 4 FTEs)", st_cell_center),
+                Paragraph(f"{d_sob_antes} dias (> {metricas_nivelamento.get('capacidade_alvo', 4.0):.1f} FTEs)", st_cell_center),
                 Paragraph(f"<b>{d_sob_depois} dias</b> (Zero)", st_cell_center),
                 Paragraph("<font color='#059669'><b>100% de estabilidade (Sem Horas Extras)</b></font>", st_cell_center)
             ],
             [
                 Paragraph("<b>Prazo Final do Projeto</b>", st_cell),
-                Paragraph(f"{metricas_nivelamento.get('prazo_nominal_base', 74.2):.1f} dias úteis", st_cell_center),
-                Paragraph(f"<b>{metricas_nivelamento['makespan_final_dias']:.1f} dias úteis</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Economia de -{metricas_nivelamento.get('prazo_nominal_base', 74.2) - metricas_nivelamento['makespan_final_dias']:.1f}d (≤ Alvo P85)</b></font>", st_cell_center)
+                Paragraph(f"{base_prazo_nom:.1f} dias úteis", st_cell_center),
+                Paragraph(f"<b>{makespan_niv_val:.1f} dias úteis</b>", st_cell_center),
+                Paragraph(f"<font color='#059669'><b>{ganho_prazo_str} (≤ P85: {p85_mit:.1f}d)</b></font>", st_cell_center)
             ]
         ]
 
@@ -530,6 +537,17 @@ def gerar_relatorio_pdf_diretoria(
         st_body
     ))
 
+    # Variáveis dinâmicas para a Matriz 5W2H
+    mat_principal = metadados.get('materiais', ['Aço Inoxidável SA-240 304'])[0]
+    ganho_ft_dias = max(1.0, d_iner['p50'] - d_mit['p50'])
+    pico_niv_fte = metricas_nivelamento.get('pico_depois', 4.0) if metricas_nivelamento else 4.0
+    pico_ant_fte = metricas_nivelamento.get('pico_antes', 7.5) if metricas_nivelamento else 7.5
+    var_red_pct = metricas_nivelamento.get('reducao_variancia_pct', 81.6) if metricas_nivelamento else 81.6
+    contingencia_fin = c_mc.get('contingencia_sugerida', 20600.0)
+    buffer_p85_val = d_mit.get('buffer_p85_p50', 3.2)
+    prob_mit_pct = d_mit.get('prob_sucesso_prazo', 95.0)
+    makespan_niv_dias = metricas_nivelamento.get('makespan_final_dias', p85_mit) if metricas_nivelamento else p85_mit
+
     # Tabela 5W2H (Cabeçalho Azul Padronizado e Fonte Branca Negrito)
     tab_5w2h_header = [
         Paragraph("Ação (O Quê)", st_cell_white_bold),
@@ -541,31 +559,31 @@ def gerar_relatorio_pdf_diretoria(
         tab_5w2h_header,
         [
             Paragraph("<b>Fast-Tracking em Suprimentos</b>", st_cell_bold),
-            Paragraph("Disparar cotação e compra de chapas SA-240 304 antes do fim do detalhamento 3D", st_cell),
+            Paragraph(f"Disparar cotação e compra de {mat_principal} antes do fim do detalhamento 3D", st_cell),
             Paragraph("Suprimentos / Eng.", st_cell_center),
-            Paragraph("<b>-8 dias no caminho crítico</b>", st_cell_center)
+            Paragraph(f"<b>-{ganho_ft_dias:.1f}d no caminho crítico</b>", st_cell_center)
         ],
         [
-            Paragraph("<b>Crashing na Soldagem ASME IX</b>", st_cell_bold),
-            Paragraph("Alocar 2 soldadores qualificados em paralelo nas soldas longitudinais do costado", st_cell),
+            Paragraph("<b>Crashing na Fabricação / Soldagem</b>", st_cell_bold),
+            Paragraph(f"Alocar equipe dimensionada de soldadores qualificados ASME IX nas juntas do {metadados.get('tag_equipamento', 'equipamento')}", st_cell),
             Paragraph("Produção / Fábrica", st_cell_center),
-            Paragraph("<b>-4 dias na caldeiraria</b>", st_cell_center)
+            Paragraph("<b>Garante fluxo contínuo</b>", st_cell_center)
         ],
         [
             Paragraph("<b>Nivelamento Bioinspirado</b>", st_cell_bold),
-            Paragraph("Operar com equipe contínua de 3 a 4 profissionais, escalonando folgas não-críticas", st_cell),
+            Paragraph(f"Operar com equipe contínua de até {pico_niv_fte:.1f} FTEs ({metricas_recursos.get('hh_total_projeto', 0):.1f} HH), escalonando folgas via GA", st_cell),
             Paragraph("Planejamento (PMO)", st_cell_center),
-            Paragraph("<b>Elimina horas extras</b>", st_cell_center)
+            Paragraph(f"<b>Zero sobrecarga (-{var_red_pct:.1f}% var)</b>", st_cell_center)
         ],
         [
             Paragraph("<b>Governança de Feeding Buffer</b>", st_cell_bold),
-            Paragraph("Fixar meta interna no P50 (65.5d) e vender no P85 (68.7d), retendo 2.3d de buffer", st_cell),
+            Paragraph(f"Fixar meta interna no P50 ({p50_mit:.1f}d) e vender no P85 ({p85_mit:.1f}d), retendo {buffer_p85_val:.1f}d de buffer", st_cell),
             Paragraph("PMO / Diretoria", st_cell_center),
-            Paragraph("<b>SLA 85% protegido</b>", st_cell_center)
+            Paragraph(f"<b>SLA {prob_mit_pct:.1f}% protegido</b>", st_cell_center)
         ],
         [
             Paragraph("<b>Reserva de Contingência</b>", st_cell_bold),
-            Paragraph("Provisionar R$ 20.600,00 (P80-P50) para absorver flutuações de ligas e frete", st_cell),
+            Paragraph(f"Provisionar R$ {contingencia_fin:,.2f} (delta P80-P50) para absorver flutuações de ligas e frete", st_cell),
             Paragraph("Financeiro / Control.", st_cell_center),
             Paragraph("<b>Proteção orçamentária</b>", st_cell_center)
         ]
@@ -589,10 +607,10 @@ def gerar_relatorio_pdf_diretoria(
     # Seção 10: Recomendações de Governança para PMOs e Gestores
     story.append(Paragraph("10. Recomendações de Governança para PMOs e Gestores Industriais", st_h2))
     story.append(Paragraph(
-        "1. <b>Abandone o Prazo Nominal Determinístico:</b> Fixe os acordos de nível de serviço (SLA) exclusivamente no Alvo Gerencial P85 (<b>68.7 dias úteis</b>).<br/>"
-        "2. <b>Blindagem do Caminho Crítico Estocástico:</b> Não utilize folgas das tarefas de suprimento de chapas e soldagem de virolas, pois possuem criticidade > 85%.<br/>"
+        f"1. <b>Abandone o Prazo Nominal Determinístico:</b> Fixe os acordos de nível de serviço (SLA) exclusivamente no Alvo Gerencial P85 (<b>{p85_mit:.1f} dias úteis</b>).<br/>"
+        f"2. <b>Blindagem do Caminho Crítico Estocástico:</b> Não utilize folgas das tarefas de suprimento ({mat_principal}) e caldeiraria/soldagem, pois possuem alta criticidade estocástica.<br/>"
         "3. <b>Monitoramento de Fricção Operacional:</b> Caso o chão de fábrica registre mais de 2 dias consecutivos em regime de bloqueio, acionar equipe de apoio.<br/>"
-        "4. <b>Gestão Visual de Recursos:</b> Acompanhar a curva de mobilização semanal nivelada, mantendo o efetivo estável de 3 a 4 profissionais.",
+        f"4. <b>Gestão Visual de Recursos:</b> Acompanhar a curva de mobilização semanal nivelada, mantendo o efetivo estabilizado em até {pico_niv_fte:.1f} profissionais.",
         st_body
     ))
     story.append(Spacer(1, 8))
@@ -601,9 +619,9 @@ def gerar_relatorio_pdf_diretoria(
     story.append(KeepTogether([
         Paragraph("11. Formalização de Decisão e Homologação da Diretoria", st_h2),
         Paragraph(
-            "Submete-se à Diretoria Executiva a aprovação formal do <b>Plano de Ação Estratégico</b>, do <b>Cronograma Nivelado</b>, "
-            "da liberação do <b>Feeding Buffer (+2.3 dias)</b> e da alocação da <b>Reserva de Contingência (R$ 20.600,00)</b> "
-            "para início imediato da fabricação com índice de segurança operacional de 95.9%.",
+            f"Submete-se à Diretoria Executiva a aprovação formal do <b>Plano de Ação Estratégico</b>, do <b>Cronograma Nivelado ({makespan_niv_dias:.1f} dias úteis)</b>, "
+            f"da liberação do <b>Feeding Buffer (+{buffer_p85_val:.1f} dias)</b> e da alocação da <b>Reserva de Contingência (R$ {contingencia_fin:,.2f})</b> "
+            f"para início imediato da fabricação com índice de segurança operacional de {prob_mit_pct:.1f}%.",
             st_body
         ),
         Spacer(1, 14),

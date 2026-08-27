@@ -90,12 +90,12 @@ def executar_nivelamento_bioinspirado(
     prazo_alvo_p85 = float(d_mit.get("p85", 68.7))
     prazo_alvo_p50 = float(d_mit.get("p50", 65.5))
 
-    # Durações mitigadas (Crashing na soldagem 4.3 de 7.1d para 4.5d)
+    # Durações mitigadas (Crashing na soldagem 4.3 com equipe reforçada ~35% de ganho)
     duracoes = []
     for t in tarefas:
         tid = t["id"]
         if tid == "4.3":
-            dur = 4.5
+            dur = max(1.0, round(float(t.get("provavel", 1.0)) * 0.65, 1))
         else:
             dur = float(t.get("provavel", 1.0))
         duracoes.append(dur)
@@ -217,11 +217,12 @@ def executar_nivelamento_bioinspirado(
     ax1.axhline(capacidade_alvo_fte, color="#0F172A", ls="--", lw=1.8, label=f"Capacidade Alvo da Fábrica ({capacidade_alvo_fte:.1f} FTEs)")
     ax1.set_title("1. ANTES DO NIVELAMENTO — Picos Graves de Sobrealocação e Oscilação Excessiva da Equipe", fontsize=10.5, fontweight="bold", color="#991B1B", pad=6)
     ax1.set_ylabel("Efetivo (FTEs)", fontsize=9.5, fontweight="bold")
-    ax1.set_ylim(0, 9.2)
+    ax1.set_ylim(0, max(pico_antes, capacidade_alvo_fte) * 1.25)
     ax1.grid(True, linestyle=":", alpha=0.55)
 
     # Badge Executivo de KPI - Antes
-    box_kpi_antes = f"Pico Máximo: {pico_antes:.1f} FTEs (+87% sobrecarga)\nVariância: {var_antes:.2f} (Instabilidade Alta)\nSobrecarga: {dias_sobrecarga_antes} dias acima do limite"
+    pct_sobrecarga_antes = ((pico_antes / capacidade_alvo_fte) - 1.0) * 100.0 if capacidade_alvo_fte > 0 else 0
+    box_kpi_antes = f"Pico Máximo: {pico_antes:.1f} FTEs (+{pct_sobrecarga_antes:.0f}% sobrecarga)\nVariância: {var_antes:.2f} (Instabilidade Alta)\nSobrecarga: {dias_sobrecarga_antes} dias acima do limite"
     ax1.text(0.985, 0.88, box_kpi_antes, transform=ax1.transAxes, ha="right", va="top",
              fontsize=7.8, fontweight="bold", color="#991B1B",
              bbox=dict(boxstyle="round,pad=0.35", facecolor="#FEF2F2", edgecolor="#DC2626", lw=0.9))
@@ -236,6 +237,7 @@ def executar_nivelamento_bioinspirado(
     ax2.set_title(f"2. APÓS NIVELAMENTO BIOINSPIRADO — Fluxo Contínuo e Estável de Produção (Prazo Nivelado: {makespan_final:.1f} dias úteis)", fontsize=10.5, fontweight="bold", color="#065F46", pad=6)
     ax2.set_xlabel("Linha do Tempo do Projeto (Dias Úteis)", fontsize=9.5, fontweight="bold")
     ax2.set_ylabel("Efetivo (FTEs)", fontsize=9.5, fontweight="bold")
+    ax2.set_ylim(0, max(pico_antes, capacidade_alvo_fte) * 1.25)
     ax2.grid(True, linestyle=":", alpha=0.55)
 
     # Badge Executivo de KPI - Depois
@@ -250,6 +252,8 @@ def executar_nivelamento_bioinspirado(
     fig.savefig(caminho_saida_png, dpi=180)
     plt.close(fig)
 
+    prazo_nom_projeto = float(rede_wbs.get("prazo_total_uteis", 63.0))
+
     metricas_nivelamento = {
         "pico_antes": round(pico_antes, 1),
         "pico_depois": round(pico_depois, 1),
@@ -261,7 +265,7 @@ def executar_nivelamento_bioinspirado(
         "dias_sobrecarga_depois": dias_sobrecarga_depois,
         "caminho_grafico_png": caminho_saida_png,
         "makespan_final_dias": makespan_final,
-        "prazo_nominal_base": 74.2
+        "prazo_nominal_base": prazo_nom_projeto
     }
 
     return metricas_nivelamento

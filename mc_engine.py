@@ -147,9 +147,9 @@ def _executar_mcmc_core(
 
 def gerar_rede_mitigada(rede_original: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Gera a versão otimizada da rede aplicando o Plano de Ação Estratégico:
-      1. Fast-Tracking em Suprimentos (início de cotações em 2.1).
-      2. Crashing na Soldagem e Montagem com dupla de soldadores qualificados ASME IX.
+    Gera a versão otimizada da rede aplicando o Plano de Ação Estratégico com compressão proporcional:
+      1. Fast-Tracking em Suprimentos (início de cotações em 2.1 e compressão de 20%).
+      2. Crashing na Soldagem e Montagem com alocação de equipe reforçada (compressão de 35% na soldagem e 25% na montagem).
       3. Buffer de Projeto planejado para assegurar SLA no P85.
     """
     rede = copy.deepcopy(rede_original)
@@ -158,22 +158,26 @@ def gerar_rede_mitigada(rede_original: Dict[str, Any]) -> Dict[str, Any]:
     for t in tarefas:
         tid = t["id"]
         if tid == "3.1":
-            t["deps"] = ["2.1"]  # Antecipação de compras
-            t["provavel"] = 2.5
-            t["otimista"] = 2.0
-            t["pessimista"] = 3.8
+            t["deps"] = ["2.1"]  # Antecipação de compras (Fast-Tracking)
+            dur_m = max(1.0, round(float(t.get("provavel", 2.0)) * 0.80, 1))
+            t["provavel"] = dur_m
+            t["otimista"] = max(0.5, round(dur_m * 0.80, 1))
+            t["pessimista"] = max(dur_m + 0.5, round(dur_m * 1.50, 1))
         elif tid == "3.2":
-            t["provavel"] = 10.0
-            t["otimista"] = 8.0
-            t["pessimista"] = 13.0
+            dur_m = max(2.0, round(float(t.get("provavel", 10.0)) * 0.80, 1))  # Diligenciamento usina
+            t["provavel"] = dur_m
+            t["otimista"] = max(1.0, round(dur_m * 0.80, 1))
+            t["pessimista"] = max(dur_m + 0.5, round(dur_m * 1.40, 1))
         elif tid == "4.3":
-            t["provavel"] = 4.5
-            t["otimista"] = 3.5
-            t["pessimista"] = 6.0
+            dur_m = max(1.5, round(float(t.get("provavel", 5.0)) * 0.65, 1))  # Crashing soldagem (2 soldadores paralelos)
+            t["provavel"] = dur_m
+            t["otimista"] = max(1.0, round(dur_m * 0.80, 1))
+            t["pessimista"] = max(dur_m + 0.5, round(dur_m * 1.40, 1))
         elif tid == "4.4":
-            t["provavel"] = 3.5
-            t["otimista"] = 2.8
-            t["pessimista"] = 4.8
+            dur_m = max(1.5, round(float(t.get("provavel", 4.0)) * 0.75, 1))  # Crashing montagem (2 montadores paralelos)
+            t["provavel"] = dur_m
+            t["otimista"] = max(1.0, round(dur_m * 0.80, 1))
+            t["pessimista"] = max(dur_m + 0.5, round(dur_m * 1.40, 1))
             
     return rede
 

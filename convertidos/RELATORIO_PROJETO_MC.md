@@ -1,8 +1,8 @@
 # 📊 Relatório Executivo de Planejamento, MCMC & Nivelamento Bioinspirado
 
 **Projeto:** Fabricação e Fornecimento do Tanque de Armazenamento TQ-960-30/1 (API 650) – Obra 2026-000037  
-**TAG do Equipamento:** `TQ-0960-30` | **Cliente:** `Oxiteno S.A. / Grupo Indorama`  
-**Data da Análise:** 26/08/2026 | **Normas:** `API 650 / NR-13`  
+**TAG do Equipamento:** `TQ-0960-30` | **Cliente:** `INDORAMA (Indovinya) — Camaçari/BA`  
+**Data da Análise:** 27/08/2026 | **Normas:** `API 650 / NR-13 / ASME IX`  
 
 ---
 
@@ -10,7 +10,7 @@
 
 | PRAZO NOMINAL (CPM) | PREVISÃO MEDIANA (P50) | ALVO GERENCIAL (P85) | NÍVEL CONSERVADOR (P95) |
 | :---: | :---: | :---: | :---: |
-| **63 dias úteis**<br/>(Soma teórica determinística) | **61.4 dias úteis**<br/>(Meta de chão de fábrica) | **64.3 dias úteis**<br/>(Buffer recomendado: +3.0d) | **66.2 dias úteis**<br/>(Buffer de segurança: +4.9d) |
+| **63 dias úteis**<br/>(Soma teórica determinística) | **59.1 dias úteis**<br/>(Meta de chão de fábrica) | **62.1 dias úteis**<br/>(Buffer recomendado: +3.0d) | **64.0 dias úteis**<br/>(Buffer de segurança: +4.8d) |
 
 ---
 
@@ -19,9 +19,9 @@
 | Métrica de Cronograma | Prazo Estimado | Buffer Adicional | Prob. Cumprimento | Perfil de Governança Indicado |
 | :--- | :---: | :---: | :---: | :--- |
 | **Baseline CPM (Nominal)** | **63.0 dias** | +0.0 d | **< 0.1%** | 🔴 **Risco Inaceitável** (Atraso contratual quase garantido) |
-| **Mediana Estocástica (P50)** | **61.4 dias** | +0.0 d (base) | **50.0%** | 🟡 **Planejamento Interno** (Meta operacional da fábrica) |
-| **Alvo Recomendado (P85)** | **64.3 dias** | **+3.0 d** | 🟢 **85.0%** | 🏆 **Padrão Ouro** para contratos comerciais e SLAs |
-| **Buffer Conservador (P95)** | **66.2 dias** | **+4.9 d** | 🟢 **95.0%** | 🛡️ **Missão Crítica** / Multas rescisórias severas |
+| **Mediana Estocástica (P50)** | **59.1 dias** | +0.0 d (base) | **50.0%** | 🟡 **Planejamento Interno** (Meta operacional da fábrica) |
+| **Alvo Recomendado (P85)** | **62.1 dias** | **+3.0 d** | 🟢 **85.0%** | 🏆 **Padrão Ouro** para contratos comerciais e SLAs |
+| **Buffer Conservador (P95)** | **64.0 dias** | **+4.8 d** | 🟢 **95.0%** | 🛡️ **Missão Crítica** / Multas rescisórias severas |
 
 ---
 
@@ -67,7 +67,7 @@ Dimensionamento fundamentado no Guia de Estimativa de Recursos Industriais (Stor
 | **Pico Máximo de Mão de Obra** | 7.5 FTEs | **4.0 FTEs** | 🟢 **Redução de -3.5 profissionais no pico** |
 | **Variância da Demanda (σ²)** | 4.62 | **0.85** | 🟢 **Suavização: -81.6% de oscilação** |
 | **Carga Total de Trabalho (HH)** | 1046.2 h | **1046.2 h** | **100% de aderência ao escopo fabril** |
-| **Prazo Final do Projeto** | 74.2 dias úteis | **61.6 dias úteis** | 🟢 **Redução de -12.6d (≤ Alvo P85)** |
+| **Prazo Final do Projeto** | 63.0 dias úteis | **61.6 dias úteis** | 🟢 **Redução de -1.4d (≤ Alvo P85)** |
 
 ---
 
@@ -77,7 +77,7 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 
 | WBS | Atividade | 3 Pontos (O, M, P) | Índice de Criticidade | Nível de Atenção |
 | :---: | :--- | :---: | :---: | :--- |
-| `1.1` | Kick-off Meeting & Alinhamento de Requisitos (Oxiteno S.A. / Grupo Indorama) | `(0.8, 1.0, 1.5) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
+| `1.1` | Kick-off Meeting & Alinhamento de Requisitos (INDORAMA (Indovinya) — Camaçari/BA) | `(0.8, 1.0, 1.5) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
 | `1.2` | Formalização do Termo de Abertura do Projeto (TAP) & Governança | `(0.8, 1.0, 1.5) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
 | `2.1` | Projeto Executivo & Detalhamento Mecânico 2D/3D (TQ-0960-30) | `(3.0, 3.8, 5.7) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
 | `2.2` | Memórias de Cálculo Estrutural e Pressão (API 650 / ASME) | `(2.6, 3.2, 4.8) d` | **100.0%** | 🔴 Crítica (Ação Imediata) |
@@ -92,10 +92,10 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 
 ## 7. Plano de Ação Estratégico para a Diretoria (5W2H)
 
-1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de chapas inox (SA-240 304) e tubos assim que o projeto preliminar for concluído (**economia de ~8 dias**).
-2. **Crashing na Soldagem ASME IX:** Alocar 2 soldadores qualificados em paralelo nas soldas do costado (**economia de ~4 dias**).
-3. **Nivelamento de Equipe Fábrica:** Operar com efetivo estável de ~3 a 4 pessoas, evitando custos com horas extras ou contratações de pico temporárias.
-4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 (61.4d) e contratar no P85 (64.3d), mantendo a margem de -1.3 dias como proteção do PMO.
+1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de Chapas de Aço Inoxidável SA-240 304 assim que o projeto 2D/3D for iniciado (-18.0d no caminho crítico).
+2. **Crashing na Fabricação / Soldagem:** Alocar equipe qualificada em paralelo nas juntas principais do TQ-0960-30.
+3. **Nivelamento de Equipe Fábrica:** Operar com efetivo estável de até 4.0 FTEs (1046.2 HH), eliminando horas extras e sobrealocações.
+4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 (59.1d) e contratar no P85 (62.1d), mantendo a margem de 3.0 dias como proteção do PMO (SLA 91.0% protegido).
 5. **Reserva de Contingência Financeira:** Provisionar **R$ 20,602.44** (P80-P50) para absorver flutuações de ligas e frete.
 
 ---
@@ -108,7 +108,7 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 | **MCMC** | **Markov Chain Monte Carlo**: Método estocástico que modela a persistência de bloqueios operacionais e alternância de regimes de produtividade. |
 | **CPM / PERT** | **Critical Path Method & PERT**: Modelagem clássica determinística baseada em estimativas de 3 pontos (Otimista, Mais Provável, Pessimista). |
 | **P50 / P85 / P95** | **Percentis de Confiança Estocástica**: P50 = Mediana interna de fábrica; P85 = Padrão ouro contratual (SLA); P95 = Buffer conservador de missão crítica. |
-| **Feeding Buffer** | **Pulmão de Convergência**: Reserva gerenciada pelo PMO (+2.3 dias) para absorver variações sem postergar a entrega final. |
+| **Feeding Buffer** | **Pulmão de Convergência**: Reserva gerenciada pelo PMO (+3.0 dias) para absorver variações sem postergar a entrega final. |
 | **FTE & HH** | **Full-Time Equivalent & Homem-Hora**: FTE = dedicação integral de 1 profissional (8h/dia); HH = esforço total de 1 hora de trabalho. |
 | **RLP / RCPSP** | **Resource Leveling & Resource-Constrained Scheduling**: Problemas de otimização combinatória para suavização de carga e restrição de recursos. |
 | **MCMC-Safe Float** | **Folga Estocástica Segura**: Regra bioinspirada que delimita os deslocamentos pelo Índice de Criticidade ($CI$), blindando tarefas críticas. |

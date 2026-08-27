@@ -122,7 +122,7 @@ def gerar_relatorio_markdown(
             f"| **Pico Máximo de Mão de Obra** | {metricas_nivelamento['pico_antes']:.1f} FTEs | **{metricas_nivelamento['pico_depois']:.1f} FTEs** | 🟢 **Redução de -{metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']:.1f} profissionais no pico** |",
             f"| **Variância da Demanda (σ²)** | {metricas_nivelamento['variancia_antes']:.2f} | **{metricas_nivelamento['variancia_depois']:.2f}** | 🟢 **Suavização: -{metricas_nivelamento['reducao_variancia_pct']:.1f}% de oscilação** |",
             f"| **Carga Total de Trabalho (HH)** | {metricas_recursos['hh_total_projeto']:.1f} h | **{metricas_recursos['hh_total_projeto']:.1f} h** | **100% de aderência ao escopo fabril** |",
-            f"| **Prazo Final do Projeto** | {metricas_nivelamento.get('prazo_nominal_base', 74.2):.1f} dias úteis | **{metricas_nivelamento['makespan_final_dias']:.1f} dias úteis** | 🟢 **Redução de -{metricas_nivelamento.get('prazo_nominal_base', 74.2) - metricas_nivelamento['makespan_final_dias']:.1f}d (≤ Alvo P85)** |"
+            f"| **Prazo Final do Projeto** | {metricas_nivelamento.get('prazo_nominal_base', prazo_nom):.1f} dias úteis | **{metricas_nivelamento['makespan_final_dias']:.1f} dias úteis** | 🟢 **Redução de -{metricas_nivelamento.get('prazo_nominal_base', prazo_nom) - metricas_nivelamento['makespan_final_dias']:.1f}d (≤ Alvo P85)** |"
         ])
 
     linhas.extend([
@@ -144,16 +144,21 @@ def gerar_relatorio_markdown(
             f"| `{t['wbs']}` | {t['nome']} | `({t['otimista']}, {t['provavel']}, {t['pessimista']}) d` | **{crit:.1f}%** | {status} |"
         )
 
+    mat_principal = metadados.get('materiais', ['Aço Inoxidável SA-240 304'])[0]
+    pico_depois_val = metricas_nivelamento.get('pico_depois', 4.0) if metricas_nivelamento else 4.0
+    buffer_p85_val = d_mit.get('buffer_p85_p50', 3.2)
+    ganho_ft_val = max(1.0, d_iner.get('p50', 0.0) - d_mit.get('p50', 0.0))
+
     linhas.extend([
         f"",
         f"---",
         f"",
         f"## 7. Plano de Ação Estratégico para a Diretoria (5W2H)",
         f"",
-        f"1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de chapas inox (SA-240 304) e tubos assim que o projeto preliminar for concluído (**economia de ~8 dias**).",
-        f"2. **Crashing na Soldagem ASME IX:** Alocar 2 soldadores qualificados em paralelo nas soldas do costado (**economia de ~4 dias**).",
-        f"3. **Nivelamento de Equipe Fábrica:** Operar com efetivo estável de ~3 a 4 pessoas, evitando custos com horas extras ou contratações de pico temporárias.",
-        f"4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 ({d_mit['p50']:.1f}d) e contratar no P85 ({d_mit['p85']:.1f}d), mantendo a margem de {d_mit['buffer_disponivel']:.1f} dias como proteção do PMO.",
+        f"1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de {mat_principal} assim que o projeto 2D/3D for iniciado (-{ganho_ft_val:.1f}d no caminho crítico).",
+        f"2. **Crashing na Fabricação / Soldagem:** Alocar equipe qualificada em paralelo nas juntas principais do {metadados.get('tag_equipamento', 'equipamento')}.",
+        f"3. **Nivelamento de Equipe Fábrica:** Operar com efetivo estável de até {pico_depois_val:.1f} FTEs ({metricas_recursos.get('hh_total_projeto', 0):.1f} HH), eliminando horas extras e sobrealocações.",
+        f"4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 ({d_mit['p50']:.1f}d) e contratar no P85 ({d_mit['p85']:.1f}d), mantendo a margem de {buffer_p85_val:.1f} dias como proteção do PMO (SLA {d_mit['prob_sucesso_prazo']:.1f}% protegido).",
         f"5. **Reserva de Contingência Financeira:** Provisionar **R$ {c['contingencia_sugerida']:,.2f}** (P80-P50) para absorver flutuações de ligas e frete.",
         f"",
         f"---",
@@ -166,7 +171,7 @@ def gerar_relatorio_markdown(
         f"| **MCMC** | **Markov Chain Monte Carlo**: Método estocástico que modela a persistência de bloqueios operacionais e alternância de regimes de produtividade. |",
         f"| **CPM / PERT** | **Critical Path Method & PERT**: Modelagem clássica determinística baseada em estimativas de 3 pontos (Otimista, Mais Provável, Pessimista). |",
         f"| **P50 / P85 / P95** | **Percentis de Confiança Estocástica**: P50 = Mediana interna de fábrica; P85 = Padrão ouro contratual (SLA); P95 = Buffer conservador de missão crítica. |",
-        f"| **Feeding Buffer** | **Pulmão de Convergência**: Reserva gerenciada pelo PMO (+2.3 dias) para absorver variações sem postergar a entrega final. |",
+        f"| **Feeding Buffer** | **Pulmão de Convergência**: Reserva gerenciada pelo PMO (+{buffer_p85_val:.1f} dias) para absorver variações sem postergar a entrega final. |",
         f"| **FTE & HH** | **Full-Time Equivalent & Homem-Hora**: FTE = dedicação integral de 1 profissional (8h/dia); HH = esforço total de 1 hora de trabalho. |",
         f"| **RLP / RCPSP** | **Resource Leveling & Resource-Constrained Scheduling**: Problemas de otimização combinatória para suavização de carga e restrição de recursos. |",
         f"| **MCMC-Safe Float** | **Folga Estocástica Segura**: Regra bioinspirada que delimita os deslocamentos pelo Índice de Criticidade ($CI$), blindando tarefas críticas. |",
@@ -295,8 +300,8 @@ def executar_pipeline(
         inicio = metadados.get("data_inicio_projeto", date(2026, 8, 6))
 
     print(f"\n📄 7. Exportando para Microsoft Project XML (MSPDI Nivelado com Recursos)...")
-    print(f"   ✓ Data de Início Real  : {inicio.strftime('%d/%m/%Y')} (Recebimento da OC 641641)")
-    print(f"   ✓ Data Limite Contrato : {metadados.get('data_fim_contratual', date(2026, 11, 2)).strftime('%d/%m/%Y')} (Marco 5 TAP)")
+    print(f"   ✓ Data de Início Real  : {inicio.strftime('%d/%m/%Y')} (Recebimento do Pedido / Início Contratual)")
+    print(f"   ✓ Data Limite Contrato : {metadados.get('data_fim_contratual', date(2026, 11, 2)).strftime('%d/%m/%Y')} (Marco Final TAP)")
     xml_path = exportar_msproject_xml(rede_wbs, res_mc, inicio, caminho_saida_xml, base_duracao, metricas_recursos)
     print(f"   ✓ Arquivo XML Gerado   : {xml_path}")
 

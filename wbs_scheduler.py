@@ -49,42 +49,82 @@ def gerar_rede_wbs(metadados: Dict[str, Any]) -> Dict[str, Any]:
     # 2. Definição do catálogo de atividades detalhadas por pacote
     # Estrutura: (id_tarefa, nome, fracao_do_pacote_no_caminho_critico, deps_ids)
     # Obs: Atividades paralelas compartilham a mesma janela ou não somam no caminho crítico.
-    estrutura_base = {
-        "1.0": [
-            ("1.1", f"Kick-off Meeting & Alinhamento de Requisitos ({cliente})", 0.50, []),
-            ("1.2", "Formalização do Termo de Abertura do Projeto (TAP) & Governança", 0.50, ["1.1"]),
-        ],
-        "2.0": [
-            ("2.1", f"Projeto Executivo & Detalhamento Mecânico 2D/3D ({tag})", 0.30, ["1.2"]),
-            ("2.2", "Memórias de Cálculo Estrutural e Pressão (API 650 / ASME)", 0.25, ["2.1"]),
-            ("2.3", "Elaboração do PIT (Plano de Inspeção e Testes) e EPS/RQPS", 0.20, ["2.2"]),
-            ("2.4", "Submissão, Análise e Aprovação Técnica pelo Cliente", 0.25, ["2.3"]),
-        ],
-        "3.0": [
-            ("3.1", "Requisição de Compras & Cotação de Matérias-Primas Inox", 0.15, ["2.4"]),
-            ("3.2", "Fabricação e Entrega de Chapas Inox SA-240 304 e Tubos pela Usina", 0.60, ["3.1"]),
-            ("3.3", "Aquisição de Forjados, Flanges, Juntas PTFE e Estojos (Paralelo)", 0.30, ["3.1"]),
-            ("3.4", "Recebimento, Inspeção Dimensional e Rastreabilidade de MP na Fábrica", 0.25, ["3.2", "3.3"]),
-        ],
-        "4.0": [
-            ("4.1", "Traçado, Corte a Plasma e Chanfro das Chapas do Costado e Fundo", 0.15, ["3.4"]),
-            ("4.2", "Calandragem das Virolas e Pré-Montagem dos Aneis do Costado", 0.15, ["4.1"]),
-            ("4.3", "Soldagem das Juntas Longitudinais e Circunferencias (ASME IX)", 0.25, ["4.2"]),
-            ("4.4", "Montagem e Soldagem do Fundo Plano e Teto Cônico Autoportante", 0.15, ["4.3"]),
-            ("4.5", "Fabricação/Instalação de Bocais A1-W1, Boca de Visita M1 e Acessórios", 0.15, ["4.4"]),
-            ("4.6", "Execução de Ensaios END (Radiografia RX, LP, Caixa de Vácuo e PMI)", 0.08, ["4.5"]),
-            ("4.7", "Preparação e Execução do Teste Hidrostático (TH) Fabril", 0.07, ["4.6"]),
-        ],
-        "5.0": [
-            ("5.1", "Decapagem Química e Passivação Integral das Superfícies em Aço Inox", 0.60, ["4.7"]),
-            ("5.2", "Jateamento e Pintura Externa dos Acessórios em Aço Carbono (Munsell 5Y 8/12)", 0.40, ["5.1"]),
-        ],
-        "6.0": [
-            ("6.1", "Emissão, Compilação e Aprovação do Data Book Final com ART (SOP-BRA-019-01)", 0.40, ["5.2"]),
-            ("6.2", "Embalagem Especial, Fabricação do Berço e Carregamento", 0.30, ["6.1"]),
-            ("6.3", "Transporte Rodoviário Especial CIF e Entrega Técnica no Polo Camaçari/BA", 0.30, ["6.2"]),
-        ]
-    }
+    nome_proj = metadados.get("nome_projeto", "").lower()
+    is_feixe = any(k in nome_proj or k in tag.lower() for k in ["feixe", "resfriador", "p-360", "tubular", "trocador"])
+
+    if is_feixe:
+        estrutura_base = {
+            "1.0": [
+                ("1.1", f"Kick-off Meeting & Alinhamento de Requisitos ({cliente})", 0.50, []),
+                ("1.2", "Formalização do Termo de Abertura do Projeto (TAP) & Governança", 0.50, ["1.1"]),
+            ],
+            "2.0": [
+                ("2.1", f"Projeto Executivo & Detalhamento Mecânico 2D/3D dos Feixes ({tag})", 0.30, ["1.2"]),
+                ("2.2", "Memórias de Cálculo Estrutural, Cabeçotes Meia-Cana e Pressão (ASME VIII / NR-13)", 0.25, ["2.1"]),
+                ("2.3", "Elaboração do PIT (Plano de Inspeção e Testes), EPS/RQPS (ASME IX) e Procedimentos END", 0.20, ["2.2"]),
+                ("2.4", "Submissão, Análise e Aprovação Técnica pelo OIA (Tipo A) e Fiscalização Petrobras", 0.25, ["2.3"]),
+            ],
+            "3.0": [
+                ("3.1", "Requisição de Compras & Cotação de Tubos Inox SA-213-TP304L e Aletas G-FIN AL1060", 0.15, ["2.4"]),
+                ("3.2", "Fabricação e Fornecimento de Tubos Sem Costura SA-213-TP304L e Fitas de Alumínio", 0.60, ["3.1"]),
+                ("3.3", "Aquisição de Cabeçotes SA-312-304L, Flanges SA-182-F304L, Perfis W150 e Fixadores (Paralelo)", 0.30, ["3.1"]),
+                ("3.4", "Recebimento, Inspeção Dimensional, Rastreabilidade e PMI de Matéria-Prima na Fábrica", 0.25, ["3.2", "3.3"]),
+            ],
+            "4.0": [
+                ("4.1", "Corte, Preparação e Furação dos Cabeçotes Meia-Cana Ø10\" em SA-312-304L e Chapas", 0.15, ["3.4"]),
+                ("4.2", "Encasulamento/Aletamento G-FIN e Curvamento das 97 Serpentinas (P-36061) e Tubos Retos", 0.15, ["4.1"]),
+                ("4.3", "Soldagem dos Cabeçotes, Bocais 6\" RTJ/RF e Emendas de Tubos (ASME IX / N-133)", 0.25, ["4.2"]),
+                ("4.4", "Montagem das Estruturas Laterais (Vigas W150), Caixas Espaçadoras e Feixes", 0.15, ["4.3"]),
+                ("4.5", "Execução de Ensaios END (Radiografia Total RX 100% UW-51, LP e PMI)", 0.15, ["4.4"]),
+                ("4.6", "Preparação e Execução do Teste Hidrostático (TH) Fabril Testemunhado (81 / 34 kgf/cm² g)", 0.15, ["4.5"]),
+            ],
+            "5.0": [
+                ("5.1", "Decapagem Química e Passivação Integral das Partes em Aço Inox SA-304L", 0.60, ["4.6"]),
+                ("5.2", "Jateamento e Pintura Anticorrosiva das Estruturas em Aço Carbono (ET-5290.00-22311-455-GBR)", 0.40, ["5.1"]),
+            ],
+            "6.0": [
+                ("6.1", "Compilação e Aprovação do Data Book Final (N-381/N-2064), ART e Emissão do CLM pelo OIA", 0.40, ["5.2"]),
+                ("6.2", "Embalagem para Transporte Rodoviário, Fabricação de Berços e Proteção dos Bocais", 0.30, ["6.1"]),
+                ("6.3", f"Transporte Rodoviário Especial e Entrega Técnica DDP na {cliente}", 0.30, ["6.2"]),
+            ]
+        }
+    else:
+        estrutura_base = {
+            "1.0": [
+                ("1.1", f"Kick-off Meeting & Alinhamento de Requisitos ({cliente})", 0.50, []),
+                ("1.2", "Formalização do Termo de Abertura do Projeto (TAP) & Governança", 0.50, ["1.1"]),
+            ],
+            "2.0": [
+                ("2.1", f"Projeto Executivo & Detalhamento Mecânico 2D/3D ({tag})", 0.30, ["1.2"]),
+                ("2.2", "Memórias de Cálculo Estrutural e Pressão (API 650 / ASME)", 0.25, ["2.1"]),
+                ("2.3", "Elaboração do PIT (Plano de Inspeção e Testes) e EPS/RQPS", 0.20, ["2.2"]),
+                ("2.4", "Submissão, Análise e Aprovação Técnica pelo Cliente", 0.25, ["2.3"]),
+            ],
+            "3.0": [
+                ("3.1", "Requisição de Compras & Cotação de Matérias-Primas Inox", 0.15, ["2.4"]),
+                ("3.2", "Fabricação e Entrega de Chapas Inox SA-240 304 e Tubos pela Usina", 0.60, ["3.1"]),
+                ("3.3", "Aquisição de Forjados, Flanges, Juntas PTFE e Estojos (Paralelo)", 0.30, ["3.1"]),
+                ("3.4", "Recebimento, Inspeção Dimensional e Rastreabilidade de MP na Fábrica", 0.25, ["3.2", "3.3"]),
+            ],
+            "4.0": [
+                ("4.1", "Traçado, Corte a Plasma e Chanfro das Chapas do Costado e Fundo", 0.15, ["3.4"]),
+                ("4.2", "Calandragem das Virolas e Pré-Montagem dos Aneis do Costado", 0.15, ["4.1"]),
+                ("4.3", "Soldagem das Juntas Longitudinais e Circunferencias (ASME IX)", 0.25, ["4.2"]),
+                ("4.4", "Montagem e Soldagem do Fundo Plano e Teto Cônico Autoportante", 0.15, ["4.3"]),
+                ("4.5", "Fabricação/Instalação de Bocais A1-W1, Boca de Visita M1 e Acessórios", 0.15, ["4.4"]),
+                ("4.6", "Execução de Ensaios END (Radiografia RX, LP, Caixa de Vácuo e PMI)", 0.08, ["4.5"]),
+                ("4.7", "Preparação e Execução do Teste Hidrostático (TH) Fabril", 0.07, ["4.6"]),
+            ],
+            "5.0": [
+                ("5.1", "Decapagem Química e Passivação Integral das Superfícies em Aço Inox", 0.60, ["4.7"]),
+                ("5.2", "Jateamento e Pintura Externa dos Acessórios em Aço Carbono (Munsell 5Y 8/12)", 0.40, ["5.1"]),
+            ],
+            "6.0": [
+                ("6.1", "Emissão, Compilação e Aprovação do Data Book Final com ART (SOP-BRA-019-01)", 0.40, ["5.2"]),
+                ("6.2", "Embalagem Especial, Fabricação do Berço e Carregamento", 0.30, ["6.1"]),
+                ("6.3", "Transporte Rodoviário Especial CIF e Entrega Técnica no Polo Camaçari/BA", 0.30, ["6.2"]),
+            ]
+        }
 
     # 3. Dimensionamento de durações de 3 pontos (otimista, provável, pessimista)
     tarefas_finais = []
