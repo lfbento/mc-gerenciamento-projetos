@@ -133,22 +133,55 @@ def exportar_msproject_xml(
     el(root, "DefaultTaskType", "0")
     el(root, "CalendarUID", "1")
 
-    # Resumo executivo nos comentários do projeto
+    dur_tot_dias = max(1, (fim_projeto - data_inicio).days + 1)
     d_mit = resultado_mc.get("cenario_mitigado", {})
     c_mc = resultado_mc.get("custo", {})
+    p85_val = d_mit.get('p85', 0)
+    p50_val = d_mit.get('p50', 0)
+    hh_proj = metricas_recursos.get('hh_total_projeto', 0) if metricas_recursos else 0
+    pico_fte = metricas_recursos.get('pico_efetivo_global', 0) if metricas_recursos else 0
     comentarios = (
         f"CRONOGRAMA GERADO POR PIPELINE INTELIGENTE COM EAP PADRONIZADA (MCMC & NIVELAMENTO GA).\n"
-        f"Alvo Gerencial P85: {d_mit.get('p85', 0):.1f} dias úteis | P50 Fábrica: {d_mit.get('p50', 0):.1f} dias | Prazo Nivelado: 61.6 dias.\n"
+        f"Alvo Gerencial P85: {p85_val:.1f} dias úteis | P50 Fábrica: {p50_val:.1f} dias | Prazo Total: {dur_tot_dias} dias úteis.\n"
         f"Custo Estimado (P50): R$ {c_mc.get('p50', 0):,.2f} | Reserva Contingência (P80-P50): R$ {c_mc.get('contingencia_sugerida', 0):,.2f}.\n"
-        f"Recursos Dimensionados: {metricas_recursos.get('hh_total_projeto', 0):.1f} HH Totais | Equipe Nivelada: 4.0 FTEs Estáveis." if metricas_recursos else ""
+        f"Recursos Dimensionados: {hh_proj:.1f} HH Totais | Pico: {pico_fte:.1f} FTEs." if metricas_recursos else ""
     )
     el(root, "Comments", comentarios)
 
-    # 3. Calendário Padrão (Segunda a Sexta, 8h/dia: 08:00-12:00 e 13:00-17:00)
+    # Lista canônica de feriados nacionais para inclusão nas Exceções do Calendário
+    HOLIDAY_LIST = [
+        (date(2026, 1, 1), "Confraternizacao Universal"),
+        (date(2026, 2, 17), "Carnaval"),
+        (date(2026, 4, 3), "Sexta-feira Santa"),
+        (date(2026, 4, 21), "Tiradentes"),
+        (date(2026, 5, 1), "Dia do Trabalho"),
+        (date(2026, 6, 4), "Corpus Christi"),
+        (date(2026, 9, 7), "Independencia do Brasil"),
+        (date(2026, 10, 12), "Nossa Senhora Aparecida"),
+        (date(2026, 11, 2), "Finados"),
+        (date(2026, 11, 15), "Proclamacao da Republica"),
+        (date(2026, 11, 20), "Dia da Consciencia Negra"),
+        (date(2026, 12, 25), "Natal"),
+        (date(2027, 1, 1), "Confraternizacao Universal"),
+        (date(2027, 2, 8), "Carnaval"),
+        (date(2027, 2, 9), "Carnaval"),
+        (date(2027, 3, 26), "Sexta-feira Santa"),
+        (date(2027, 4, 21), "Tiradentes"),
+        (date(2027, 5, 1), "Dia do Trabalho"),
+        (date(2027, 5, 27), "Corpus Christi"),
+        (date(2027, 9, 7), "Independencia do Brasil"),
+        (date(2027, 10, 12), "Nossa Senhora Aparecida"),
+        (date(2027, 11, 2), "Finados"),
+        (date(2027, 11, 15), "Proclamacao da Republica"),
+        (date(2027, 11, 20), "Dia da Consciencia Negra"),
+        (date(2027, 12, 25), "Natal"),
+    ]
+
+    # 3. Calendário Padrão (Segunda a Sexta, 8h/dia: 08:00-12:00 e 13:00-17:00) com Feriados
     cals = ET.SubElement(root, f"{{{NS}}}Calendars")
     cal = ET.SubElement(cals, f"{{{NS}}}Calendar")
     el(cal, "UID", "1")
-    el(cal, "Name", "Padrao_Caldeiraria")
+    el(cal, "Name", "Padrao_Caldeiraria_40h")
     el(cal, "IsBaseCalendar", "1")
     wds = ET.SubElement(cal, f"{{{NS}}}WeekDays")
     for day_type in range(1, 8):
@@ -165,6 +198,20 @@ def exportar_msproject_xml(
             el(t2, "ToTime", "17:00:00")
         else:
             el(wd, "DayWorking", "0")
+
+    # Exceções (Feriados Nacionais que ocorrem no intervalo do projeto)
+    exceptions = ET.SubElement(cal, f"{{{NS}}}Exceptions")
+    for h_date, h_name in HOLIDAY_LIST:
+        if data_inicio - timedelta(days=15) <= h_date <= fim_projeto + timedelta(days=15):
+            exc = ET.SubElement(exceptions, f"{{{NS}}}Exception")
+            el(exc, "EnteredByOccurrences", "0")
+            tp = ET.SubElement(exc, f"{{{NS}}}TimePeriod")
+            el(tp, "FromDate", f"{h_date.strftime('%Y-%m-%d')}T00:00:00")
+            el(tp, "ToDate", f"{h_date.strftime('%Y-%m-%d')}T23:59:00")
+            el(exc, "Occurrences", "1")
+            el(exc, "Name", h_name)
+            el(exc, "Type", "1")
+            el(exc, "DayWorking", "0")
 
     # 4. Estrutura de Tarefas (Tasks)
     tasks_el = ET.SubElement(root, f"{{{NS}}}Tasks")

@@ -305,10 +305,16 @@ def executar_pipeline(
     xml_path = exportar_msproject_xml(rede_wbs, res_mc, inicio, caminho_saida_xml, base_duracao, metricas_recursos)
     print(f"   ✓ Arquivo XML Gerado   : {xml_path}")
 
-    # 7. Geração do Relatório Executivo em PDF para a Diretoria (3 Páginas)
-    print(f"\n📑 7. Gerando Relatório Executivo para a Diretoria em PDF (3 Páginas)...")
+    # 7. Geração do Relatório Executivo em PDF para a Diretoria (5 Páginas Padronizadas)
+    print(f"\n📑 7. Gerando Relatório Executivo para a Diretoria em PDF (5 Páginas Padronizadas)...")
     pdf_out = gerar_relatorio_pdf_diretoria(metadados, rede_wbs, res_mc, caminho_pdf, metricas_recursos, metricas_nivelamento)
     print(f"   ✓ Relatório PDF Criado : {pdf_out}")
+
+    # Gera também o nome canônico formal conforme SKILL.md
+    caminho_pdf_rev1 = str(pasta_dir / "ANALISE DE RISCO E PLANO DE MITIGAÇÃO_rev1.pdf")
+    if os.path.abspath(caminho_pdf_rev1) != os.path.abspath(caminho_pdf):
+        gerar_relatorio_pdf_diretoria(metadados, rede_wbs, res_mc, caminho_pdf_rev1, metricas_recursos, metricas_nivelamento)
+        print(f"   ✓ Relatório Canônico   : {caminho_pdf_rev1}")
 
     # 8. Geração do Relatório Markdown
     print(f"\n📝 8. Gerando relatório executivo Markdown...")

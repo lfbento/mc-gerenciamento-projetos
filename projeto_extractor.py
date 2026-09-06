@@ -200,13 +200,14 @@ def extrair_metadados_projeto(pasta_convertidos: str) -> Dict[str, Any]:
         dados["tag_equipamento"] = m_tag.group(1).strip()
 
     # 5. Cliente
-    m_cli = re.search(r"(?:Cliente / Sponsor|Cliente|Raz[ãa]o Social|Empresa):\s*([^\n\r*#|]+)", texto_completo, re.IGNORECASE)
-    if "RNEST" in texto_completo or "Petrobras" in texto_completo or "4515511508" in texto_completo:
-        dados["cliente"] = "PETROBRAS / RNEST (Refinaria Abreu e Lima - Ipojuca/PE)"
-    elif m_cli and len(m_cli.group(1).strip()) > 3 and not m_cli.group(1).strip().startswith(":"):
-        dados["cliente"] = m_cli.group(1).strip()
-    elif "Oxiteno" in texto_completo or "Indorama" in texto_completo:
+    if "Oxiteno" in texto_completo or "Indorama" in texto_completo:
         dados["cliente"] = "INDORAMA (Indovinya) — Camaçari/BA"
+    elif "Pedido de Compra Petrobras" in texto_completo or "RNEST" in dados["nome_projeto"] or "FAFEN" in texto_completo or "7004625456" in texto_completo:
+        dados["cliente"] = "PETROBRAS / RNEST (Refinaria Abreu e Lima - Ipojuca/PE)"
+    else:
+        m_cli = re.search(r"(?:Cliente / Sponsor|Cliente|Raz[ãa]o Social|Empresa):\s*([^\n\r*#|]+)", texto_completo, re.IGNORECASE)
+        if m_cli and len(m_cli.group(1).strip()) > 3 and not m_cli.group(1).strip().startswith(":"):
+            dados["cliente"] = m_cli.group(1).strip()
 
     # 6. Orçamento
     m_orc = re.search(r"(?:Or[çc]amento Total Estimado|Or[çc]amento Total|pre[çc]o fixo|valor total estimado|valor total do pedido|valor total bruto dos produtos|Valor da Nota Fiscal|Valor total)[^\n\r]*?R?\$?\s*([\d\.]+\,\d{2})", texto_completo, re.IGNORECASE)

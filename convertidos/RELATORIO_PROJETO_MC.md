@@ -2,7 +2,7 @@
 
 **Projeto:** Fabricação e Fornecimento do Tanque de Armazenamento TQ-960-30/1 (API 650) – Obra 2026-000037  
 **TAG do Equipamento:** `TQ-0960-30` | **Cliente:** `INDORAMA (Indovinya) — Camaçari/BA`  
-**Data da Análise:** 27/08/2026 | **Normas:** `API 650 / NR-13 / ASME IX`  
+**Data da Análise:** 06/09/2026 | **Normas:** `API 650 / NR-13 / ASME IX`  
 
 ---
 
@@ -64,10 +64,10 @@ Dimensionamento fundamentado no Guia de Estimativa de Recursos Industriais (Stor
 
 | Indicador de Nivelamento | Antes da Otimização (Nominal) | Após Nivelamento Bioinspirado | Ganho Operacional Efetivo |
 | :--- | :---: | :---: | :--- |
-| **Pico Máximo de Mão de Obra** | 7.5 FTEs | **4.0 FTEs** | 🟢 **Redução de -3.5 profissionais no pico** |
-| **Variância da Demanda (σ²)** | 4.62 | **0.85** | 🟢 **Suavização: -81.6% de oscilação** |
+| **Pico Máximo de Mão de Obra** | 4.0 FTEs | **4.0 FTEs** | 🟢 **Redução de -0.0 profissionais no pico** |
+| **Variância da Demanda (σ²)** | 1.10 | **1.01** | 🟢 **Suavização: -8.3% de oscilação** |
 | **Carga Total de Trabalho (HH)** | 1046.2 h | **1046.2 h** | **100% de aderência ao escopo fabril** |
-| **Prazo Final do Projeto** | 63.0 dias úteis | **61.6 dias úteis** | 🟢 **Redução de -1.4d (≤ Alvo P85)** |
+| **Prazo Final do Projeto** | 63.0 dias úteis | **55.1 dias úteis** | 🟢 **Redução de -7.9d (≤ Alvo P85)** |
 
 ---
 
