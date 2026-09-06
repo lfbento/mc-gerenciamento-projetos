@@ -408,7 +408,7 @@ def gerar_relatorio_pdf_diretoria(
     if metricas_recursos and "caminho_histograma_png" in metricas_recursos:
         img_rec_path = metricas_recursos["caminho_histograma_png"]
         if os.path.exists(img_rec_path):
-            story.append(Image(img_rec_path, width=18.0 * cm, height=5.5 * cm))
+            story.append(Image(img_rec_path, width=18.0 * cm, height=5.7 * cm))
             story.append(Spacer(1, 3))
 
     # Tabela de Recursos (Cabeçalho Azul Padronizado e Fonte Branca Negrito)

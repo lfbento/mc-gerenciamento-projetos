@@ -317,71 +317,93 @@ def gerar_histograma_recursos_temporal(
                     fte_semanal = units * (dias_na_semana / 5.0)
                     alocacao_semanal[cod_rec][sem] += fte_semanal
 
-    # 3. Plotagem do Histograma Empilhado (Altura expandida e rótulos com linha guia)
-    semanas_x = [f"Sem {s+1}" for s in range(num_semanas)]
+    # 3. Plotagem com Proporção Otimizada para PDF (12.0 x 3.8 inches, 300 DPI)
+    fig, ax1 = plt.subplots(figsize=(12.0, 3.8), dpi=300)
     x_indices = np.arange(num_semanas)
     
-    fig, ax1 = plt.subplots(figsize=(10.2, 5.6))
-    
+    if num_semanas > 16:
+        semanas_labels = [f"S{s+1:02d}" for s in range(num_semanas)]
+        rot_x = 45
+        ha_x = "right"
+    else:
+        semanas_labels = [f"Sem {s+1}" for s in range(num_semanas)]
+        rot_x = 0
+        ha_x = "center"
+
     bottom_y = np.zeros(num_semanas)
     for cod in codigos_ativos:
         valores = alocacao_semanal[cod]
         info = CATALOGO_RECURSOS[cod]
         nome_label = f"{info['categoria']} ({info['nome'].split('/')[0].strip()})"
-        ax1.bar(x_indices, valores, bottom=bottom_y, label=nome_label, color=info["cor"], edgecolor="white", alpha=0.90, width=0.68)
+        ax1.bar(
+            x_indices, valores, bottom=bottom_y, label=nome_label,
+            color=info["cor"], edgecolor="#FFFFFF", linewidth=0.4, alpha=0.92, width=0.74
+        )
         bottom_y += valores
 
     pico_efetivo = float(np.max(bottom_y))
     semana_pico = int(np.argmax(bottom_y)) + 1
-    
+    hh_total_proj = metricas_recursos.get("hh_total_projeto", float(np.sum(bottom_y) * 40.0))
+
     # Eixo 2: Curva S de Homem-Hora Acumulado (HH)
     ax2 = ax1.twinx()
-    hh_por_semana = bottom_y * 40.0 # 40h por FTE/semana
+    hh_por_semana = bottom_y * 40.0
     hh_acumulado = np.cumsum(hh_por_semana)
-    ax2.plot(x_indices, hh_acumulado, color="#0F172A", lw=2.4, marker="o", markersize=4.5, label="Curva S (HH Acumulado)")
-    ax2.set_ylabel("Homem-Hora Acumulado (HH)", fontsize=9.5, fontweight="bold", color="#0F172A")
-    ax2.tick_params(axis='y', labelcolor="#0F172A")
+    ax2.plot(x_indices, hh_acumulado, color="#0F172A", lw=1.9, linestyle="-", marker="o", markersize=3.2, label="Curva S (HH Acumulado)")
+    ax2.set_ylabel("Homem-Hora Acumulado (HH)", fontsize=7.8, fontweight="bold", color="#0F172A", labelpad=6)
+    ax2.tick_params(axis='y', labelsize=7.0, labelcolor="#0F172A")
+    ax2.set_ylim(0, max(hh_total_proj * 1.15, 100))
+    ax2.grid(False)
 
-    # Rótulos Numéricos com Linha e Caixa Flutuante fora das barras
+    # Rótulos limpos e despoluídos no topo das barras
     for i, val in enumerate(bottom_y):
-        if val > 0.05:
-            hh_sem = int(round(val * 40.0))
-            texto_rotulo = f"{val:.1f} FTE\n({hh_sem}h)"
-            ax1.annotate(
-                texto_rotulo,
-                xy=(x_indices[i], val),
-                xytext=(x_indices[i], val + 0.45),
-                ha="center",
-                va="bottom",
-                fontsize=7.2,
-                fontweight="bold",
-                color="#0F172A",
-                bbox=dict(boxstyle="round,pad=0.22", facecolor="#F8FAFC", edgecolor="#94A3B8", alpha=0.92, lw=0.6),
-                arrowprops=dict(arrowstyle="-", color="#64748B", lw=0.8, ls=":")
-            )
+        if val >= 0.2:
+            if abs(val - pico_efetivo) < 1e-4:
+                ax1.text(
+                    x_indices[i], val + 0.10, f"★ {val:.1f}\nPICO",
+                    ha="center", va="bottom", fontsize=6.2, fontweight="bold", color="#DC2626",
+                    bbox=dict(boxstyle="round,pad=0.12", facecolor="#FEE2E2", edgecolor="#DC2626", lw=0.5)
+                )
+            elif val >= 0.9:
+                ax1.text(
+                    x_indices[i], val + 0.06, f"{val:.1f}",
+                    ha="center", va="bottom", fontsize=6.2, fontweight="bold", color="#1E293B"
+                )
 
-    ax1.set_xlabel("Cronograma Semanal do Projeto", fontsize=10, fontweight="bold")
-    ax1.set_ylabel("Efetivo Alocado (Pessoas / FTEs)", fontsize=10, fontweight="bold")
-    ax1.set_title(f"Histograma de Alocação de Recursos por Função ao Longo do Tempo\n(Pico de Mobilização: {pico_efetivo:.1f} profissionais na Semana {semana_pico} | Total: {metricas_recursos['hh_total_projeto']:.1f} HH)", fontsize=11, fontweight="bold", pad=12)
+    # Linha guia horizontal do Pico Máximo
+    ax1.axhline(pico_efetivo, color="#DC2626", linestyle="--", linewidth=0.9, alpha=0.7)
+    ax1.text(
+        0.0, pico_efetivo + 0.10, f"Pico Máximo: {pico_efetivo:.1f} FTEs ({int(round(pico_efetivo*40))}h/sem na Semana {semana_pico})",
+        color="#DC2626", fontweight="bold", fontsize=7.2, ha="left"
+    )
+
+    # Configuração dos eixos principais
+    ax1.set_xlabel("Semanas de Execução Fabril", fontsize=7.8, fontweight="bold", color="#1E293B", labelpad=4)
+    ax1.set_ylabel("Efetivo (FTEs)", fontsize=7.8, fontweight="bold", color="#1E293B", labelpad=4)
     ax1.set_xticks(x_indices)
-    ax1.set_xticklabels(semanas_x, rotation=0, fontsize=8.5)
-    
-    # Altura vertical expandida com margem para os rótulos
-    limite_y_max = max(7.0, pico_efetivo * 1.45)
-    ax1.set_ylim(0, limite_y_max)
-    ax2.set_ylim(0, metricas_recursos["hh_total_projeto"] * 1.25)
-    
-    # Linha de pico de mobilização
-    ax1.axhline(pico_efetivo, color="#DC2626", ls="--", lw=1.2, alpha=0.7)
-    ax1.text(0.1, pico_efetivo + 0.15, f"Pico Máximo: {pico_efetivo:.1f} FTEs", color="#DC2626", fontweight="bold", fontsize=8.5)
+    ax1.set_xticklabels(semanas_labels, rotation=rot_x, ha=ha_x, fontsize=6.8)
+    ax1.set_ylim(0, max(5.8, pico_efetivo * 1.34))
+    ax1.tick_params(axis='both', labelsize=7.0)
+    ax1.grid(axis='y', linestyle=':', alpha=0.4, color='#94A3B8')
 
-    # Legenda organizada e nítida
+    # Título executivo padronizado
+    fig.suptitle(
+        f"Histograma Semanal de Recursos por Função Nivelada (Pico: {pico_efetivo:.1f} FTEs na Sem {semana_pico} | Total: {hh_total_proj:.1f} HH)",
+        fontsize=8.8, fontweight="bold", color="#0B2545", y=0.98
+    )
+
+    # Legenda externa inferior em 4 colunas limpas
     handles1, labels1 = ax1.get_legend_handles_labels()
     handles2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(handles1 + handles2, labels1 + labels2, loc="upper left", bbox_to_anchor=(0.0, 0.98), fontsize=7.2, frameon=True, ncol=2)
+    fig.legend(
+        handles1 + handles2, labels1 + labels2,
+        loc="lower center", bbox_to_anchor=(0.5, -0.06),
+        fontsize=6.0, frameon=True, edgecolor="#CBD5E1", facecolor="#F8FAFC",
+        ncol=4
+    )
 
-    fig.tight_layout()
-    fig.savefig(caminho_saida_png, dpi=160)
+    plt.tight_layout(rect=[0, 0.10, 1, 0.94])
+    fig.savefig(caminho_saida_png, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
     metricas_recursos["pico_efetivo_global"] = round(pico_efetivo, 1)
