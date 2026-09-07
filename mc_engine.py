@@ -110,13 +110,16 @@ def _executar_mcmc_core(
     ef = np.zeros((n_sim, n_t))
 
     for u in topo_order:
+        shift_u = float(tarefas[u].get("shift_nivelamento", 0.0))
         if preds[u]:
             max_prev = ef[:, preds[u][0]]
             for p in preds[u][1:]:
                 max_prev = np.maximum(max_prev, ef[:, p])
+            if shift_u > 0:
+                max_prev = np.maximum(max_prev, shift_u)
             es[:, u] = max_prev
         else:
-            es[:, u] = 0.0
+            es[:, u] = shift_u
         ef[:, u] = es[:, u] + dur[:, u]
 
     duracao_total = ef.max(axis=1)
@@ -143,6 +146,78 @@ def _executar_mcmc_core(
         t["indice_criticidade"] = round(float(crit_idx[i]), 1)
 
     return duracao_total, crit_idx, dur
+
+
+def calcular_estatisticas_cenario(
+    duracoes: np.ndarray,
+    prazo_alvo: float,
+    cenario_id: str,
+    cenario_nome: str
+) -> Dict[str, Any]:
+    """Calcula estatísticas descritivas completas e percentis auditáveis para um cenário."""
+    p10 = float(np.percentile(duracoes, 10))
+    p50 = float(np.percentile(duracoes, 50))
+    p80 = float(np.percentile(duracoes, 80))
+    p85 = float(np.percentile(duracoes, 85))
+    p90 = float(np.percentile(duracoes, 90))
+    p95 = float(np.percentile(duracoes, 95))
+    media = float(np.mean(duracoes))
+    mediana = float(np.median(duracoes))
+    std_val = float(np.std(duracoes, ddof=1))
+    min_val = float(np.min(duracoes))
+    max_val = float(np.max(duracoes))
+
+    try:
+        import scipy.stats as sp_stats
+        skew_val = float(sp_stats.skew(duracoes))
+        kurt_val = float(sp_stats.kurtosis(duracoes))
+    except Exception:
+        skew_val = 0.0
+        kurt_val = 0.0
+
+    prob_cumprimento = float(np.mean(duracoes <= prazo_alvo) * 100.0)
+    buffer_85_50 = round(p85 - p50, 2)
+    buffer_95_50 = round(p95 - p50, 2)
+
+    return {
+        "scenario_id": cenario_id,
+        "scenario_name": cenario_nome,
+        "media": media,
+        "mediana": mediana,
+        "std": std_val,
+        "min": min_val,
+        "max": max_val,
+        "skewness": skew_val,
+        "kurtosis": kurt_val,
+        "p10": p10,
+        "p50": p50,
+        "p80": p80,
+        "p85": p85,
+        "p90": p90,
+        "p95": p95,
+        "prazo_alvo": prazo_alvo,
+        "prob_sucesso_prazo": prob_cumprimento,
+        "buffer_p85_p50": buffer_85_50,
+        "buffer_p95_p50": buffer_95_50,
+        "buffer_disponivel": round(prazo_alvo - p85, 2),
+        "duracao_bloqueio_esperada": DURACAO_MEDIA_BLOQUEIO
+    }
+
+
+def simular_cenario_leveled(
+    rede_nivelada: Dict[str, Any],
+    n_sim: int = N_SIM_DEFAULT,
+    prazo_alvo: float = 71.0
+) -> Tuple[np.ndarray, np.ndarray, Dict[str, Any]]:
+    """
+    Executa a simulação MCMC estocástica no cronograma após o nivelamento bioinspirado (GA).
+    As tarefas respeitam seus 'shift_nivelamento' e precedências do DAG sob incerteza PERT e Markov.
+    """
+    dur_leveled, crit_leveled, _ = _executar_mcmc_core(rede_nivelada["tarefas"], prazo_alvo, n_sim)
+    res_leveled = calcular_estatisticas_cenario(
+        dur_leveled, prazo_alvo, "scenario_leveled", "Cenário Nivelado (Algoritmo Genético & MCMC)"
+    )
+    return dur_leveled, crit_leveled, res_leveled
 
 
 def gerar_rede_mitigada(rede_original: Dict[str, Any]) -> Dict[str, Any]:
@@ -202,49 +277,20 @@ def simular_monte_carlo_rede(
     rede_mitigada = gerar_rede_mitigada(rede_wbs)
     dur_mitigado, crit_mitigado, _ = _executar_mcmc_core(rede_mitigada["tarefas"], prazo_alvo, n_sim)
 
-    # Extração de Métricas de Governança - Cenário Inercial
-    p50_inercial = float(np.percentile(dur_inercial, 50))
-    p85_inercial = float(np.percentile(dur_inercial, 85))
-    p95_inercial = float(np.percentile(dur_inercial, 95))
-    res_inercial = {
-        "media": float(dur_inercial.mean()),
-        "p10": float(np.percentile(dur_inercial, 10)),
-        "p50": p50_inercial,
-        "p80": float(np.percentile(dur_inercial, 80)),
-        "p85": p85_inercial,
-        "p90": float(np.percentile(dur_inercial, 90)),
-        "p95": p95_inercial,
-        "prazo_alvo": prazo_alvo,
-        "prob_sucesso_prazo": float(np.mean(dur_inercial <= prazo_alvo) * 100.0),
-        "buffer_p85_p50": p85_inercial - p50_inercial,
-        "buffer_p95_p50": p95_inercial - p50_inercial,
-        "buffer_necessario": float(p90_inercial := np.percentile(dur_inercial, 90)) - prazo_alvo,
-        "buffer_sugerido": float(p90_inercial - p50_inercial),
-        "duracao_bloqueio_esperada": DURACAO_MEDIA_BLOQUEIO
-    }
+    # Extração de Métricas de Governança - Cenário Inercial e Mitigado
+    res_inercial = calcular_estatisticas_cenario(
+        dur_inercial, prazo_alvo, "scenario_inertial", "Cenário Inercial (Sem Mitigação)"
+    )
+    res_mitigado = calcular_estatisticas_cenario(
+        dur_mitigado, prazo_alvo, "scenario_mitigated", "Cenário Mitigado (Plano de Ação Estratégico)"
+    )
 
-    # Extração de Métricas de Governança - Cenário Mitigado
-    p50_mitigado = float(np.percentile(dur_mitigado, 50))
-    p85_mitigado = float(np.percentile(dur_mitigado, 85))
-    p95_mitigado = float(np.percentile(dur_mitigado, 95))
-    res_mitigado = {
-        "media": float(dur_mitigado.mean()),
-        "p10": float(np.percentile(dur_mitigado, 10)),
-        "p50": p50_mitigado,
-        "p80": float(np.percentile(dur_mitigado, 80)),
-        "p85": p85_mitigado,
-        "p90": float(np.percentile(dur_mitigado, 90)),
-        "p95": p95_mitigado,
-        "prazo_alvo": prazo_alvo,
-        "prob_sucesso_prazo": float(np.mean(dur_mitigado <= prazo_alvo) * 100.0),
-        "buffer_p85_p50": p85_mitigado - p50_mitigado,
-        "buffer_p95_p50": p95_mitigado - p50_mitigado,
-        "buffer_disponivel": float(prazo_alvo - p85_mitigado),
-        "buffer_sugerido": float(p85_mitigado - p50_mitigado),
-        "duracao_bloqueio_esperada": DURACAO_MEDIA_BLOQUEIO
-    }
+    p50_inercial = res_inercial["p50"]
+    p85_inercial = res_inercial["p85"]
+    p50_mitigado = res_mitigado["p50"]
+    p85_mitigado = res_mitigado["p85"]
 
-    # 3. Simulação de Custo Estocástico
+    # 3. Simulação de Custo Estocástico com Percentis Padrão
     custos_sim = (
         RNG.triangular(orcamento_base * 0.28, orcamento_base * 0.35, orcamento_base * 0.45, size=n_sim) +
         RNG.triangular(orcamento_base * 0.25, orcamento_base * 0.32, orcamento_base * 0.42, size=n_sim) +
@@ -255,8 +301,10 @@ def simular_monte_carlo_rede(
     custo_media = float(custos_sim.mean())
     custo_p50 = float(np.percentile(custos_sim, 50))
     custo_p80 = float(np.percentile(custos_sim, 80))
+    custo_p85 = float(np.percentile(custos_sim, 85))
     custo_p90 = float(np.percentile(custos_sim, 90))
-    contingencia_custo = custo_p80 - custo_p50
+    custo_p95 = float(np.percentile(custos_sim, 95))
+    contingencia_custo = round(custo_p80 - custo_p50, 2)
     p_estouro_orcamento = float(np.mean(custos_sim > orcamento_base) * 100.0)
 
     # 4. Geração de Gráficos Executivos

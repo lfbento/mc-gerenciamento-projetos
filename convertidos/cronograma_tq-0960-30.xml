@@ -6,7 +6,7 @@
   <LastSaved>2026-09-06T08:00:00</LastSaved>
   <ScheduleFromStart>1</ScheduleFromStart>
   <StartDate>2026-08-06T08:00:00</StartDate>
-  <FinishDate>2026-10-21T17:00:00</FinishDate>
+  <FinishDate>2026-10-13T17:00:00</FinishDate>
   <DefaultStartTime>08:00:00</DefaultStartTime>
   <DefaultFinishTime>17:00:00</DefaultFinishTime>
   <MinutesPerDay>480</MinutesPerDay>
@@ -15,9 +15,9 @@
   <DefaultTaskType>0</DefaultTaskType>
   <CalendarUID>1</CalendarUID>
   <Comments>CRONOGRAMA GERADO POR PIPELINE INTELIGENTE COM EAP PADRONIZADA (MCMC &amp; NIVELAMENTO GA).
-Alvo Gerencial P85: 62.1 dias úteis | P50 Fábrica: 59.1 dias | Prazo Total: 77 dias úteis.
+Alvo Gerencial P85: 62.1 dias úteis | P50 Fábrica: 59.1 dias | Prazo Total: 69 dias úteis.
 Custo Estimado (P50): R$ 412,937.11 | Reserva Contingência (P80-P50): R$ 20,602.44.
-Recursos Dimensionados: 1046.2 HH Totais | Pico: 4.7 FTEs.</Comments>
+Recursos Dimensionados: 1046.2 HH Totais | Pico: 4.5 FTEs.</Comments>
   <Calendars>
     <Calendar>
       <UID>1</UID>
@@ -126,17 +126,6 @@ Recursos Dimensionados: 1046.2 HH Totais | Pico: 4.7 FTEs.</Comments>
           <Type>1</Type>
           <DayWorking>0</DayWorking>
         </Exception>
-        <Exception>
-          <EnteredByOccurrences>0</EnteredByOccurrences>
-          <TimePeriod>
-            <FromDate>2026-11-02T00:00:00</FromDate>
-            <ToDate>2026-11-02T23:59:00</ToDate>
-          </TimePeriod>
-          <Occurrences>1</Occurrences>
-          <Name>Finados</Name>
-          <Type>1</Type>
-          <DayWorking>0</DayWorking>
-        </Exception>
       </Exceptions>
     </Calendar>
   </Calendars>
@@ -153,7 +142,7 @@ Recursos Dimensionados: 1046.2 HH Totais | Pico: 4.7 FTEs.</Comments>
       <OutlineLevel>0</OutlineLevel>
       <Priority>500</Priority>
       <Start>2026-08-06T08:00:00</Start>
-      <Finish>2026-10-21T17:00:00</Finish>
+      <Finish>2026-10-13T17:00:00</Finish>
       <Summary>1</Summary>
       <Manual>0</Manual>
       <ConstraintType>0</ConstraintType>
@@ -286,8 +275,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
       <Start>2026-08-10T08:00:00</Start>
-      <Finish>2026-08-26T17:00:00</Finish>
-      <Duration>PT136H0M0S</Duration>
+      <Finish>2026-08-28T17:00:00</Finish>
+      <Duration>PT152H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Summary>1</Summary>
       <Manual>0</Manual>
@@ -356,8 +345,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>2.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-08-13T08:00:00</Start>
-      <Finish>2026-08-18T17:00:00</Finish>
+      <Start>2026-08-17T08:00:00</Start>
+      <Finish>2026-08-20T17:00:00</Finish>
       <Duration>PT25H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT25H0M0S</Work>
@@ -386,14 +375,14 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>100.0%</Value>
+        <Value>0.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>2.0 - METODOS E PROCESSOS</Value>
       </ExtendedAttribute>
       <Notes>Estimativas de 3 Pontos: Otimista = 2.6d | Provável = 3.2d | Pessimista = 4.8d.
-Índice de Criticidade MCMC: 100.0% no Caminho Crítico.
+Índice de Criticidade MCMC: 0.0% no Caminho Crítico.
 Alocação de Recursos: Engenheiro Mecânico de Projetos [100%] | Total: 25.6 HH.
 Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
     </Task>
@@ -408,8 +397,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>2.3</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-08-19T08:00:00</Start>
-      <Finish>2026-08-21T17:00:00</Finish>
+      <Start>2026-08-21T08:00:00</Start>
+      <Finish>2026-08-25T17:00:00</Finish>
       <Duration>PT20H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT30H0M0S</Work>
@@ -438,14 +427,14 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>100.0%</Value>
+        <Value>0.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>2.0 - METODOS E PROCESSOS</Value>
       </ExtendedAttribute>
       <Notes>Estimativas de 3 Pontos: Otimista = 2.0d | Provável = 2.5d | Pessimista = 3.8d.
-Índice de Criticidade MCMC: 100.0% no Caminho Crítico.
+Índice de Criticidade MCMC: 0.0% no Caminho Crítico.
 Alocação de Recursos: Engenheiro Mecânico de Projetos [50%], Inspetor de Soldagem [100%] | Total: 30.0 HH.
 Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
     </Task>
@@ -460,8 +449,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>2.4</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-08-21T08:00:00</Start>
-      <Finish>2026-08-26T17:00:00</Finish>
+      <Start>2026-08-25T08:00:00</Start>
+      <Finish>2026-08-28T17:00:00</Finish>
       <Duration>PT25H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT12H0M0S</Work>
@@ -490,14 +479,14 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>100.0%</Value>
+        <Value>0.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>2.0 - METODOS E PROCESSOS</Value>
       </ExtendedAttribute>
       <Notes>Estimativas de 3 Pontos: Otimista = 2.6d | Provável = 3.2d | Pessimista = 4.8d.
-Índice de Criticidade MCMC: 100.0% no Caminho Crítico.
+Índice de Criticidade MCMC: 0.0% no Caminho Crítico.
 Alocação de Recursos: Engenheiro Mecânico de Projetos [50%] | Total: 12.8 HH.
 Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
     </Task>
@@ -513,8 +502,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
       <Start>2026-08-13T08:00:00</Start>
-      <Finish>2026-09-08T17:00:00</Finish>
-      <Duration>PT216H0M0S</Duration>
+      <Finish>2026-09-04T17:00:00</Finish>
+      <Duration>PT184H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Summary>1</Summary>
       <Manual>0</Manual>
@@ -533,7 +522,7 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Priority>500</Priority>
       <Start>2026-08-13T08:00:00</Start>
       <Finish>2026-08-17T17:00:00</Finish>
-      <Duration>PT22H0M0S</Duration>
+      <Duration>PT17H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT22H0M0S</Work>
       <Summary>0</Summary>
@@ -541,7 +530,7 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <CalendarUID>1</CalendarUID>
       <ConstraintType>0</ConstraintType>
       <PredecessorLink>
-        <PredecessorUID>8</PredecessorUID>
+        <PredecessorUID>5</PredecessorUID>
         <Type>1</Type>
         <CrossProject>0</CrossProject>
         <LinkLag>0</LinkLag>
@@ -549,15 +538,15 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>2.2 d</Value>
+        <Value>1.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>2.8 d</Value>
+        <Value>2.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>4.2 d</Value>
+        <Value>3.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -567,7 +556,7 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
         <FieldID>188743735</FieldID>
         <Value>3.0 - SUPRIMENTOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 2.2d | Provável = 2.8d | Pessimista = 4.2d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 1.8d | Provável = 2.2d | Pessimista = 3.3d.
 Índice de Criticidade MCMC: 100.0% no Caminho Crítico.
 Alocação de Recursos: Comprador Técnico Industrial [100%] | Total: 22.4 HH.
 Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
@@ -584,8 +573,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
       <Start>2026-08-18T08:00:00</Start>
-      <Finish>2026-09-02T17:00:00</Finish>
-      <Duration>PT90H0M0S</Duration>
+      <Finish>2026-08-28T17:00:00</Finish>
+      <Duration>PT72H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT22H0M0S</Work>
       <Summary>0</Summary>
@@ -601,26 +590,26 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>9.0 d</Value>
+        <Value>7.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>11.3 d</Value>
+        <Value>9.0 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>17.0 d</Value>
+        <Value>12.6 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>99.9%</Value>
+        <Value>97.4%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>3.0 - SUPRIMENTOS</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 9.0d | Provável = 11.3d | Pessimista = 17.0d.
-Índice de Criticidade MCMC: 99.9% no Caminho Crítico.
+      <Notes>Estimativas de 3 Pontos: Otimista = 7.2d | Provável = 9.0d | Pessimista = 12.6d.
+Índice de Criticidade MCMC: 97.4% no Caminho Crítico.
 Alocação de Recursos: Comprador Técnico Industrial [25%] | Total: 22.6 HH.
 Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
     </Task>
@@ -635,8 +624,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>3.3</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-08-25T08:00:00</Start>
-      <Finish>2026-09-01T17:00:00</Finish>
+      <Start>2026-08-21T08:00:00</Start>
+      <Finish>2026-08-28T17:00:00</Finish>
       <Duration>PT45H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT22H0M0S</Work>
@@ -665,14 +654,14 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
-        <Value>0.1%</Value>
+        <Value>3.0%</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743735</FieldID>
         <Value>3.0 - SUPRIMENTOS</Value>
       </ExtendedAttribute>
       <Notes>Estimativas de 3 Pontos: Otimista = 4.6d | Provável = 5.7d | Pessimista = 8.6d.
-Índice de Criticidade MCMC: 0.1% no Caminho Crítico.
+Índice de Criticidade MCMC: 3.0% no Caminho Crítico.
 Alocação de Recursos: Comprador Técnico Industrial [50%] | Total: 22.8 HH.
 Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
     </Task>
@@ -687,8 +676,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>3.4</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-02T08:00:00</Start>
-      <Finish>2026-09-08T17:00:00</Finish>
+      <Start>2026-08-31T08:00:00</Start>
+      <Finish>2026-09-04T17:00:00</Finish>
       <Duration>PT37H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT75H0M0S</Work>
@@ -746,9 +735,9 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>4.0</OutlineNumber>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-09T08:00:00</Start>
-      <Finish>2026-10-09T17:00:00</Finish>
-      <Duration>PT248H0M0S</Duration>
+      <Start>2026-09-04T08:00:00</Start>
+      <Finish>2026-10-02T17:00:00</Finish>
+      <Duration>PT232H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Summary>1</Summary>
       <Manual>0</Manual>
@@ -765,8 +754,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>4.1</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-09T08:00:00</Start>
-      <Finish>2026-09-14T17:00:00</Finish>
+      <Start>2026-09-04T08:00:00</Start>
+      <Finish>2026-09-09T17:00:00</Finish>
       <Duration>PT30H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT60H0M0S</Work>
@@ -817,8 +806,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>4.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-15T08:00:00</Start>
-      <Finish>2026-09-18T17:00:00</Finish>
+      <Start>2026-09-10T08:00:00</Start>
+      <Finish>2026-09-15T17:00:00</Finish>
       <Duration>PT30H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT60H0M0S</Work>
@@ -869,9 +858,9 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>4.3</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-21T08:00:00</Start>
-      <Finish>2026-09-25T17:00:00</Finish>
-      <Duration>PT32H0M0S</Duration>
+      <Start>2026-09-16T08:00:00</Start>
+      <Finish>2026-09-18T17:00:00</Finish>
+      <Duration>PT21H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT201H0M0S</Work>
       <Summary>0</Summary>
@@ -887,15 +876,15 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>5.0 d</Value>
+        <Value>3.3 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>4.1 d</Value>
+        <Value>2.7 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>9.4 d</Value>
+        <Value>5.7 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -905,7 +894,7 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 5.0d | Provável = 4.1d | Pessimista = 9.4d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 3.3d | Provável = 2.7d | Pessimista = 5.7d.
 Índice de Criticidade MCMC: 100.0% no Caminho Crítico.
 Alocação de Recursos: Soldador Qualificado ASME IX (TIG [200%], Ajudante Operacional de Caldeiraria e Fábrica [200%] | Total: 201.6 HH.
 Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
@@ -921,9 +910,9 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>4.4</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-09-25T08:00:00</Start>
-      <Finish>2026-09-30T17:00:00</Finish>
-      <Duration>PT30H0M0S</Duration>
+      <Start>2026-09-21T08:00:00</Start>
+      <Finish>2026-09-23T17:00:00</Finish>
+      <Duration>PT22H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT152H0M0S</Work>
       <Summary>0</Summary>
@@ -939,15 +928,15 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       </PredecessorLink>
       <ExtendedAttribute>
         <FieldID>188743731</FieldID>
-        <Value>3.0 d</Value>
+        <Value>2.2 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743732</FieldID>
-        <Value>3.8 d</Value>
+        <Value>2.8 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743733</FieldID>
-        <Value>5.7 d</Value>
+        <Value>3.9 d</Value>
       </ExtendedAttribute>
       <ExtendedAttribute>
         <FieldID>188743734</FieldID>
@@ -957,7 +946,7 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
         <FieldID>188743735</FieldID>
         <Value>4.0 - FABRICAÇÃO E MONTAGEM</Value>
       </ExtendedAttribute>
-      <Notes>Estimativas de 3 Pontos: Otimista = 3.0d | Provável = 3.8d | Pessimista = 5.7d.
+      <Notes>Estimativas de 3 Pontos: Otimista = 2.2d | Provável = 2.8d | Pessimista = 3.9d.
 Índice de Criticidade MCMC: 100.0% no Caminho Crítico.
 Alocação de Recursos: Caldeireiro Montador [200%], Soldador Qualificado ASME IX (TIG [100%], Ajudante Operacional de Caldeiraria e Fábrica [200%] | Total: 152.0 HH.
 Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
@@ -973,8 +962,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>4.5</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-01T08:00:00</Start>
-      <Finish>2026-10-06T17:00:00</Finish>
+      <Start>2026-09-23T08:00:00</Start>
+      <Finish>2026-09-28T17:00:00</Finish>
       <Duration>PT30H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT91H0M0S</Work>
@@ -1025,8 +1014,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>4.6</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-06T08:00:00</Start>
-      <Finish>2026-10-07T17:00:00</Finish>
+      <Start>2026-09-29T08:00:00</Start>
+      <Finish>2026-09-30T17:00:00</Finish>
       <Duration>PT16H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT32H0M0S</Work>
@@ -1077,8 +1066,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>4.7</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-08T08:00:00</Start>
-      <Finish>2026-10-09T17:00:00</Finish>
+      <Start>2026-10-01T08:00:00</Start>
+      <Finish>2026-10-02T17:00:00</Finish>
       <Duration>PT14H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT50H0M0S</Work>
@@ -1129,8 +1118,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>5.0</OutlineNumber>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-12T08:00:00</Start>
-      <Finish>2026-10-16T17:00:00</Finish>
+      <Start>2026-10-05T08:00:00</Start>
+      <Finish>2026-10-09T17:00:00</Finish>
       <Duration>PT40H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Summary>1</Summary>
@@ -1148,8 +1137,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>5.1</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-12T08:00:00</Start>
-      <Finish>2026-10-14T17:00:00</Finish>
+      <Start>2026-10-05T08:00:00</Start>
+      <Finish>2026-10-07T17:00:00</Finish>
       <Duration>PT20H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT41H0M0S</Work>
@@ -1200,8 +1189,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>5.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-15T08:00:00</Start>
-      <Finish>2026-10-16T17:00:00</Finish>
+      <Start>2026-10-08T08:00:00</Start>
+      <Finish>2026-10-09T17:00:00</Finish>
       <Duration>PT14H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT28H0M0S</Work>
@@ -1252,9 +1241,9 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>6.0</OutlineNumber>
       <OutlineLevel>1</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-19T08:00:00</Start>
-      <Finish>2026-10-21T17:00:00</Finish>
-      <Duration>PT24H0M0S</Duration>
+      <Start>2026-10-09T08:00:00</Start>
+      <Finish>2026-10-13T17:00:00</Finish>
+      <Duration>PT40H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Summary>1</Summary>
       <Manual>0</Manual>
@@ -1271,8 +1260,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>6.1</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-19T08:00:00</Start>
-      <Finish>2026-10-19T17:00:00</Finish>
+      <Start>2026-10-09T08:00:00</Start>
+      <Finish>2026-10-09T17:00:00</Finish>
       <Duration>PT8H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT12H0M0S</Work>
@@ -1323,8 +1312,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>6.2</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-20T08:00:00</Start>
-      <Finish>2026-10-20T17:00:00</Finish>
+      <Start>2026-10-12T08:00:00</Start>
+      <Finish>2026-10-12T17:00:00</Finish>
       <Duration>PT8H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT24H0M0S</Work>
@@ -1375,8 +1364,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <OutlineNumber>6.3</OutlineNumber>
       <OutlineLevel>2</OutlineLevel>
       <Priority>500</Priority>
-      <Start>2026-10-21T08:00:00</Start>
-      <Finish>2026-10-21T17:00:00</Finish>
+      <Start>2026-10-13T08:00:00</Start>
+      <Finish>2026-10-13T17:00:00</Finish>
       <Duration>PT8H0M0S</Duration>
       <DurationFormat>39</DurationFormat>
       <Work>PT10H0M0S</Work>
@@ -1598,8 +1587,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT25H0M0S</Work>
       <Cost>2816.0</Cost>
-      <Start>2026-08-13T08:00:00</Start>
-      <Finish>2026-08-18T17:00:00</Finish>
+      <Start>2026-08-17T08:00:00</Start>
+      <Finish>2026-08-20T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>7</UID>
@@ -1608,8 +1597,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>0.5</Units>
       <Work>PT10H0M0S</Work>
       <Cost>1100.0</Cost>
-      <Start>2026-08-19T08:00:00</Start>
-      <Finish>2026-08-21T17:00:00</Finish>
+      <Start>2026-08-21T08:00:00</Start>
+      <Finish>2026-08-25T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>8</UID>
@@ -1618,8 +1607,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT20H0M0S</Work>
       <Cost>1800.0</Cost>
-      <Start>2026-08-19T08:00:00</Start>
-      <Finish>2026-08-21T17:00:00</Finish>
+      <Start>2026-08-21T08:00:00</Start>
+      <Finish>2026-08-25T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>9</UID>
@@ -1628,8 +1617,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>0.5</Units>
       <Work>PT12H0M0S</Work>
       <Cost>1408.0</Cost>
-      <Start>2026-08-21T08:00:00</Start>
-      <Finish>2026-08-26T17:00:00</Finish>
+      <Start>2026-08-25T08:00:00</Start>
+      <Finish>2026-08-28T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>10</UID>
@@ -1649,7 +1638,7 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Work>PT22H0M0S</Work>
       <Cost>1243.0</Cost>
       <Start>2026-08-18T08:00:00</Start>
-      <Finish>2026-09-02T17:00:00</Finish>
+      <Finish>2026-08-28T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>12</UID>
@@ -1658,8 +1647,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>0.5</Units>
       <Work>PT22H0M0S</Work>
       <Cost>1254.0</Cost>
-      <Start>2026-08-25T08:00:00</Start>
-      <Finish>2026-09-01T17:00:00</Finish>
+      <Start>2026-08-21T08:00:00</Start>
+      <Finish>2026-08-28T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>13</UID>
@@ -1668,8 +1657,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT37H0M0S</Work>
       <Cost>3384.0</Cost>
-      <Start>2026-09-02T08:00:00</Start>
-      <Finish>2026-09-08T17:00:00</Finish>
+      <Start>2026-08-31T08:00:00</Start>
+      <Finish>2026-09-04T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>14</UID>
@@ -1678,8 +1667,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT37H0M0S</Work>
       <Cost>1128.0</Cost>
-      <Start>2026-09-02T08:00:00</Start>
-      <Finish>2026-09-08T17:00:00</Finish>
+      <Start>2026-08-31T08:00:00</Start>
+      <Finish>2026-09-04T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>15</UID>
@@ -1688,8 +1677,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT30H0M0S</Work>
       <Cost>1520.0</Cost>
-      <Start>2026-09-09T08:00:00</Start>
-      <Finish>2026-09-14T17:00:00</Finish>
+      <Start>2026-09-04T08:00:00</Start>
+      <Finish>2026-09-09T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>16</UID>
@@ -1698,8 +1687,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT30H0M0S</Work>
       <Cost>912.0</Cost>
-      <Start>2026-09-09T08:00:00</Start>
-      <Finish>2026-09-14T17:00:00</Finish>
+      <Start>2026-09-04T08:00:00</Start>
+      <Finish>2026-09-09T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>17</UID>
@@ -1708,8 +1697,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT30H0M0S</Work>
       <Cost>1520.0</Cost>
-      <Start>2026-09-15T08:00:00</Start>
-      <Finish>2026-09-18T17:00:00</Finish>
+      <Start>2026-09-10T08:00:00</Start>
+      <Finish>2026-09-15T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>18</UID>
@@ -1718,8 +1707,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT30H0M0S</Work>
       <Cost>912.0</Cost>
-      <Start>2026-09-15T08:00:00</Start>
-      <Finish>2026-09-18T17:00:00</Finish>
+      <Start>2026-09-10T08:00:00</Start>
+      <Finish>2026-09-15T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>19</UID>
@@ -1728,8 +1717,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>2.0</Units>
       <Work>PT100H0M0S</Work>
       <Cost>6552.0</Cost>
-      <Start>2026-09-21T08:00:00</Start>
-      <Finish>2026-09-25T17:00:00</Finish>
+      <Start>2026-09-16T08:00:00</Start>
+      <Finish>2026-09-18T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>20</UID>
@@ -1738,8 +1727,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>2.0</Units>
       <Work>PT100H0M0S</Work>
       <Cost>3024.0</Cost>
-      <Start>2026-09-21T08:00:00</Start>
-      <Finish>2026-09-25T17:00:00</Finish>
+      <Start>2026-09-16T08:00:00</Start>
+      <Finish>2026-09-18T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>21</UID>
@@ -1748,8 +1737,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>2.0</Units>
       <Work>PT60H0M0S</Work>
       <Cost>3344.0</Cost>
-      <Start>2026-09-25T08:00:00</Start>
-      <Finish>2026-09-30T17:00:00</Finish>
+      <Start>2026-09-21T08:00:00</Start>
+      <Finish>2026-09-23T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>22</UID>
@@ -1758,8 +1747,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT30H0M0S</Work>
       <Cost>1976.0</Cost>
-      <Start>2026-09-25T08:00:00</Start>
-      <Finish>2026-09-30T17:00:00</Finish>
+      <Start>2026-09-21T08:00:00</Start>
+      <Finish>2026-09-23T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>23</UID>
@@ -1768,8 +1757,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>2.0</Units>
       <Work>PT60H0M0S</Work>
       <Cost>1824.0</Cost>
-      <Start>2026-09-25T08:00:00</Start>
-      <Finish>2026-09-30T17:00:00</Finish>
+      <Start>2026-09-21T08:00:00</Start>
+      <Finish>2026-09-23T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>24</UID>
@@ -1778,8 +1767,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT30H0M0S</Work>
       <Cost>1672.0</Cost>
-      <Start>2026-10-01T08:00:00</Start>
-      <Finish>2026-10-06T17:00:00</Finish>
+      <Start>2026-09-23T08:00:00</Start>
+      <Finish>2026-09-28T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>25</UID>
@@ -1788,8 +1777,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT30H0M0S</Work>
       <Cost>1976.0</Cost>
-      <Start>2026-10-01T08:00:00</Start>
-      <Finish>2026-10-06T17:00:00</Finish>
+      <Start>2026-09-23T08:00:00</Start>
+      <Finish>2026-09-28T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>26</UID>
@@ -1798,8 +1787,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT30H0M0S</Work>
       <Cost>912.0</Cost>
-      <Start>2026-10-01T08:00:00</Start>
-      <Finish>2026-10-06T17:00:00</Finish>
+      <Start>2026-09-23T08:00:00</Start>
+      <Finish>2026-09-28T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>27</UID>
@@ -1808,8 +1797,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT16H0M0S</Work>
       <Cost>1440.0</Cost>
-      <Start>2026-10-06T08:00:00</Start>
-      <Finish>2026-10-07T17:00:00</Finish>
+      <Start>2026-09-29T08:00:00</Start>
+      <Finish>2026-09-30T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>28</UID>
@@ -1818,8 +1807,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT16H0M0S</Work>
       <Cost>480.0</Cost>
-      <Start>2026-10-06T08:00:00</Start>
-      <Finish>2026-10-07T17:00:00</Finish>
+      <Start>2026-09-29T08:00:00</Start>
+      <Finish>2026-09-30T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>29</UID>
@@ -1828,8 +1817,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>0.5</Units>
       <Work>PT7H0M0S</Work>
       <Cost>792.0</Cost>
-      <Start>2026-10-08T08:00:00</Start>
-      <Finish>2026-10-09T17:00:00</Finish>
+      <Start>2026-10-01T08:00:00</Start>
+      <Finish>2026-10-02T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>30</UID>
@@ -1838,8 +1827,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT14H0M0S</Work>
       <Cost>1296.0</Cost>
-      <Start>2026-10-08T08:00:00</Start>
-      <Finish>2026-10-09T17:00:00</Finish>
+      <Start>2026-10-01T08:00:00</Start>
+      <Finish>2026-10-02T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>31</UID>
@@ -1848,8 +1837,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT14H0M0S</Work>
       <Cost>792.0</Cost>
-      <Start>2026-10-08T08:00:00</Start>
-      <Finish>2026-10-09T17:00:00</Finish>
+      <Start>2026-10-01T08:00:00</Start>
+      <Finish>2026-10-02T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>32</UID>
@@ -1858,8 +1847,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT14H0M0S</Work>
       <Cost>432.0</Cost>
-      <Start>2026-10-08T08:00:00</Start>
-      <Finish>2026-10-09T17:00:00</Finish>
+      <Start>2026-10-01T08:00:00</Start>
+      <Finish>2026-10-02T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>33</UID>
@@ -1868,8 +1857,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT20H0M0S</Work>
       <Cost>936.0</Cost>
-      <Start>2026-10-12T08:00:00</Start>
-      <Finish>2026-10-14T17:00:00</Finish>
+      <Start>2026-10-05T08:00:00</Start>
+      <Finish>2026-10-07T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>34</UID>
@@ -1878,8 +1867,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT20H0M0S</Work>
       <Cost>624.0</Cost>
-      <Start>2026-10-12T08:00:00</Start>
-      <Finish>2026-10-14T17:00:00</Finish>
+      <Start>2026-10-05T08:00:00</Start>
+      <Finish>2026-10-07T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>35</UID>
@@ -1888,8 +1877,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT14H0M0S</Work>
       <Cost>648.0</Cost>
-      <Start>2026-10-15T08:00:00</Start>
-      <Finish>2026-10-16T17:00:00</Finish>
+      <Start>2026-10-08T08:00:00</Start>
+      <Finish>2026-10-09T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>36</UID>
@@ -1898,8 +1887,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT14H0M0S</Work>
       <Cost>432.0</Cost>
-      <Start>2026-10-15T08:00:00</Start>
-      <Finish>2026-10-16T17:00:00</Finish>
+      <Start>2026-10-08T08:00:00</Start>
+      <Finish>2026-10-09T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>37</UID>
@@ -1908,8 +1897,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT8H0M0S</Work>
       <Cost>880.0</Cost>
-      <Start>2026-10-19T08:00:00</Start>
-      <Finish>2026-10-19T17:00:00</Finish>
+      <Start>2026-10-09T08:00:00</Start>
+      <Finish>2026-10-09T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>38</UID>
@@ -1918,8 +1907,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>0.5</Units>
       <Work>PT4H0M0S</Work>
       <Cost>360.0</Cost>
-      <Start>2026-10-19T08:00:00</Start>
-      <Finish>2026-10-19T17:00:00</Finish>
+      <Start>2026-10-09T08:00:00</Start>
+      <Finish>2026-10-09T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>39</UID>
@@ -1928,8 +1917,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT8H0M0S</Work>
       <Cost>440.0</Cost>
-      <Start>2026-10-20T08:00:00</Start>
-      <Finish>2026-10-20T17:00:00</Finish>
+      <Start>2026-10-12T08:00:00</Start>
+      <Finish>2026-10-12T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>40</UID>
@@ -1938,8 +1927,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT8H0M0S</Work>
       <Cost>360.0</Cost>
-      <Start>2026-10-20T08:00:00</Start>
-      <Finish>2026-10-20T17:00:00</Finish>
+      <Start>2026-10-12T08:00:00</Start>
+      <Finish>2026-10-12T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>41</UID>
@@ -1948,8 +1937,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT8H0M0S</Work>
       <Cost>240.0</Cost>
-      <Start>2026-10-20T08:00:00</Start>
-      <Finish>2026-10-20T17:00:00</Finish>
+      <Start>2026-10-12T08:00:00</Start>
+      <Finish>2026-10-12T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>42</UID>
@@ -1958,8 +1947,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>1.0</Units>
       <Work>PT8H0M0S</Work>
       <Cost>360.0</Cost>
-      <Start>2026-10-21T08:00:00</Start>
-      <Finish>2026-10-21T17:00:00</Finish>
+      <Start>2026-10-13T08:00:00</Start>
+      <Finish>2026-10-13T17:00:00</Finish>
     </Assignment>
     <Assignment>
       <UID>43</UID>
@@ -1968,8 +1957,8 @@ Cronograma Nivelado pelo Algoritmo Genético &amp; MCMC-Safe Float.</Notes>
       <Units>0.25</Units>
       <Work>PT2H0M0S</Work>
       <Cost>110.0</Cost>
-      <Start>2026-10-21T08:00:00</Start>
-      <Finish>2026-10-21T17:00:00</Finish>
+      <Start>2026-10-13T08:00:00</Start>
+      <Finish>2026-10-13T17:00:00</Finish>
     </Assignment>
   </Assignments>
 </Project>

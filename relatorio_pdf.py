@@ -226,7 +226,7 @@ def gerar_relatorio_pdf_diretoria(
         f"A simulação pura do cronograma nominal em série revelou <b>{d_iner['prob_sucesso_prazo']:.1f}% de chance</b> de entrega em {prazo_nom:.0f} dias úteis "
         f"(duração média de <b>{d_iner['p50']:.1f} dias</b>, gerando atraso crítico de +{d_iner['p50'] - prazo_nom:.1f} dias). "
         f"Com o <b>Plano de Ação Estratégico e Nivelamento Bioinspirado</b>, a probabilidade de cumprimento do prazo contratual "
-        f"eleva-se para <b>{d_mit['prob_sucesso_prazo']:.1f}% (🟢 Baixo Risco / Protegido)</b> com margem de segurança de <b>{d_mit['buffer_disponivel']:.1f} dias úteis</b>.",
+        f"eleva-se para <b>{d_mit['prob_sucesso_prazo']:.1f}% (🟢 Alta Confiabilidade / Risco Controlado)</b> com margem estocástica de segurança de <b>{d_mit['buffer_disponivel']:.1f} dias úteis</b>.",
         st_body
     ))
 
@@ -246,7 +246,7 @@ def gerar_relatorio_pdf_diretoria(
             Paragraph(f"{prazo_nom:.1f} dias", st_cell_center),
             Paragraph("+0.0 dias", st_cell_center),
             Paragraph("<font color='#DC2626'><b>~ 0.0%</b></font>", st_cell_center),
-            Paragraph("<b>Risco Inaceitável</b> (Gera atraso contratual garantido)", st_cell)
+            Paragraph("<b>Risco Severo</b> (Alta probabilidade de extrapolação do prazo contratual)", st_cell)
         ],
         [
             Paragraph("<b>Mediana Estocástica (P50)</b>", st_cell),
@@ -430,6 +430,16 @@ def gerar_relatorio_pdf_diretoria(
                 Paragraph(f"R$ {r['taxa_hora']:.2f}", st_cell_center),
                 Paragraph(f"R$ {r['custo_total']:,.2f}", st_cell_center)
             ])
+        if len(rec_list) > 5:
+            demais_hh = sum(r['hh_total'] for r in rec_list[5:])
+            demais_custo = sum(r['custo_total'] for r in rec_list[5:])
+            tab_rec_rows.append([
+                Paragraph(f"<b>DEMAIS</b> - Demais Especialidades ({len(rec_list)-5} funções)", st_cell),
+                Paragraph("Apoio / Chão", st_cell_center),
+                Paragraph(f"{demais_hh:.1f} h", st_cell_center),
+                Paragraph("Diversas", st_cell_center),
+                Paragraph(f"R$ {demais_custo:,.2f}", st_cell_center)
+            ])
         # Linha Total
         tab_rec_rows.append([
             Paragraph("<b>TOTAL GERAL DE MÃO DE OBRA</b>", st_cell_bold),
@@ -475,6 +485,21 @@ def gerar_relatorio_pdf_diretoria(
         else:
             ganho_prazo_str = "Alinhado ao Alvo"
         
+        diff_pico = metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']
+        if abs(diff_pico) < 0.05:
+            txt_pico = f"Pico mantido em {metricas_nivelamento['pico_depois']:.1f} FTEs (otimizado)"
+        elif diff_pico > 0:
+            txt_pico = f"Redução de {diff_pico:.1f} profissionais"
+        else:
+            txt_pico = f"Ajuste para {metricas_nivelamento['pico_depois']:.1f} FTEs"
+
+        if d_sob_depois == 0:
+            txt_sob_depois = "<b>0 dias</b> (Zero)"
+            txt_sob_status = "<font color='#059669'><b>Estabilidade plena (sem sobrecarga de pico)</b></font>"
+        else:
+            txt_sob_depois = f"<b>{d_sob_depois} dias</b>"
+            txt_sob_status = f"<font color='#D97706'><b>Residual de {d_sob_depois}d absorvido por remanejamento</b></font>"
+        
         tab_niv_data = [
             [
                 Paragraph("Indicador de Nivelamento", st_cell_white_bold),
@@ -486,7 +511,7 @@ def gerar_relatorio_pdf_diretoria(
                 Paragraph("<b>Pico Máximo de Mão de Obra</b>", st_cell),
                 Paragraph(f"{metricas_nivelamento['pico_antes']:.1f} FTEs", st_cell_center),
                 Paragraph(f"<b>{metricas_nivelamento['pico_depois']:.1f} FTEs</b>", st_cell_center),
-                Paragraph(f"<font color='#059669'><b>Redução de -{metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']:.1f} profissionais</b></font>", st_cell_center)
+                Paragraph(f"<font color='#059669'><b>{txt_pico}</b></font>", st_cell_center)
             ],
             [
                 Paragraph("<b>Variância da Demanda (σ²)</b>", st_cell),
@@ -497,8 +522,8 @@ def gerar_relatorio_pdf_diretoria(
             [
                 Paragraph("<b>Dias em Sobrealocação Crítica</b>", st_cell),
                 Paragraph(f"{d_sob_antes} dias (> {metricas_nivelamento.get('capacidade_alvo', 4.0):.1f} FTEs)", st_cell_center),
-                Paragraph(f"<b>{d_sob_depois} dias</b> (Zero)", st_cell_center),
-                Paragraph("<font color='#059669'><b>100% de estabilidade (Sem Horas Extras)</b></font>", st_cell_center)
+                Paragraph(txt_sob_depois, st_cell_center),
+                Paragraph(txt_sob_status, st_cell_center)
             ],
             [
                 Paragraph("<b>Prazo Final do Projeto</b>", st_cell),
@@ -531,9 +556,9 @@ def gerar_relatorio_pdf_diretoria(
     # =========================================================================
     # PÁGINA 4: PLANO ESTRATÉGICO 5W2H, RECOMENDAÇÕES DE PMO & HOMOLOGAÇÃO
     # =========================================================================
-    story.append(Paragraph("9. Plano de Ação Estratégico para a Diretoria (Matriz 5W2H)", st_h2))
+    story.append(Paragraph("9. Plano Estratégico de Ações de Mitigação para a Diretoria (Framework 5W2H)", st_h2))
     story.append(Paragraph(
-        "Ações prioritárias de mitigação para transformar o risco inercial de atraso em garantia de entrega no prazo contratual:",
+        "Ações operacionais prioritárias estruturadas sob os preceitos do 5W2H para mitigar a inércia operacional e maximizar a probabilidade de cumprimento do prazo contratual:",
         st_body
     ))
 
@@ -547,6 +572,12 @@ def gerar_relatorio_pdf_diretoria(
     buffer_p85_val = d_mit.get('buffer_p85_p50', 3.2)
     prob_mit_pct = d_mit.get('prob_sucesso_prazo', 95.0)
     makespan_niv_dias = metricas_nivelamento.get('makespan_final_dias', p85_mit) if metricas_nivelamento else p85_mit
+
+    dias_sob_dep = metricas_nivelamento.get('dias_sobrecarga_depois', 0) if metricas_nivelamento else 0
+    if dias_sob_dep == 0:
+        impacto_ga_str = f"<b>Zero sobrecarga (-{var_red_pct:.1f}% var)</b>"
+    else:
+        impacto_ga_str = f"<b>Carga suavizada (-{var_red_pct:.1f}% var)</b>"
 
     # Tabela 5W2H (Cabeçalho Azul Padronizado e Fonte Branca Negrito)
     tab_5w2h_header = [
@@ -567,19 +598,19 @@ def gerar_relatorio_pdf_diretoria(
             Paragraph("<b>Crashing na Fabricação / Soldagem</b>", st_cell_bold),
             Paragraph(f"Alocar equipe dimensionada de soldadores qualificados ASME IX nas juntas do {metadados.get('tag_equipamento', 'equipamento')}", st_cell),
             Paragraph("Produção / Fábrica", st_cell_center),
-            Paragraph("<b>Garante fluxo contínuo</b>", st_cell_center)
+            Paragraph("<b>Assegura fluxo contínuo</b>", st_cell_center)
         ],
         [
             Paragraph("<b>Nivelamento Bioinspirado</b>", st_cell_bold),
             Paragraph(f"Operar com equipe contínua de até {pico_niv_fte:.1f} FTEs ({metricas_recursos.get('hh_total_projeto', 0):.1f} HH), escalonando folgas via GA", st_cell),
             Paragraph("Planejamento (PMO)", st_cell_center),
-            Paragraph(f"<b>Zero sobrecarga (-{var_red_pct:.1f}% var)</b>", st_cell_center)
+            Paragraph(impacto_ga_str, st_cell_center)
         ],
         [
             Paragraph("<b>Governança de Feeding Buffer</b>", st_cell_bold),
             Paragraph(f"Fixar meta interna no P50 ({p50_mit:.1f}d) e vender no P85 ({p85_mit:.1f}d), retendo {buffer_p85_val:.1f}d de buffer", st_cell),
             Paragraph("PMO / Diretoria", st_cell_center),
-            Paragraph(f"<b>SLA {prob_mit_pct:.1f}% protegido</b>", st_cell_center)
+            Paragraph(f"<b>Confiabilidade de {prob_mit_pct:.1f}%</b>", st_cell_center)
         ],
         [
             Paragraph("<b>Reserva de Contingência</b>", st_cell_bold),
@@ -669,7 +700,7 @@ def gerar_relatorio_pdf_diretoria(
         ],
         [
             Paragraph("<b>Feeding Buffer</b>", st_glos_term),
-            Paragraph("<b>Pulmão de Convergência</b>: Reserva de tempo centralizada e gerenciada pelo PMO (P85 - P50 = +2.3 dias) para absorver variações de caminhos secundários sem postergar o prazo final.", st_glos_desc)
+            Paragraph(f"<b>Pulmão de Convergência</b>: Reserva de tempo centralizada e gerenciada pelo PMO (P85 - P50 = +{d_mit.get('buffer_p85_p50', 3.0):.1f} dias úteis) para absorver variações de caminhos secundários sem postergar o prazo final.", st_glos_desc)
         ],
         [
             Paragraph("<b>Path Merge Bias</b>", st_glos_term),
@@ -692,12 +723,12 @@ def gerar_relatorio_pdf_diretoria(
             Paragraph("<b>Algoritmos Genéticos & Simulated Annealing</b>: Meta-heurísticas bioinspiradas baseadas na seleção natural darwiniana e no recozimento térmico para convergir a cronogramas nivelados quasi-ótimos.", st_glos_desc)
         ],
         [
-            Paragraph("<b>API 650</b>", st_glos_term),
-            Paragraph("<b>American Petroleum Institute Standard 650</b>: Norma internacional de referência para projeto, fabricação, montagem e inspeção de tanques de armazenamento atmosférico verticais.", st_glos_desc)
+            Paragraph("<b>ASME VIII & IX</b>", st_glos_term),
+            Paragraph("<b>Boiler and Pressure Vessel Code</b>: Seção VIII regulamenta projeto e fabricação mecânica; Seção IX estabelece qualificação de soldadores e procedimentos de soldagem (EPS/RQPS).", st_glos_desc)
         ],
         [
-            Paragraph("<b>ASME VIII & IX</b>", st_glos_term),
-            Paragraph("<b>Boiler and Pressure Vessel Code</b>: Seção VIII regulamenta projeto de vasos de pressão; Seção IX estabelece qualificação de soldadores e procedimentos de soldagem (EPS/RQPS).", st_glos_desc)
+            Paragraph("<b>TEMA / API 650</b>", st_glos_term),
+            Paragraph("<b>Normas Industriais de Referência</b>: TEMA regulamenta trocadores e feixes tubulares; API 650 padroniza tanques de armazenamento soldados.", st_glos_desc)
         ],
         [
             Paragraph("<b>NR-13</b>", st_glos_term),

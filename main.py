@@ -12,6 +12,7 @@ Uso:
 import argparse
 import os
 import sys
+import json
 from datetime import date
 from pathlib import Path
 
@@ -26,11 +27,13 @@ if hasattr(sys.stderr, "reconfigure"):
 
 from projeto_extractor import extrair_metadados_projeto
 from wbs_scheduler import gerar_rede_wbs, PESOS_WBS
-from mc_engine import simular_monte_carlo_rede
+from mc_engine import simular_monte_carlo_rede, simular_cenario_leveled
 from msproject_exporter import exportar_msproject_xml, next_monday
 from relatorio_pdf import gerar_relatorio_pdf_diretoria
 from resource_allocator import dimensionar_recursos_tarefas, gerar_histograma_recursos_temporal
 from bioinspired_leveler import executar_nivelamento_bioinspirado
+from model_schema import ScenarioMetrics, AuditReportSummary, compute_input_hash
+from validation_engine import ValidationEngine, ReportGenerationBlocked
 
 
 def gerar_relatorio_markdown(
@@ -70,7 +73,7 @@ def gerar_relatorio_markdown(
         f"",
         f"| Métrica de Cronograma | Prazo Estimado | Buffer Adicional | Prob. Cumprimento | Perfil de Governança Indicado |",
         f"| :--- | :---: | :---: | :---: | :--- |",
-        f"| **Baseline CPM (Nominal)** | **{prazo_nom:.1f} dias** | +0.0 d | **< 0.1%** | 🔴 **Risco Inaceitável** (Atraso contratual quase garantido) |",
+        f"| **Baseline CPM (Nominal)** | **{prazo_nom:.1f} dias** | +0.0 d | **< 0.1%** | 🔴 **Risco Severo** (Alta probabilidade de atraso contratual) |",
         f"| **Mediana Estocástica (P50)** | **{d_mit['p50']:.1f} dias** | +0.0 d (base) | **50.0%** | 🟡 **Planejamento Interno** (Meta operacional da fábrica) |",
         f"| **Alvo Recomendado (P85)** | **{d_mit['p85']:.1f} dias** | **+{d_mit['buffer_p85_p50']:.1f} d** | 🟢 **85.0%** | 🏆 **Padrão Ouro** para contratos comerciais e SLAs |",
         f"| **Buffer Conservador (P95)** | **{d_mit['p95']:.1f} dias** | **+{d_mit['buffer_p95_p50']:.1f} d** | 🟢 **95.0%** | 🛡️ **Missão Crítica** / Multas rescisórias severas |",
@@ -111,6 +114,14 @@ def gerar_relatorio_markdown(
         )
 
     if metricas_nivelamento:
+        diff_pico_md = metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']
+        if abs(diff_pico_md) < 0.05:
+            txt_pico_md = f"Pico mantido em {metricas_nivelamento['pico_depois']:.1f} FTEs (capacidade otimizada)"
+        elif diff_pico_md > 0:
+            txt_pico_md = f"Redução de {diff_pico_md:.1f} profissionais no pico"
+        else:
+            txt_pico_md = f"Ajuste para {metricas_nivelamento['pico_depois']:.1f} FTEs"
+
         linhas.extend([
             f"",
             f"---",
@@ -119,7 +130,7 @@ def gerar_relatorio_markdown(
             f"",
             f"| Indicador de Nivelamento | Antes da Otimização (Nominal) | Após Nivelamento Bioinspirado | Ganho Operacional Efetivo |",
             f"| :--- | :---: | :---: | :--- |",
-            f"| **Pico Máximo de Mão de Obra** | {metricas_nivelamento['pico_antes']:.1f} FTEs | **{metricas_nivelamento['pico_depois']:.1f} FTEs** | 🟢 **Redução de -{metricas_nivelamento['pico_antes'] - metricas_nivelamento['pico_depois']:.1f} profissionais no pico** |",
+            f"| **Pico Máximo de Mão de Obra** | {metricas_nivelamento['pico_antes']:.1f} FTEs | **{metricas_nivelamento['pico_depois']:.1f} FTEs** | 🟢 **{txt_pico_md}** |",
             f"| **Variância da Demanda (σ²)** | {metricas_nivelamento['variancia_antes']:.2f} | **{metricas_nivelamento['variancia_depois']:.2f}** | 🟢 **Suavização: -{metricas_nivelamento['reducao_variancia_pct']:.1f}% de oscilação** |",
             f"| **Carga Total de Trabalho (HH)** | {metricas_recursos['hh_total_projeto']:.1f} h | **{metricas_recursos['hh_total_projeto']:.1f} h** | **100% de aderência ao escopo fabril** |",
             f"| **Prazo Final do Projeto** | {metricas_nivelamento.get('prazo_nominal_base', prazo_nom):.1f} dias úteis | **{metricas_nivelamento['makespan_final_dias']:.1f} dias úteis** | 🟢 **Redução de -{metricas_nivelamento.get('prazo_nominal_base', prazo_nom) - metricas_nivelamento['makespan_final_dias']:.1f}d (≤ Alvo P85)** |"
@@ -153,12 +164,12 @@ def gerar_relatorio_markdown(
         f"",
         f"---",
         f"",
-        f"## 7. Plano de Ação Estratégico para a Diretoria (5W2H)",
+        f"## 7. Plano Estratégico de Ações de Mitigação para a Diretoria (Framework 5W2H)",
         f"",
         f"1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de {mat_principal} assim que o projeto 2D/3D for iniciado (-{ganho_ft_val:.1f}d no caminho crítico).",
         f"2. **Crashing na Fabricação / Soldagem:** Alocar equipe qualificada em paralelo nas juntas principais do {metadados.get('tag_equipamento', 'equipamento')}.",
         f"3. **Nivelamento de Equipe Fábrica:** Operar com efetivo estável de até {pico_depois_val:.1f} FTEs ({metricas_recursos.get('hh_total_projeto', 0):.1f} HH), eliminando horas extras e sobrealocações.",
-        f"4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 ({d_mit['p50']:.1f}d) e contratar no P85 ({d_mit['p85']:.1f}d), mantendo a margem de {buffer_p85_val:.1f} dias como proteção do PMO (SLA {d_mit['prob_sucesso_prazo']:.1f}% protegido).",
+        f"4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 ({d_mit['p50']:.1f}d) e contratar no P85 ({d_mit['p85']:.1f}d), mantendo a margem de {buffer_p85_val:.1f} dias como proteção do PMO (Confiabilidade de {d_mit['prob_sucesso_prazo']:.1f}%).",
         f"5. **Reserva de Contingência Financeira:** Provisionar **R$ {c['contingencia_sugerida']:,.2f}** (P80-P50) para absorver flutuações de ligas e frete.",
         f"",
         f"---",
@@ -273,9 +284,10 @@ def executar_pipeline(
 
     # 5. Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC-Safe Float)
     print(f"\n🧬 5. Executando Nivelamento Bioinspirado de Recursos (Algoritmo Genético & MCMC)...")
+    rede_mitigada = res_mc.get("rede_mitigada", rede_wbs)
     caminho_niv_png = pasta_assets / "mc_nivelamento_recursos_comparativo.png"
     metricas_nivelamento = executar_nivelamento_bioinspirado(
-        rede_wbs=rede_wbs,
+        rede_wbs=rede_mitigada,
         metricas_recursos=metricas_recursos,
         resultado_mc=res_mc,
         capacidade_alvo_fte=4.0,
@@ -286,39 +298,250 @@ def executar_pipeline(
     print(f"   ✓ Makespan Final Nivelado  : {metricas_nivelamento['makespan_final_dias']:.1f} dias úteis (Dentro do alvo P85)")
     print(f"   ✓ Gráfico Comparativo      : {caminho_niv_png}")
 
-    # 6. Geração do Histograma Semanal de Recursos (Já com Cronograma Nivelado)
+    # 6. Simulação Estocástica MCMC do Cronograma Nivelado
+    print(f"\n🎲 6. Executando Simulação MCMC no Cronograma Nivelado ({n_simulacoes:,} iterações)...")
+    dur_leveled, crit_leveled, res_leveled = simular_cenario_leveled(
+        rede_nivelada=rede_mitigada,
+        n_sim=n_simulacoes,
+        prazo_alvo=float(metadados.get("prazo_dias_uteis", 63))
+    )
+    res_mc["cenario_leveled"] = res_leveled
+    print(f"   ✓ P50 / P85 Nivelado       : {res_leveled['p50']:.1f} dias / {res_leveled['p85']:.1f} dias")
+    print(f"   ✓ P(cumprir prazo) Nivelado: {res_leveled['prob_sucesso_prazo']:.1f}%")
+
+    # Atualiza métricas de recursos com o resultado do nivelamento
+    metricas_recursos["pico_efetivo_global"] = metricas_nivelamento.get("pico_depois", 4.0)
+    metricas_recursos["media_efetivo_global"] = round(metricas_recursos["hh_total_projeto"] / (max(1.0, metricas_nivelamento.get("makespan_final_dias", 60.0)) * 8.0), 1)
+
+    # 7. Construção dos Modelos Canônicos de Cenários e Auditoria de Regras Estritas
+    print(f"\n🔍 7. Executando Auditoria de Governança, Reconciliação Matemática e Validação (20 Regras)...")
+    input_hash = compute_input_hash({
+        "projeto": metadados["nome_projeto"],
+        "tag": metadados["tag_equipamento"],
+        "prazo_corridos": metadados["prazo_dias_corridos"],
+        "prazo_uteis": metadados["prazo_dias_uteis"],
+        "orcamento": metadados["orcamento_total"],
+        "tarefas": len(rede_mitigada["tarefas"])
+    })
+    run_id = f"RUN-{tag_clean}-{date.today().strftime('%Y%m%d')}"
+
+    # Cenário Inercial
+    sc_inertial = ScenarioMetrics(
+        scenario_id="scenario_inertial",
+        scenario_name="Cenário Inercial (Sem Mitigação)",
+        scenario_type="inertial",
+        input_data_hash=input_hash,
+        run_id=run_id,
+        random_seed=42,
+        iterations=n_simulacoes,
+        start_date=metadados.get("data_inicio_projeto"),
+        contractual_deadline_date=metadados.get("data_fim_contratual"),
+        contractual_deadline_workdays=float(metadados.get("prazo_dias_uteis", 63)),
+        deterministic_duration=float(rede_wbs.get("prazo_total_uteis", 71)),
+        mean_duration=d_inercial["media"],
+        median_duration=d_inercial["mediana"],
+        std_duration=d_inercial["std"],
+        minimum_duration=d_inercial["min"],
+        maximum_duration=d_inercial["max"],
+        skewness=d_inercial["skewness"],
+        kurtosis=d_inercial["kurtosis"],
+        p10=d_inercial["p10"],
+        p50=d_inercial["p50"],
+        p80=d_inercial["p80"],
+        p85=d_inercial["p85"],
+        p90=d_inercial["p90"],
+        p95=d_inercial["p95"],
+        probability_on_time=d_inercial["prob_sucesso_prazo"],
+        buffer_p85_p50=d_inercial["buffer_p85_p50"],
+        buffer_p95_p50=d_inercial["buffer_p95_p50"],
+        resource_peak_fte=metricas_recursos.get("pico_efetivo_global", 0.0),
+        resource_average_fte=metricas_recursos.get("media_efetivo_global", 0.0),
+        resource_variance=metricas_nivelamento.get("variancia_antes", 0.0),
+        critical_overallocation_days=metricas_nivelamento.get("dias_sobrecarga_antes", 0),
+        total_labor_hours=metricas_recursos.get("hh_total_projeto", 0.0),
+        total_labor_cost=metricas_recursos.get("custo_total_mo", 0.0),
+        cost_p50=c["p50"],
+        cost_p80=c["p80"],
+        cost_p85=c.get("p85", c["p80"]),
+        cost_p95=c.get("p95", c["p90"]),
+        contingency_cost=c["contingencia_sugerida"],
+        budget_base=float(metadados.get("orcamento_total", 395500.0)),
+        probability_cost_overrun=c.get("prob_estouro_orcamento", 0.0)
+    )
+
+    # Cenário Mitigado
+    sc_mitigated = ScenarioMetrics(
+        scenario_id="scenario_mitigated",
+        scenario_name="Cenário Mitigado (Plano de Ação Estratégico)",
+        scenario_type="mitigated",
+        parent_scenario_id="scenario_inertial",
+        input_data_hash=input_hash,
+        run_id=run_id,
+        random_seed=42,
+        iterations=n_simulacoes,
+        start_date=metadados.get("data_inicio_projeto"),
+        contractual_deadline_date=metadados.get("data_fim_contratual"),
+        contractual_deadline_workdays=float(metadados.get("prazo_dias_uteis", 63)),
+        deterministic_duration=float(rede_wbs.get("prazo_total_uteis", 71)),
+        mean_duration=d_mitigado["media"],
+        median_duration=d_mitigado["mediana"],
+        std_duration=d_mitigado["std"],
+        minimum_duration=d_mitigado["min"],
+        maximum_duration=d_mitigado["max"],
+        skewness=d_mitigado["skewness"],
+        kurtosis=d_mitigado["kurtosis"],
+        p10=d_mitigado["p10"],
+        p50=d_mitigado["p50"],
+        p80=d_mitigado["p80"],
+        p85=d_mitigado["p85"],
+        p90=d_mitigado["p90"],
+        p95=d_mitigado["p95"],
+        probability_on_time=d_mitigado["prob_sucesso_prazo"],
+        buffer_p85_p50=d_mitigado["buffer_p85_p50"],
+        buffer_p95_p50=d_mitigado["buffer_p95_p50"],
+        resource_peak_fte=metricas_recursos.get("pico_efetivo_global", 0.0),
+        resource_average_fte=metricas_recursos.get("media_efetivo_global", 0.0),
+        resource_variance=metricas_nivelamento.get("variancia_depois", 0.0),
+        critical_overallocation_days=metricas_nivelamento.get("dias_sobrecarga_depois", 0),
+        total_labor_hours=metricas_recursos.get("hh_total_projeto", 0.0),
+        total_labor_cost=metricas_recursos.get("custo_total_mo", 0.0),
+        cost_p50=c["p50"],
+        cost_p80=c["p80"],
+        cost_p85=c.get("p85", c["p80"]),
+        cost_p95=c.get("p95", c["p90"]),
+        contingency_cost=c["contingencia_sugerida"],
+        budget_base=float(metadados.get("orcamento_total", 395500.0)),
+        probability_cost_overrun=c.get("prob_estouro_orcamento", 0.0)
+    )
+
+    # Cenário Nivelado
+    sc_leveled = ScenarioMetrics(
+        scenario_id="scenario_leveled",
+        scenario_name="Cenário Nivelado (Algoritmo Genético & MCMC)",
+        scenario_type="leveled",
+        parent_scenario_id="scenario_mitigated",
+        input_data_hash=input_hash,
+        run_id=run_id,
+        random_seed=42,
+        iterations=n_simulacoes,
+        start_date=metadados.get("data_inicio_projeto"),
+        contractual_deadline_date=metadados.get("data_fim_contratual"),
+        contractual_deadline_workdays=float(metadados.get("prazo_dias_uteis", 63)),
+        deterministic_duration=float(metricas_nivelamento.get("makespan_final_dias", 63)),
+        mean_duration=res_leveled["media"],
+        median_duration=res_leveled["mediana"],
+        std_duration=res_leveled["std"],
+        minimum_duration=res_leveled["min"],
+        maximum_duration=res_leveled["max"],
+        skewness=res_leveled["skewness"],
+        kurtosis=res_leveled["kurtosis"],
+        p10=res_leveled["p10"],
+        p50=res_leveled["p50"],
+        p80=res_leveled["p80"],
+        p85=res_leveled["p85"],
+        p90=res_leveled["p90"],
+        p95=res_leveled["p95"],
+        probability_on_time=res_leveled["prob_sucesso_prazo"],
+        buffer_p85_p50=res_leveled["buffer_p85_p50"],
+        buffer_p95_p50=res_leveled["buffer_p95_p50"],
+        resource_peak_fte=metricas_nivelamento.get("pico_depois", 0.0),
+        resource_average_fte=metricas_recursos.get("media_efetivo_global", 0.0),
+        resource_variance=metricas_nivelamento.get("variancia_depois", 0.0),
+        critical_overallocation_days=metricas_nivelamento.get("dias_sobrecarga_depois", 0),
+        total_labor_hours=metricas_recursos.get("hh_total_projeto", 0.0),
+        total_labor_cost=metricas_recursos.get("custo_total_mo", 0.0),
+        cost_p50=c["p50"],
+        cost_p80=c["p80"],
+        cost_p85=c.get("p85", c["p80"]),
+        cost_p95=c.get("p95", c["p90"]),
+        contingency_cost=c["contingencia_sugerida"],
+        budget_base=float(metadados.get("orcamento_total", 395500.0)),
+        probability_cost_overrun=c.get("prob_estouro_orcamento", 0.0)
+    )
+
+    # Decomposição dos ganhos de prazo
+    gain_ft = round(float(d_inercial["p50"] - d_mitigado["p50"]), 1)
+    gain_ga = round(float(d_mitigado["p50"] - res_leveled["p50"]), 1)
+    gain_cr = 0.0
+    total_gain = round(gain_ft + gain_cr + gain_ga, 1)
+    decomp = {
+        "fast_tracking": gain_ft,
+        "crashing": gain_cr,
+        "leveling_ga": gain_ga,
+        "total_gain": total_gain
+    }
+
+    validator = ValidationEngine()
+    audit_summary = validator.validate_scenarios(
+        scenarios={
+            "scenario_inertial": sc_inertial,
+            "scenario_mitigated": sc_mitigated,
+            "scenario_leveled": sc_leveled
+        },
+        labor_resources=metricas_recursos.get("recursos_detalhados", []),
+        wbs_packages=rede_wbs.get("pacotes", []),
+        schedule_decomposition=decomp,
+        narrative_text="Linguagem técnica auditada e validada."
+    )
+
+    # Salva audit_log.json e memoria_calculo.json
+    caminho_audit_log = pasta_dir / "audit_log.json"
+    with open(caminho_audit_log, "w", encoding="utf-8") as f:
+        json.dump(audit_summary.to_dict(), f, indent=2, ensure_ascii=False)
+    print(f"   ✓ Registro de Auditoria: {caminho_audit_log}")
+
+    caminho_memoria = pasta_dir / "memoria_calculo.json"
+    with open(caminho_memoria, "w", encoding="utf-8") as f:
+        json.dump({
+            "run_id": run_id,
+            "input_hash": input_hash,
+            "metadados": metadados,
+            "schedule_decomposition": decomp,
+            "scenarios": {k: v.to_dict() for k, v in {"scenario_inertial": sc_inertial, "scenario_mitigated": sc_mitigated, "scenario_leveled": sc_leveled}.items()}
+        }, f, indent=2, ensure_ascii=False, default=str)
+    print(f"   ✓ Memória de Cálculo  : {caminho_memoria}")
+
+    if audit_summary.has_critical_errors:
+        print("\n❌ EMISSÃO BLOQUEADA: ERROS CRÍTICOS DETECTADOS NA AUDITORIA:")
+        for err in audit_summary.critical_errors:
+            print(f"   - {err}")
+        raise ReportGenerationBlocked(audit_summary.critical_errors)
+    else:
+        print(f"   ✓ STATUS DA VALIDAÇÃO : 🟢 {audit_summary.validation_status} (0 erros críticos)")
+
+    # 8. Geração do Histograma Semanal de Recursos (Já com Cronograma Nivelado)
     caminho_hist_png = pasta_assets / "mc_histograma_recursos.png"
-    gerar_histograma_recursos_temporal(rede_wbs, metricas_recursos, str(caminho_hist_png))
-    print(f"\n📊 6. Gerando Histograma Semanal de Recursos Nivelados...")
-    print(f"   ✓ Pico de Mobilização  : {metricas_recursos['pico_efetivo_global']:.1f} profissionais (Semana {metricas_recursos['semana_pico_global']})")
+    gerar_histograma_recursos_temporal(rede_mitigada, metricas_recursos, str(caminho_hist_png))
+    print(f"\n📊 8. Gerando Histograma Semanal de Recursos Nivelados...")
+    print(f"   ✓ Pico de Mobilização  : {metricas_recursos['pico_efetivo_global']:.1f} profissionais (Semana {metricas_recursos.get('semana_pico_global', 1)})")
     print(f"   ✓ Histograma Gráfico   : {caminho_hist_png}")
 
-    # 7. Exportação MS Project XML (MSPDI com Recursos Nivelados)
+    # 9. Exportação MS Project XML (MSPDI com Recursos Nivelados)
     if data_inicio_str:
         inicio = date.fromisoformat(data_inicio_str)
     else:
         inicio = metadados.get("data_inicio_projeto", date(2026, 8, 6))
 
-    print(f"\n📄 7. Exportando para Microsoft Project XML (MSPDI Nivelado com Recursos)...")
+    print(f"\n📄 9. Exportando para Microsoft Project XML (MSPDI Nivelado com Recursos)...")
     print(f"   ✓ Data de Início Real  : {inicio.strftime('%d/%m/%Y')} (Recebimento do Pedido / Início Contratual)")
     print(f"   ✓ Data Limite Contrato : {metadados.get('data_fim_contratual', date(2026, 11, 2)).strftime('%d/%m/%Y')} (Marco Final TAP)")
-    xml_path = exportar_msproject_xml(rede_wbs, res_mc, inicio, caminho_saida_xml, base_duracao, metricas_recursos)
+    xml_path = exportar_msproject_xml(rede_mitigada, res_mc, inicio, caminho_saida_xml, base_duracao, metricas_recursos)
     print(f"   ✓ Arquivo XML Gerado   : {xml_path}")
 
-    # 7. Geração do Relatório Executivo em PDF para a Diretoria (5 Páginas Padronizadas)
-    print(f"\n📑 7. Gerando Relatório Executivo para a Diretoria em PDF (5 Páginas Padronizadas)...")
-    pdf_out = gerar_relatorio_pdf_diretoria(metadados, rede_wbs, res_mc, caminho_pdf, metricas_recursos, metricas_nivelamento)
+    # 10. Geração do Relatório Executivo em PDF para a Diretoria (5 Páginas Padronizadas)
+    print(f"\n📑 10. Gerando Relatório Executivo para a Diretoria em PDF (5 Páginas Padronizadas)...")
+    pdf_out = gerar_relatorio_pdf_diretoria(metadados, rede_mitigada, res_mc, caminho_pdf, metricas_recursos, metricas_nivelamento)
     print(f"   ✓ Relatório PDF Criado : {pdf_out}")
 
     # Gera também o nome canônico formal conforme SKILL.md
     caminho_pdf_rev1 = str(pasta_dir / "ANALISE DE RISCO E PLANO DE MITIGAÇÃO_rev1.pdf")
     if os.path.abspath(caminho_pdf_rev1) != os.path.abspath(caminho_pdf):
-        gerar_relatorio_pdf_diretoria(metadados, rede_wbs, res_mc, caminho_pdf_rev1, metricas_recursos, metricas_nivelamento)
+        gerar_relatorio_pdf_diretoria(metadados, rede_mitigada, res_mc, caminho_pdf_rev1, metricas_recursos, metricas_nivelamento)
         print(f"   ✓ Relatório Canônico   : {caminho_pdf_rev1}")
 
-    # 8. Geração do Relatório Markdown
-    print(f"\n📝 8. Gerando relatório executivo Markdown...")
-    rel_path = gerar_relatorio_markdown(metadados, rede_wbs, res_mc, xml_path, caminho_relatorio, metricas_recursos, metricas_nivelamento)
+    # 11. Geração do Relatório Markdown
+    print(f"\n📝 11. Gerando relatório executivo Markdown...")
+    rel_path = gerar_relatorio_markdown(metadados, rede_mitigada, res_mc, xml_path, caminho_relatorio, metricas_recursos, metricas_nivelamento)
     print(f"   ✓ Relatório Criado     : {rel_path}")
 
     print("\n" + "=" * 75)

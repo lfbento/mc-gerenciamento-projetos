@@ -18,7 +18,7 @@
 
 | Métrica de Cronograma | Prazo Estimado | Buffer Adicional | Prob. Cumprimento | Perfil de Governança Indicado |
 | :--- | :---: | :---: | :---: | :--- |
-| **Baseline CPM (Nominal)** | **63.0 dias** | +0.0 d | **< 0.1%** | 🔴 **Risco Inaceitável** (Atraso contratual quase garantido) |
+| **Baseline CPM (Nominal)** | **63.0 dias** | +0.0 d | **< 0.1%** | 🔴 **Risco Severo** (Alta probabilidade de atraso contratual) |
 | **Mediana Estocástica (P50)** | **59.1 dias** | +0.0 d (base) | **50.0%** | 🟡 **Planejamento Interno** (Meta operacional da fábrica) |
 | **Alvo Recomendado (P85)** | **62.1 dias** | **+3.0 d** | 🟢 **85.0%** | 🏆 **Padrão Ouro** para contratos comerciais e SLAs |
 | **Buffer Conservador (P95)** | **64.0 dias** | **+4.8 d** | 🟢 **95.0%** | 🛡️ **Missão Crítica** / Multas rescisórias severas |
@@ -56,7 +56,7 @@ Dimensionamento fundamentado no Guia de Estimativa de Recursos Industriais (Stor
 | **CALD-PREP** - Caldeireiro de Traçado e Corte Plasma | Caldeiraria | 30.4 h | R$ 50.00/h | R$ 1,520.00 |
 | **OPER-CAL** - Operador de Calandra e Conformação | Caldeiraria | 30.4 h | R$ 50.00/h | R$ 1,520.00 |
 | **RIG-LOG** - Rigger / Operador de Carga, Berço e Expedição | Logística | 16.0 h | R$ 45.00/h | R$ 720.00 |
-| **TOTAL GERAL DE MÃO DE OBRA** | **Pico Inicial: 4.7 FTEs** | **1046.2 h** | — | **R$ 58,059.00** |
+| **TOTAL GERAL DE MÃO DE OBRA** | **Pico Inicial: 4.5 FTEs** | **1046.2 h** | — | **R$ 58,059.00** |
 
 ---
 
@@ -64,10 +64,10 @@ Dimensionamento fundamentado no Guia de Estimativa de Recursos Industriais (Stor
 
 | Indicador de Nivelamento | Antes da Otimização (Nominal) | Após Nivelamento Bioinspirado | Ganho Operacional Efetivo |
 | :--- | :---: | :---: | :--- |
-| **Pico Máximo de Mão de Obra** | 4.0 FTEs | **4.0 FTEs** | 🟢 **Redução de -0.0 profissionais no pico** |
-| **Variância da Demanda (σ²)** | 1.10 | **1.01** | 🟢 **Suavização: -8.3% de oscilação** |
+| **Pico Máximo de Mão de Obra** | 4.0 FTEs | **4.0 FTEs** | 🟢 **Pico mantido em 4.0 FTEs (capacidade otimizada)** |
+| **Variância da Demanda (σ²)** | 0.79 | **0.71** | 🟢 **Suavização: -10.5% de oscilação** |
 | **Carga Total de Trabalho (HH)** | 1046.2 h | **1046.2 h** | **100% de aderência ao escopo fabril** |
-| **Prazo Final do Projeto** | 63.0 dias úteis | **55.1 dias úteis** | 🟢 **Redução de -7.9d (≤ Alvo P85)** |
+| **Prazo Final do Projeto** | 63.0 dias úteis | **49.8 dias úteis** | 🟢 **Redução de -13.2d (≤ Alvo P85)** |
 
 ---
 
@@ -90,12 +90,12 @@ Atividades com maior probabilidade de travar o cronograma global (presença no C
 
 ---
 
-## 7. Plano de Ação Estratégico para a Diretoria (5W2H)
+## 7. Plano Estratégico de Ações de Mitigação para a Diretoria (Framework 5W2H)
 
 1. **Fast-Tracking em Suprimentos:** Disparar pedido e cotação de Chapas de Aço Inoxidável SA-240 304 assim que o projeto 2D/3D for iniciado (-18.0d no caminho crítico).
 2. **Crashing na Fabricação / Soldagem:** Alocar equipe qualificada em paralelo nas juntas principais do TQ-0960-30.
 3. **Nivelamento de Equipe Fábrica:** Operar com efetivo estável de até 4.0 FTEs (1046.2 HH), eliminando horas extras e sobrealocações.
-4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 (59.1d) e contratar no P85 (62.1d), mantendo a margem de 3.0 dias como proteção do PMO (SLA 91.0% protegido).
+4. **Governança de Feeding Buffer:** Fixar meta de fábrica no P50 (59.1d) e contratar no P85 (62.1d), mantendo a margem de 3.0 dias como proteção do PMO (Confiabilidade de 91.0%).
 5. **Reserva de Contingência Financeira:** Provisionar **R$ 20,602.44** (P80-P50) para absorver flutuações de ligas e frete.
 
 ---

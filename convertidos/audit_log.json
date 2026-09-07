@@ -1,0 +1,379 @@
+{
+  "project_name": "Cenário Inercial (Sem Mitigação)",
+  "tag_equipment": "scenario_inertial",
+  "client": "Seg-Sex 8h/dia com Feriados Nacionais",
+  "run_id": "RUN-tq-0960-30-20260906",
+  "timestamp": "2026-08-06",
+  "input_hash": "5bfed3913d05ee20",
+  "seed": 42,
+  "iterations": 20000,
+  "validation_status": "APPROVED",
+  "has_critical_errors": false,
+  "critical_errors": [],
+  "warnings": [],
+  "schedule_decomposition": {
+    "fast_tracking": 18.0,
+    "crashing": 0.0,
+    "leveling_ga": 0.0,
+    "total_gain": 18.0
+  },
+  "rules_validated": [
+    {
+      "rule_id": "R01_SCENARIO_INERTIAL",
+      "rule_name": "Monotonicidade de Percentis (Cenário Inercial (Sem Mitigação))",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Percentis ordenados: min=65.4 <= p10=72.9 <= p50=77.1 <= p85=81.0 <= p95=83.5 <= max=94.3",
+      "details": {
+        "min": 65.3691683312289,
+        "p10": 72.8823760198337,
+        "p50": 77.10388206993555,
+        "p85": 80.959374242169,
+        "p95": 83.47598328389834,
+        "max": 94.2546501117636
+      }
+    },
+    {
+      "rule_id": "R01_SCENARIO_MITIGATED",
+      "rule_name": "Monotonicidade de Percentis (Cenário Mitigado (Plano de Ação Estratégico))",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Percentis ordenados: min=50.3 <= p10=55.8 <= p50=59.1 <= p85=62.1 <= p95=64.0 <= max=72.8",
+      "details": {
+        "min": 50.30038630966848,
+        "p10": 55.80502681853931,
+        "p50": 59.11524554377711,
+        "p85": 62.08204828394441,
+        "p95": 63.95811891566807,
+        "max": 72.7599100012761
+      }
+    },
+    {
+      "rule_id": "R01_SCENARIO_LEVELED",
+      "rule_name": "Monotonicidade de Percentis (Cenário Nivelado (Algoritmo Genético & MCMC))",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Percentis ordenados: min=50.9 <= p10=55.8 <= p50=59.1 <= p85=62.1 <= p95=63.9 <= max=71.6",
+      "details": {
+        "min": 50.86290540149054,
+        "p10": 55.84902245339659,
+        "p50": 59.10134864103662,
+        "p85": 62.12824401115295,
+        "p95": 63.92653181174725,
+        "max": 71.58351554032501
+      }
+    },
+    {
+      "rule_id": "R02_SCENARIO_MITIGATED",
+      "rule_name": "Aritmética Exata de Buffers (Cenário Mitigado (Plano de Ação Estratégico))",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Buffer P85-P50 informado: 2.97d (Esperado: 2.97d, diff=0.0032d)",
+      "details": {
+        "reported_b85": 2.97,
+        "expected_b85": 2.966802740167303
+      }
+    },
+    {
+      "rule_id": "R02_SCENARIO_LEVELED",
+      "rule_name": "Aritmética Exata de Buffers (Cenário Nivelado (Algoritmo Genético & MCMC))",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Buffer P85-P50 informado: 3.03d (Esperado: 3.03d, diff=0.0031d)",
+      "details": {
+        "reported_b85": 3.03,
+        "expected_b85": 3.0268953701163284
+      }
+    },
+    {
+      "rule_id": "R03_SCENARIO_INERTIAL",
+      "rule_name": "Consistência de Probabilidade (Cenário Inercial (Sem Mitigação))",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Probabilidade 0.0% consistente com prazo 63.0d",
+      "details": {
+        "prob": 0.0,
+        "deadline": 63.0,
+        "p50": 77.10388206993555,
+        "p95": 83.47598328389834
+      }
+    },
+    {
+      "rule_id": "R03_SCENARIO_MITIGATED",
+      "rule_name": "Consistência de Probabilidade (Cenário Mitigado (Plano de Ação Estratégico))",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Probabilidade 91.0% consistente com prazo 63.0d",
+      "details": {
+        "prob": 90.98,
+        "deadline": 63.0,
+        "p50": 59.11524554377711,
+        "p95": 63.95811891566807
+      }
+    },
+    {
+      "rule_id": "R03_SCENARIO_LEVELED",
+      "rule_name": "Consistência de Probabilidade (Cenário Nivelado (Algoritmo Genético & MCMC))",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Probabilidade 90.8% consistente com prazo 63.0d",
+      "details": {
+        "prob": 90.755,
+        "deadline": 63.0,
+        "p50": 59.10134864103662,
+        "p95": 63.92653181174725
+      }
+    },
+    {
+      "rule_id": "R04_HH_RECONCILIATION",
+      "rule_name": "Reconciliação Estrita de Homens-Hora (HH)",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Soma das especialidades: 1046.2 HH == Total reportado: 1046.2 HH (dif=0.000 HH)",
+      "details": {
+        "sum_hh": 1046.2,
+        "reported_hh": 1046.2
+      }
+    },
+    {
+      "rule_id": "R05_COST_RECONCILIATION",
+      "rule_name": "Reconciliação Estrita de Custos de Mão de Obra",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Soma dos custos por função: R$ 58,059.00 == Total reportado: R$ 58,059.00 (dif=R$ 0.00)",
+      "details": {
+        "sum_cost": 58059.0,
+        "reported_cost": 58059.0
+      }
+    },
+    {
+      "rule_id": "R06_WBS_WEIGHTS_100",
+      "rule_name": "Somatório de Pesos da EAP / WBS",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Soma dos pesos dos pacotes: 100.00% (Esperado: 100.00%)",
+      "details": {
+        "sum_weights": 100.0
+      }
+    },
+    {
+      "rule_id": "R07_NO_NEGATIVE_ZERO",
+      "rule_name": "Ausência de Formatação Negativa Nula ('-0.0')",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Nenhum texto contém '-0.0' ou '-0,0'",
+      "details": {
+        "neg_zero_present": false
+      }
+    },
+    {
+      "rule_id": "R08_OVERALLOCATION_HONESTY",
+      "rule_name": "Coerência Narrativa de Sobrealocação Pós-Nivelamento",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Dias de sobrealocação após GA: 6 dias. Narrativa consistente e sem falsas alegações de zero sobrecarga.",
+      "details": {
+        "days_over": 6
+      }
+    },
+    {
+      "rule_id": "R09_NO_GUARANTEE_LANGUAGE",
+      "rule_name": "Saneamento de Linguagem Probabilística (Sem Garantias Falsas)",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Linguagem estocástica estrita aplicada com sucesso.",
+      "details": {
+        "found_forbidden": []
+      }
+    },
+    {
+      "rule_id": "R10_CONTINGENCY_RECONCILIATION",
+      "rule_name": "Reconciliação da Contingência Financeira (P80 - P50)",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Contingência: R$ 20,602.44 == P80 (R$ 433,539.56) - P50 (R$ 412,937.11)",
+      "details": {
+        "contingency": 20602.44,
+        "cost_p80": 433539.55660445814,
+        "cost_p50": 412937.113630367
+      }
+    },
+    {
+      "rule_id": "R11_SCHEDULE_DECOMPOSITION",
+      "rule_name": "Decomposição Auditável dos Ganhos de Prazo",
+      "severity": "WARNING",
+      "passed": true,
+      "message": "Soma dos ganhos marginais (18.0d + 0.0d + 0.0d = 18.0d) reconciliada com ganho total (18.0d)",
+      "details": {
+        "sum_gains": 18.0,
+        "total_gain": 18.0,
+        "diff": 0.0
+      }
+    },
+    {
+      "rule_id": "R12_LEVELED_SIMULATION_PRESENT",
+      "rule_name": "Existência de Simulação Estocástica do Cronograma Nivelado",
+      "severity": "CRITICAL",
+      "passed": true,
+      "message": "Cronograma nivelado possui distribuição MCMC simulada independente.",
+      "details": {
+        "has_leveled_sim": true
+      }
+    }
+  ],
+  "scenarios": {
+    "scenario_inertial": {
+      "scenario_id": "scenario_inertial",
+      "scenario_name": "Cenário Inercial (Sem Mitigação)",
+      "scenario_type": "inertial",
+      "parent_scenario_id": null,
+      "simulation_version": "2.0.0",
+      "model_version": "MCMC-Markov-2Regimes",
+      "input_data_hash": "5bfed3913d05ee20",
+      "run_id": "RUN-tq-0960-30-20260906",
+      "random_seed": 42,
+      "iterations": 20000,
+      "calendar_id": "CAL-BR-IND-40H",
+      "calendar_type": "Seg-Sex 8h/dia com Feriados Nacionais",
+      "start_date": "2026-08-06",
+      "contractual_deadline_date": "2026-11-02",
+      "contractual_deadline_workdays": 63.0,
+      "deterministic_duration": 63.0,
+      "mean_duration": 77.29777055069327,
+      "median_duration": 77.10388206993555,
+      "std_duration": 3.5294010980109083,
+      "minimum_duration": 65.3691683312289,
+      "maximum_duration": 94.2546501117636,
+      "skewness": 0.29863812740050855,
+      "kurtosis": 0.12040753989434805,
+      "p10": 72.8823760198337,
+      "p50": 77.10388206993555,
+      "p80": 80.19015837677303,
+      "p85": 80.959374242169,
+      "p90": 81.91651958921106,
+      "p95": 83.47598328389834,
+      "probability_on_time": 0.0,
+      "buffer_p85_p50": 3.86,
+      "buffer_p95_p50": 6.37,
+      "resource_peak_fte": 4.0,
+      "resource_average_fte": 2.6,
+      "resource_variance": 0.79,
+      "critical_overallocation_days": 6,
+      "total_labor_hours": 1046.2,
+      "total_labor_cost": 58059.0,
+      "cost_p50": 412937.113630367,
+      "cost_p80": 433539.55660445814,
+      "cost_p85": 433539.55660445814,
+      "cost_p95": 444506.88079755544,
+      "contingency_cost": 20602.44,
+      "budget_base": 395500.0,
+      "probability_cost_overrun": 77.265,
+      "mitigation_actions": [],
+      "assumptions": [],
+      "warnings": [],
+      "validation_status": "PENDING"
+    },
+    "scenario_mitigated": {
+      "scenario_id": "scenario_mitigated",
+      "scenario_name": "Cenário Mitigado (Plano de Ação Estratégico)",
+      "scenario_type": "mitigated",
+      "parent_scenario_id": "scenario_inertial",
+      "simulation_version": "2.0.0",
+      "model_version": "MCMC-Markov-2Regimes",
+      "input_data_hash": "5bfed3913d05ee20",
+      "run_id": "RUN-tq-0960-30-20260906",
+      "random_seed": 42,
+      "iterations": 20000,
+      "calendar_id": "CAL-BR-IND-40H",
+      "calendar_type": "Seg-Sex 8h/dia com Feriados Nacionais",
+      "start_date": "2026-08-06",
+      "contractual_deadline_date": "2026-11-02",
+      "contractual_deadline_workdays": 63.0,
+      "deterministic_duration": 63.0,
+      "mean_duration": 59.24505737481336,
+      "median_duration": 59.11524554377711,
+      "std_duration": 2.7296932339540594,
+      "minimum_duration": 50.30038630966848,
+      "maximum_duration": 72.7599100012761,
+      "skewness": 0.2519573206982531,
+      "kurtosis": 0.040982994450653454,
+      "p10": 55.80502681853931,
+      "p50": 59.11524554377711,
+      "p80": 61.517825551149514,
+      "p85": 62.08204828394441,
+      "p90": 62.82147709349733,
+      "p95": 63.95811891566807,
+      "probability_on_time": 90.98,
+      "buffer_p85_p50": 2.97,
+      "buffer_p95_p50": 4.84,
+      "resource_peak_fte": 4.0,
+      "resource_average_fte": 2.6,
+      "resource_variance": 0.71,
+      "critical_overallocation_days": 6,
+      "total_labor_hours": 1046.2,
+      "total_labor_cost": 58059.0,
+      "cost_p50": 412937.113630367,
+      "cost_p80": 433539.55660445814,
+      "cost_p85": 433539.55660445814,
+      "cost_p95": 444506.88079755544,
+      "contingency_cost": 20602.44,
+      "budget_base": 395500.0,
+      "probability_cost_overrun": 77.265,
+      "mitigation_actions": [],
+      "assumptions": [],
+      "warnings": [],
+      "validation_status": "PENDING"
+    },
+    "scenario_leveled": {
+      "scenario_id": "scenario_leveled",
+      "scenario_name": "Cenário Nivelado (Algoritmo Genético & MCMC)",
+      "scenario_type": "leveled",
+      "parent_scenario_id": "scenario_mitigated",
+      "simulation_version": "2.0.0",
+      "model_version": "MCMC-Markov-2Regimes",
+      "input_data_hash": "5bfed3913d05ee20",
+      "run_id": "RUN-tq-0960-30-20260906",
+      "random_seed": 42,
+      "iterations": 20000,
+      "calendar_id": "CAL-BR-IND-40H",
+      "calendar_type": "Seg-Sex 8h/dia com Feriados Nacionais",
+      "start_date": "2026-08-06",
+      "contractual_deadline_date": "2026-11-02",
+      "contractual_deadline_workdays": 63.0,
+      "deterministic_duration": 49.8,
+      "mean_duration": 59.2522654102291,
+      "median_duration": 59.10134864103662,
+      "std_duration": 2.735614340699607,
+      "minimum_duration": 50.86290540149054,
+      "maximum_duration": 71.58351554032501,
+      "skewness": 0.2850541780665793,
+      "kurtosis": 0.06699853621070151,
+      "p10": 55.84902245339659,
+      "p50": 59.10134864103662,
+      "p80": 61.556481711987786,
+      "p85": 62.12824401115295,
+      "p90": 62.84821115864499,
+      "p95": 63.92653181174725,
+      "probability_on_time": 90.755,
+      "buffer_p85_p50": 3.03,
+      "buffer_p95_p50": 4.83,
+      "resource_peak_fte": 4.0,
+      "resource_average_fte": 2.6,
+      "resource_variance": 0.71,
+      "critical_overallocation_days": 6,
+      "total_labor_hours": 1046.2,
+      "total_labor_cost": 58059.0,
+      "cost_p50": 412937.113630367,
+      "cost_p80": 433539.55660445814,
+      "cost_p85": 433539.55660445814,
+      "cost_p95": 444506.88079755544,
+      "contingency_cost": 20602.44,
+      "budget_base": 395500.0,
+      "probability_cost_overrun": 77.265,
+      "mitigation_actions": [],
+      "assumptions": [],
+      "warnings": [],
+      "validation_status": "PENDING"
+    }
+  }
+}
